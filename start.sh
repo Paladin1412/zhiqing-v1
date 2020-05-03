@@ -1,0 +1,1 @@
+gunicorn -w 2 -b 0.0.0.0:9191 --access-logfile ./logs/access.log --error-logfile ./logs/error.log -D main:app -t 300

@@ -1,0 +1,549 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+@File     : videos.py
+@Time     : 2020-03-29 21:32
+@Author   : Qi
+@Email    : 18821723039@163.com
+@Software : PyCharm
+"""
+import datetime
+import hashlib
+import os
+import re
+import time
+from ast import literal_eval
+from pprint import pprint
+from threading import Thread
+import os
+import cv2
+import math
+import jwt
+from flask import request, g, current_app
+
+from main import mongo
+from modules.aimodels import run_ai
+from modules.aimodels.run_ai import generate_subtitle as generate_subtitle1, \
+    edit_video
+from utils import response_code
+from utils.auth import query_user_data
+from utils.setResJson import set_resjson
+from utils.video_upload.uploadVideo import upload_video
+from config.settings import config
+
+
+class VideoHandler(object):
+    def __init__(self, extra_data, model_action):
+        self.temporary_path = os.path.abspath(
+            os.path.dirname(os.path.dirname(__file__)))
+        abs_path = os.path.dirname(self.temporary_path)
+        self.path = abs_path + '/static'
+        self.extra_data = extra_data
+        self.model_action = model_action
+
+    def handle_model(self):
+        func_name = 'func_{}'.format(self.model_action)
+        func_name = func_name.lower()
+        handle_function = getattr(VideoHandler, func_name)
+        res = handle_function(self)
+        return res
+
+    def func_global_search(self):
+        """
+        全局搜索视频
+        :return:
+        """
+        query_string = self.extra_data.get("query_string", "")
+        video_ids = self.extra_data.get("video_ids", "")
+        mode = 'global'
+        ret = run_ai.play_video(query_string, mode, video_ids)
+        response = set_resjson(res_array=ret)
+        return response
+
+    def func_local_search(self):
+        """
+        局部搜索视频
+        :return:
+        """
+        query_string = self.extra_data.get('query_string', "")
+        video_ids = self.extra_data.get('video_ids', "")
+        if query_string == "":
+            response = set_resjson(err=-1,
+                                   errmsg="[ query_string ] must be provided ！")
+        elif video_ids == "":
+            response = set_resjson(err=-2,
+                                   errmsg="[ video_ids ] must be provided ！")
+        else:
+            mode = 'local'
+            ret = run_ai.play_video(query_string, mode, video_ids)
+            response = set_resjson(res_array=ret)
+
+        return response
+
+    def func_breakpoint(self):
+        """
+        视频断点续传
+        """
+        user = g.user
+        if not user:
+            raise response_code.UserERR(errmsg='用户未登录')
+        task = self.extra_data.get('task_id', "")
+        if task == "":
+            raise response_code.ParamERR(errmsg="[ task ] must be provided ！")
+        folder_file_list = os.listdir('static/upload')
+        file_list = [file for file in folder_file_list if
+                     re.match(r'{}'.format(task), file)]
+        return set_resjson(res_array=file_list)
+
+    def func_generate_subtitle(self):
+        """
+        生成字幕
+        :return:
+        """
+        user = g.user
+        if not user:
+            raise response_code.UserERR(errmsg='用户未登录')
+        lang = self.extra_data.get('lang')
+        task_id = self.extra_data.get('task_id')
+
+        if not task_id:
+            resp = set_resjson(err=-1, errmsg='[ task_id ] must be provided ！')
+        else:
+            try:
+                video_info = mongo.db.video.find_one({'_id': task_id})
+            except Exception as e:
+                raise response_code.DatabaseERR(errmsg="{}".format(e))
+            if not video_info:
+                resp = set_resjson(err=-1, errmsg='_id is Incorrect!')
+            else:
+                if 'subtitling' in video_info:
+                    resp = set_resjson(err=-1,
+                                       errmsg='Subtitles have been created or are being created. Please be patient')
+                elif lang not in ['cn', 'en']:
+                    resp = set_resjson(err=-1, errmsg='lang is cn or en')
+
+                else:
+                    thread = Thread(target=generate_subtitle1,
+                                    args=(task_id, lang))
+                    thread.start()
+                    try:
+                        mongo.db.video.update_one({'_id': task_id},
+                                                  {"$set": {"subtitling": 0}})
+                    except Exception as e:
+                        raise response_code.DatabaseERR(errmsg="{}".format(e))
+                    resp = set_resjson(
+                        errmsg='Please wait. Generating subtitles!')
+
+        return resp
+
+    def func_query_subtitle(self):
+        """
+        查询字幕
+        :return:
+        """
+        user = g.user
+        if not user:
+            raise response_code.UserERR(errmsg='用户未登录')
+        task_id = self.extra_data.get('task_id', '')
+        if task_id == '':
+            resp = set_resjson(err=-1, errmsg='[ task_id ] must be provided ！')
+        else:
+            try:
+                video_info = mongo.db.video.find_one({'_id': task_id})
+            except Exception as e:
+                raise response_code.DatabaseERR(errmsg="{}".format(e))
+            if not video_info:
+                resp = set_resjson(err=-1, errmsg='_id is Incorrect!')
+            else:
+                try:
+                    video_info = mongo.db.video.find_one({"_id": task_id},
+                                                         {'video_path': 1,
+                                                          'subtitling': 1,
+                                                          "_id": 0})
+                except Exception as e:
+                    raise response_code.DatabaseERR(errmsg="{}".format(e))
+                if 'subtitling' in video_info:
+                    sub_info = video_info.get('subtitling')
+                    if sub_info == 0:
+                        resp = set_resjson(
+                            errmsg="Subtitles are being generated, please wait")
+                    else:
+                        resp = set_resjson(res_array=[video_info])
+                else:
+                    resp = set_resjson(
+                        errmsg='Subtitle generation failed or not generated. Please regenerate the subtitle')
+        return resp
+
+    def func_update_subtitle(self):
+        """
+        更新字幕
+        :return:
+        """
+        user = g.user
+        if not user:
+            raise response_code.UserERR(errmsg='用户未登录')
+        style = self.extra_data.get('style')
+        task_id = self.extra_data.get('task_id')
+        subtitling = self.extra_data.get('subtitling', '')
+        if not task_id:
+            resp = set_resjson(err=-1, errmsg='[ task_id ] must be provided ！')
+        elif subtitling == "" or type(subtitling) != list:
+            resp = set_resjson(err=-1,
+                               errmsg='subtitling can not be empty, Its type is list')
+        else:
+            try:
+                video_info = mongo.db.video.find_one({'_id': task_id})
+            except Exception as e:
+                raise response_code.DatabaseERR(errmsg="{}".format(e))
+            if not video_info:
+                resp = set_resjson(err=-1, errmsg='_id is Incorrect!')
+            else:
+                try:
+                    run_ai.update_subtitle(task_id, subtitling, style)
+                except Exception as e:
+                    raise response_code.ParamERR(errmsg='{}'.format(e))
+                resp = set_resjson()
+        return resp
+
+    def func_download(self):
+        """
+        导出视频
+        """
+        user = g.user
+        if not user:
+            raise response_code.UserERR(errmsg='用户未登录')
+
+        task_id = self.extra_data.get('task_id', '')
+        if task_id == '':
+            raise response_code.ParamERR(errmsg="task_id not can be empty")
+
+        try:
+            video_info = mongo.db.video.find_one({"_id": task_id})
+        except Exception as e:
+            raise response_code.ParamERR(errmsg="{}".format(e))
+        sub_path = video_info.get('ass_path', '')
+
+        if sub_path == '':
+            raise response_code.ParamERR(errmsg="请先生成字幕")
+        input_path = video_info.get('video_path')
+        output_path = "static/synthetic/" + input_path.split('/')[-1]
+        compress = "ffmpeg -i {} -vf subtitles={} -y {}".format(input_path,
+                                                                sub_path,
+                                                                output_path)
+        try:
+            is_run = os.system(compress)
+        except Exception as e:
+            raise response_code.RoleERR(errmsg="视频合并失败 {}".format(e))
+        if is_run != 0:
+            raise response_code.RoleERR(errmsg="视频合并失败")
+        editor_video_md5 = video_to_md5(output_path)
+        editor_video_name = "static/synthetic/" + editor_video_md5 + "." + \
+                            input_path.split('.')[-1]
+        os.rename(output_path, editor_video_name)
+        response = upload_video(editor_video_name)
+        os.remove(editor_video_name)
+        video_path = response.pop("video_url")
+        video__update_info = {'video_editor': response, 'state': 0,
+                              "video_editor_path": video_path}
+        try:
+            mongo.db.video.update_one({"_id": task_id},
+                                      {"$set": video__update_info})
+        except Exception as e:
+            raise response_code.DatabaseERR(errmsg="{}".format(e))
+
+        back_info = {"video_editor_path": video_path,
+                     "video_path": video_path,
+                     "image_path": video_info.pop("image_path")
+                     }
+        return set_resjson(res_array=[back_info])
+
+    def func_verify(self):
+        """
+        验证服务器是否有此视频
+        """
+        user = g.user
+        if not user:
+            raise response_code.UserERR(errmsg='用户未登录')
+        md5_token = self.extra_data.get('token', "")
+        if md5_token == '':
+            raise response_code.ParamERR(
+                errmsg="[ md5_token ] must be provided ！")
+        try:
+            mongo_md5_token = mongo.db.video.find_one({'_id': str(md5_token)},
+                                                      {'video_path': 1,
+                                                       '_id': 0})
+        except Exception as e:
+            raise response_code.DatabaseERR(errmsg="{}".format(e))
+        if mongo_md5_token:
+            resp = set_resjson(err=-1,
+                               errmsg="This videos is already available!")
+        else:
+            resp = set_resjson(err=0, errmsg='This videos can be uploaded!')
+        return resp
+
+    def func_generate_thumbnail(self):
+        # user = g.user
+        # if not user:
+        #     raise response_code.UserERR(errmsg='用户未登录')
+        video_id = self.extra_data.get('video_id', '')
+        try:
+            video_info = mongo.db.video.find_one({'_id': video_id})
+        except Exception as e:
+            raise response_code.DatabaseERR(errmsg="{}".format(e))
+        input_path = video_info.get('video_path')
+        height = 48
+        out_path = 'static/picture/{}'.format(video_id)
+        pprint(os.listdir('static/picture/{}/'.format(video_id)))
+        if not os.path.exists(out_path):
+            os.makedirs(out_path)
+            video_resolution = get_resolution2(input_path, height)
+            video_to_image(input_path, out_path, video_resolution)
+
+        file_list = ['static/picture/{}/{}'.format(video_id, filename) for
+                     filename in
+                     os.listdir('static/picture/{}/'.format(video_id))]
+        return set_resjson(res_array=sorted(file_list))
+
+
+def upload():
+    """
+    上传文件
+    """
+    user = g.user
+    if not user:
+        raise response_code.UserERR(errmsg='用户未登录')
+    task_id = request.form.get('task_id')
+    chunk = request.form.get('chunk')
+    chunks = request.form.get('chunks')
+    file_type = request.form.get('video_type')
+    if not all([task_id, chunk, chunks, file_type]):
+        resp = set_resjson(err=-1,
+                           errmsg='[ task_id, chunk, chunks, file, video_type ] can not be empty!')
+    elif not allowed_file(file_type):
+        resp = set_resjson(err=-1, errmsg='Incorrect file type!')
+    else:
+        if not os.path.isfile('static/upload/{}{}'.format(task_id, chunk)):
+            upload_file = request.files['file']
+            # if not dict(request.files['file']):
+            #     raise response_code.ParamERR(errmsg='file not can be empty')
+            upload_file.save('static/upload/{}{}'.format(task_id, chunk))
+            folder_file_list = os.listdir('static/upload')
+            file_list = [file for file in folder_file_list if
+                         re.match(r'{}'.format(task_id), file)]
+            if len(file_list) == int(chunks):
+                resp = upload_success(file_type, task_id)
+            else:
+                resp = set_resjson(err=1,
+                                   errmsg='Video shard acceptance completed!')
+        else:
+            resp = set_resjson(err=1, errmsg="Shards have been uploaded")
+    return resp
+
+
+def upload_update():
+    """
+    上传文件
+    """
+    user = g.user
+    if not user:
+        raise response_code.UserERR(errmsg='用户未登录')
+    task_id = request.form.get('task_id', "")
+    chunk = request.form.get('chunk', "")
+    chunks = request.form.get('chunks', "")
+    file_type = request.form.get('video_type', "")
+    subtitling = request.form.get('subtitling', "")
+    lang = request.form.get('lang', "")
+    style = request.form.get('style', "")
+
+    try:
+        subtitling_list = literal_eval(subtitling)
+    except Exception as e:
+        raise response_code.ParamERR(
+            errmsg="Incorrect subtitling format: {}".format(e))
+
+    if not all([task_id, chunk, chunks, file_type, subtitling]):
+        resp = set_resjson(err=-1,
+                           errmsg='[ task_id, chunk, chunks, file, video_type ] can not be empty!')
+    elif not allowed_file(file_type):
+        resp = set_resjson(err=-1, errmsg='Incorrect file type!')
+    elif lang not in ['en', 'cn']:
+        raise response_code.ParamERR(errmsg='lang must be en or cn')
+    else:
+        upload_file = request.files['file']
+        upload_file.save('static/upload/{}{}'.format(task_id, chunk))
+        folder_file_list = os.listdir('static/upload')
+        file_list = [file for file in folder_file_list if
+                     re.match(r'{}'.format(task_id), file)]
+        if len(file_list) == int(chunks):
+            resp = upload_success_update(file_type, task_id, subtitling_list,
+                                         style, lang)
+        else:
+            resp = set_resjson(err=1,
+                               errmsg='Video shard acceptance completed!')
+    return resp
+
+
+def upload_success_update(file_type, task_id, subtitling_list, style, lang):
+    """
+    合并视频
+    """
+    chunk = 0
+    current_name = 'static/videos/{}.{}'.format(task_id, file_type)
+    with open(current_name, 'wb') as target_file:
+        while True:
+            try:
+                filename = 'static/upload/{}{}'.format(task_id, chunk)
+                source_file = open(filename, 'rb')
+                target_file.write(source_file.read())
+                source_file.close()
+            except IOError:
+                break
+            chunk += 1
+            os.remove(filename)
+
+    md5_token = video_to_md5('static/videos/{}.{}'.format(task_id, file_type))
+
+    try:
+        video_info = mongo.db.video.find_one({'_id': md5_token},
+                                             {'video_path': 1, "_id": 1,
+                                              'image_path': 1})
+    except Exception as e:
+        raise response_code.DatabaseERR(errmsg="{}".format(e))
+    if not video_info:
+
+        filename = 'static/videos/{}.{}'.format(md5_token, file_type)
+        os.rename(current_name, filename)
+        converted_video_picture(md5_token)
+        response = upload_video(filename)
+        # os.remove(filename)
+
+        video_path = response.pop("video_url")
+        upload_date = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        video_info = {'_id': md5_token, 'videos': response,
+                      'video_path': video_path,
+                      'image_path': 'static/image/{}.jpg'.format(md5_token),
+                      "date": upload_date
+                      }
+        try:
+            mongo.db.video.insert_one(video_info)
+        except Exception as e:
+            raise response_code.DatabaseERR(errmsg="{}".format(e))
+
+        back_info = {'video_id': md5_token,
+                     'video_path': video_path,
+                     'image_path': 'static/image/{}.jpg'.format(md5_token)
+                     }
+        resp = set_resjson(errmsg='Video uploaded successfully!',
+                           res_array=[back_info])
+
+    else:
+        os.remove('static/videos/{}.{}'.format(task_id, file_type))
+
+        resp = set_resjson(errmsg='Video uploaded successfully!',
+                           res_array=[video_info])
+    edit_video(subtitling_list, md5_token, style, lang)
+
+    return resp
+
+
+def upload_success(file_type, task_id):
+    """
+    合并视频
+    """
+    chunk = 0
+    current_name = 'static/videos/{}.{}'.format(task_id, file_type)
+    with open(current_name, 'wb') as target_file:
+        while True:
+            try:
+                filename = 'static/upload/{}{}'.format(task_id, chunk)
+                source_file = open(filename, 'rb')
+                target_file.write(source_file.read())
+                source_file.close()
+            except IOError:
+                break
+            chunk += 1
+            os.remove(filename)
+
+    md5_token = video_to_md5('static/videos/{}.{}'.format(task_id, file_type))
+    try:
+        video_info = mongo.db.video.find_one({'_id': md5_token},
+                                             {'video_path': 1, "_id": 1,
+                                              'image_path': 1})
+    except Exception as e:
+        raise response_code.DatabaseERR(errmsg="{}".format(e))
+    if not video_info:
+
+        filename = 'static/videos/{}.{}'.format(md5_token, file_type)
+        os.rename(current_name, filename)
+        converted_video_picture(md5_token)
+        response = upload_video(filename)
+        # os.remove(filename)
+        video_path = response.pop("video_url")
+        upload_date = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        video_info = {'_id': md5_token, 'videos': response,
+                      'video_path': video_path,
+                      'image_path': 'static/image/{}.jpg'.format(md5_token),
+                      "upload_date": upload_date
+                      }
+        try:
+            mongo.db.video.insert_one(video_info)
+        except Exception as e:
+            raise response_code.DatabaseERR(errmsg="{}".format(e))
+
+        back_info = {'video_id': md5_token,
+                     'video_path': video_path,
+                     'image_path': 'static/image/{}.jpg'.format(md5_token)
+                     }
+        resp = set_resjson(errmsg='Video uploaded successfully!',
+                           res_array=[back_info])
+
+    else:
+        os.remove('static/videos/{}.{}'.format(task_id, file_type))
+
+        resp = set_resjson(errmsg='Video uploaded successfully!',
+                           res_array=[video_info])
+    return resp
+
+
+def converted_video_picture(video_name):
+    compress = "ffmpeg -i static/videos/{}.mp4 -y -ss 00:00:02 -vframes 1 -f image2  static/image/{}.jpg".format(
+        video_name, video_name)
+    is_run = os.system(compress)
+    if is_run != 0:
+        return (is_run, "没有安装ffmpeg")
+    else:
+        return (is_run, "转化成功")
+
+
+def allowed_file(file_type):
+    return file_type in config.ALLOWED_EXTENSIONS
+
+
+def video_to_md5(_path):
+    video = open(_path, 'rb').read()
+    m1 = hashlib.md5()
+    m1.update(video)
+    token = m1.hexdigest()
+    return token
+
+
+def get_resolution2(input_path, height):
+    cap = cv2.VideoCapture(input_path)
+    width_now = cap.get(3)
+    height_now = cap.get(4)
+    width = math.floor(height / height_now * width_now)
+    print('width:', width)
+    video_resolution = str(width) + 'x' + str(height)
+    return video_resolution
+
+
+def video_to_image(input_path, out_path, video_resolution):
+    compress = "ffmpeg -i {} -s {} -r 1  {}/image%5d.png".format(input_path,
+                                                                 video_resolution,
+                                                                 out_path)
+    print("************", compress)
+    is_run = os.system(compress)
+    if is_run != 0:
+        raise response_code.RoleERR(errmsg="{} 没有安装 ffmpeg".format(is_run))
+    else:
+        return (is_run, "转化成功")
