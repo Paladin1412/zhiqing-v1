@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="知擎" uuid="5cb2cefc-15a6-4229-8f21-6bcdc8067c5b">
+      <driver-ref>mongo</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.dbschema.MongoJdbcDriver</jdbc-driver>
+      <jdbc-url>mongodb://web01cn.haetek.com:37018/ppvideo</jdbc-url>
+    </data-source>
+    <data-source source="LOCAL" name="@localhost" uuid="08be9f31-4328-40b6-8055-a1767df7aa2b">
+      <driver-ref>mongo</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.dbschema.MongoJdbcDriver</jdbc-driver>
+      <jdbc-url>mongodb://localhost:27017</jdbc-url>
+    </data-source>
+  </component>
+</project>

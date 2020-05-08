@@ -2,13 +2,11 @@
 """
 user_login
 """
-import datetime
 import hashlib
 import json
 import random
 import time
 import urllib.parse
-from pprint import pprint
 from threading import Thread
 from urllib.request import urlopen
 from uuid import uuid1
@@ -20,8 +18,9 @@ from itsdangerous import TimedJSONWebSignatureSerializer as TJSSerializer
 from config.settings import config
 from main import mongo, mail
 from utils import response_code, constants
-from utils.auth import encode_auth_token, query_user_data
+from utils.auth import encode_auth_token
 # from utils.dysms1.send_sms import send_sms
+from utils.mongo_id import create_uuid
 from utils.redisConnector import redis_conn
 from utils.regular import mobile_re
 from utils.setResJson import set_resjson
@@ -325,6 +324,22 @@ class UserHandler(object):
             response.headers["Authorization"] = encode_auth_token(_id)
             return response
 
+    def func_video_collect(self):
+        """
+        视频收藏
+        """
+        user = g.user
+        if not user:
+            raise response_code.UserERR(errmsg='用户未登录')
+        video_id = self.extra_data.get('video_id', '')
+        value = self.extra_data.get('value', '')
+        collect_time = self.extra_data.get('time', '')
+        if video_id == "" or value == "" or collect_time == "":
+            raise response_code.ParamERR(
+                errmsg="[video_id, value, time] must be provided")
+
+        return
+
 
 def send_async_email(msg):
     """
@@ -609,17 +624,6 @@ class OAuthQQ(object):
         except Exception as e:
             raise response_code.ThirdERR(errmsg="{}".format(e))
         return unionid, openid
-
-
-def create_uuid():
-    """
-    生成唯一 id
-    :return:
-    """
-    now_time = datetime.datetime.now().strftime("%Y%m%d%H%M%S")  # 生成当前时间
-    random_num = '{}'.format(random.randint(0, 999999))  # 生成的随机整数
-    unique_num = now_time + random_num
-    return unique_num
 
 
 def qq_login(code):

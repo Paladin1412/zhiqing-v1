@@ -9,27 +9,24 @@
 """
 import datetime
 import hashlib
+import math
 import os
 import re
-import time
 from ast import literal_eval
 from pprint import pprint
 from threading import Thread
-import os
-import cv2
-import math
-import jwt
-from flask import request, g, current_app
 
+import cv2
+from flask import request, g
+
+from config.settings import config
 from main import mongo
 from modules.aimodels import run_ai
 from modules.aimodels.run_ai import generate_subtitle as generate_subtitle1, \
     edit_video
 from utils import response_code
-from utils.auth import query_user_data
 from utils.setResJson import set_resjson
 from utils.video_upload.uploadVideo import upload_video
-from config.settings import config
 
 
 class VideoHandler(object):
@@ -45,6 +42,10 @@ class VideoHandler(object):
         func_name = 'func_{}'.format(self.model_action)
         func_name = func_name.lower()
         handle_function = getattr(VideoHandler, func_name)
+        if self.model_action not in ["global_search", "logout"]:
+            if self.extra_data == '':
+                raise response_code.ParamERR(
+                    errmsg="[ extra_data ] must be provided ")
         res = handle_function(self)
         return res
 
@@ -243,8 +244,8 @@ class VideoHandler(object):
         response = upload_video(editor_video_name)
         os.remove(editor_video_name)
         video_path = response.pop("video_url")
-        video__update_info = {'video_editor': response, 'state': 0,
-                              "video_editor_path": video_path}
+        video__update_info = {'composite_video_message': response, 'state': 0,
+                              "composite_video": video_path}
         try:
             mongo.db.video.update_one({"_id": task_id},
                                       {"$set": video__update_info})
@@ -282,9 +283,9 @@ class VideoHandler(object):
         return resp
 
     def func_generate_thumbnail(self):
-        # user = g.user
-        # if not user:
-        #     raise response_code.UserERR(errmsg='用户未登录')
+        user = g.user
+        if not user:
+            raise response_code.UserERR(errmsg='用户未登录')
         video_id = self.extra_data.get('video_id', '')
         try:
             video_info = mongo.db.video.find_one({'_id': video_id})
@@ -324,14 +325,15 @@ def upload():
     else:
         if not os.path.isfile('static/upload/{}{}'.format(task_id, chunk)):
             upload_file = request.files['file']
-            # if not dict(request.files['file']):
-            #     raise response_code.ParamERR(errmsg='file not can be empty')
+            title = upload_file.filename
+            if not title:
+                raise response_code.ParamERR(errmsg='file not can be empty')
             upload_file.save('static/upload/{}{}'.format(task_id, chunk))
             folder_file_list = os.listdir('static/upload')
             file_list = [file for file in folder_file_list if
                          re.match(r'{}'.format(task_id), file)]
             if len(file_list) == int(chunks):
-                resp = upload_success(file_type, task_id)
+                resp = upload_success(file_type, task_id, user["_id"], title)
             else:
                 resp = set_resjson(err=1,
                                    errmsg='Video shard acceptance completed!')
@@ -370,20 +372,24 @@ def upload_update():
         raise response_code.ParamERR(errmsg='lang must be en or cn')
     else:
         upload_file = request.files['file']
+        title = upload_file.filename
+        if not title:
+            raise response_code.ParamERR(errmsg='file not can be empty')
         upload_file.save('static/upload/{}{}'.format(task_id, chunk))
         folder_file_list = os.listdir('static/upload')
         file_list = [file for file in folder_file_list if
                      re.match(r'{}'.format(task_id), file)]
         if len(file_list) == int(chunks):
             resp = upload_success_update(file_type, task_id, subtitling_list,
-                                         style, lang)
+                                         style, lang, user["_id"], title)
         else:
             resp = set_resjson(err=1,
                                errmsg='Video shard acceptance completed!')
     return resp
 
 
-def upload_success_update(file_type, task_id, subtitling_list, style, lang):
+def upload_success_update(file_type, task_id, subtitling_list, style, lang,
+                          user_id, title):
     """
     合并视频
     """
@@ -415,14 +421,14 @@ def upload_success_update(file_type, task_id, subtitling_list, style, lang):
         os.rename(current_name, filename)
         converted_video_picture(md5_token)
         response = upload_video(filename)
-        # os.remove(filename)
+        os.remove(filename)
 
         video_path = response.pop("video_url")
-        upload_date = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-        video_info = {'_id': md5_token, 'videos': response,
-                      'video_path': video_path,
+        upload_time = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        video_info = {'_id': md5_token, 'video_message': response,
+                      'video_path': video_path, "title": title,
                       'image_path': 'static/image/{}.jpg'.format(md5_token),
-                      "date": upload_date
+                      "upload_time": upload_time, "user_id": user_id
                       }
         try:
             mongo.db.video.insert_one(video_info)
@@ -446,7 +452,7 @@ def upload_success_update(file_type, task_id, subtitling_list, style, lang):
     return resp
 
 
-def upload_success(file_type, task_id):
+def upload_success(file_type, task_id, user_id, title):
     """
     合并视频
     """
@@ -477,13 +483,13 @@ def upload_success(file_type, task_id):
         os.rename(current_name, filename)
         converted_video_picture(md5_token)
         response = upload_video(filename)
-        # os.remove(filename)
+        os.remove(filename)
         video_path = response.pop("video_url")
         upload_date = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-        video_info = {'_id': md5_token, 'videos': response,
-                      'video_path': video_path,
+        video_info = {'_id': md5_token, 'video_message': response,
+                      'video_path': video_path, "title": title,
                       'image_path': 'static/image/{}.jpg'.format(md5_token),
-                      "upload_date": upload_date
+                      "upload_time": upload_date, "user_id": user_id
                       }
         try:
             mongo.db.video.insert_one(video_info)

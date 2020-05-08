@@ -7,25 +7,18 @@
 @Email    : 18821723039@163.com
 @Software : PyCharm
 """
-import os
-import time
 
-import jwt
-from apscheduler.schedulers.background import BackgroundScheduler
-
-from utils.response_code import ApiException
-from utils.setResJson import set_resjson
-
-from flask import Flask, request, current_app, g
+from flask import Flask, request, current_app
 from flask_apscheduler import APScheduler
+from flask_cors import CORS
 from flask_mail import Mail
 from flask_pymongo import PyMongo
 
-from flask_cors import CORS
+from config.settings import config
 from utils import response_code
 from utils.log import setup_log
-
-from config.settings import config
+from utils.response_code import ApiException
+from utils.setResJson import set_resjson
 
 setup_log()
 app = Flask(__name__, instance_relative_config=True)
@@ -54,7 +47,7 @@ def index():
         extra_data = post_data.get('extra_data', "")
         # model_type = post_data.get('model_type', "")
         if model_action == "":
-            resp = set_resjson(err=-8, errmsg="[ extradata ] must be provided")
+            resp = set_resjson(err=-8, errmsg="[ extra_data ] must be provided")
         else:
             if model_name == "video":
                 from modules.videos import VideoHandler
@@ -64,6 +57,10 @@ def index():
                 from modules.user import UserHandler
                 user_main = UserHandler(extra_data, model_action)
                 resp = user_main.handle_model()
+            elif model_action == "comment":
+                from modules.comment import CommentHandler
+                comment_main = CommentHandler(extra_data, model_action)
+                resp = comment_main.handle_model()
             else:
                 resp = set_resjson(err=-1, errmsg="model_name is incorrect")
     return resp
