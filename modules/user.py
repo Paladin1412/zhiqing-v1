@@ -11,6 +11,7 @@ from threading import Thread
 from urllib.request import urlopen
 from uuid import uuid1
 
+import jwt
 from flask import request, g, current_app, make_response
 from flask_mail import Message
 from itsdangerous import TimedJSONWebSignatureSerializer as TJSSerializer
@@ -340,6 +341,24 @@ class UserHandler(object):
 
         return
 
+    def func_is_login(self):
+        """
+        判断登陆
+        """
+        user = None
+        try:
+            authorization = request.headers.get("Authorization")
+            if authorization:
+                token = authorization.strip()[7:]
+                payload = jwt.decode(token, current_app.config['JWT_SECRET'],
+                                     algorithm=['HS256'])
+                if payload:
+                    _id = payload["data"].get("_id")
+                    user = mongo.db.user.find_one({"_id": _id})
+        except Exception as e:
+            raise response_code.UserERR(err="-1", errmsg="ERROR")
+        if user:
+            return set_resjson()
 
 def send_async_email(msg):
     """
