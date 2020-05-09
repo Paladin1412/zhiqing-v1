@@ -39,12 +39,12 @@ def connect_mongodb():
     mongodb_user = parser.get('mongodb', 'user')
     mongodb_password = parser.get('mongodb', 'password')
     mongodb_authMechanism = parser.get('mongodb', 'authMechanism')
-    # client = MongoClient(mongodb_host, username=mongodb_user,
-    #                      password=mongodb_password,
-    #                      authSource=mongodb_db,
-    #                      authMechanism=mongodb_authMechanism,
-    #                      port=mongodb_port)
-    client = MongoClient(host='127.0.0.1', port=27017)
+    client = MongoClient(mongodb_host, username=mongodb_user,
+                         password=mongodb_password,
+                         authSource=mongodb_db,
+                         authMechanism=mongodb_authMechanism,
+                         port=mongodb_port)
+    # client = MongoClient(host='127.0.0.1', port=27017)
     database = client.get_database(mongodb_db)
     return database
 

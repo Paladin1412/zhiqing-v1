@@ -76,7 +76,6 @@ def raise_info(error):
     if isinstance(error, response_code.ApiException):
         return set_resjson(error.err_code, error.errmsg, [])
     current_app.logger.error(error)
-
     return set_resjson(error.err_code, errmsg=error)
 
 
@@ -91,6 +90,7 @@ def raise_info(error):
 #         return set_resjson(error.err_code, error.errmsg)
 #     current_app.logger.error(error)
 #     return set_resjson(err=400, errmsg="{}".format(error))
+
 
 @app.after_request
 def after_request(response):

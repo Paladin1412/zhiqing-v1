@@ -2,6 +2,7 @@
 """
 user_login
 """
+import base64
 import hashlib
 import json
 import random
@@ -12,6 +13,9 @@ from urllib.request import urlopen
 from uuid import uuid1
 
 import jwt
+import requests
+from Crypto.Cipher import PKCS1_v1_5
+from Crypto.PublicKey import RSA
 from flask import request, g, current_app, make_response
 from flask_mail import Message
 from itsdangerous import TimedJSONWebSignatureSerializer as TJSSerializer
@@ -356,9 +360,84 @@ class UserHandler(object):
                     _id = payload["data"].get("_id")
                     user = mongo.db.user.find_one({"_id": _id})
         except Exception as e:
-            raise response_code.UserERR(err="-1", errmsg="ERROR")
+            return set_resjson(err=-1, errmsg="ERROR")
         if user:
             return set_resjson()
+
+    def func_quick_login(self):
+        """
+        手机一键登陆
+        """
+        login_token = self.extra_data.get("login_token", "")
+        if login_token == "":
+            raise response_code.ParamERR(
+                errmsg="[ login_token ] must be provided")
+
+        curl = 'https://api.verification.jpush.cn/v1/web/loginTokenVerify'
+        dict_body = {"loginToken": login_token}
+        json_body = json.dumps(dict_body)
+        encrypt_phone = get_phone(curl, json_body)
+        if not encrypt_phone:
+            raise response_code.ParamERR(errmsg="登陆失败")
+        phone = get_num(encrypt_phone, config.JI_GUANG_PRIKEY)
+        user_info = mongo.db.user.find_one({"mobile": phone},
+                                           {"headshot": 1, "name": 1})
+        now_time = str(time.time())
+        if not user_info:
+            _id = create_uuid()
+            try:
+
+                mongo.db.user.insert_one(
+                    {"name": '{}'.format(phone), "mobile": '{}'.format(phone),
+                     "_id": _id,
+                     "create_time": now_time, "login_time": now_time})
+            except Exception as error:
+                current_app.logger.error(error)
+                raise response_code.DatabaseERR(errmsg='{}'.format(error))
+            user_info = {"name": '{}'.format(phone), "headshot": ""}
+        else:
+            _id = user_info.pop("_id")
+            try:
+                mongo.db.user.update_one({"mobile": '{}'.format(phone)},
+                                         {"$set": {"login_time": now_time}})
+            except Exception as err:
+                current_app.logger.error(err)
+                raise response_code.DatabaseERR(errmsg='{}'.format(err))
+        # set the token information in the response
+        response = make_response(set_resjson(res_array=[user_info]))
+        response.headers["Authorization"] = encode_auth_token(_id)
+        return response
+
+
+def get_phone(curl, json_body):
+    """
+    获取RSA加密手机号码
+    """
+    Authorization = str(
+        base64.b64encode(
+            (config.JI_GUANG_APP_KEY + ':' + config.JI_GUANG_MASTER_KEY).encode(
+                'utf-8')), 'utf-8')
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Basic {}".format(Authorization)
+    }
+    req = requests.post(url=curl, data=json_body, headers=headers)
+    req_dict = req.json()
+    phone = req_dict['phone']
+    return phone
+
+
+def get_num(phone, prikey):
+    """
+    RSA解密，获取手机号
+    """
+    PREFIX = '-----BEGIN RSA PRIVATE KEY-----'
+    SUFFIX = '-----END RSA PRIVATE KEY-----'
+    key = "{}\n{}\n{}".format(PREFIX, prikey, SUFFIX)
+    cipher = PKCS1_v1_5.new(RSA.import_key(key))
+    result = cipher.decrypt(base64.b64decode(phone.encode()), None).decode()
+    return result
+
 
 def send_async_email(msg):
     """

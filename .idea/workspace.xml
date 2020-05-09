@@ -2,22 +2,79 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6c7c281b-f7b3-43bc-8de8-c1cbc42d9bf8" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/08be9f31-4328-40b6-8055-a1767df7aa2b.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/5cb2cefc-15a6-4229-8f21-6bcdc8067c5b.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/zhiqing-v1.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules/comment.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/image/9bedd89faf371092e1aaaacf5fd3b704.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/mongo_id.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00001.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00002.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00003.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00004.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00005.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00006.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00007.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00008.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00009.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00010.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00011.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00012.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00013.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00014.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00015.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00016.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00017.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00018.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00019.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00020.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00021.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00022.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00023.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00024.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00025.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00026.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00027.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00028.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00029.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00030.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00031.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00032.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00033.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00034.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00035.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00036.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00037.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00038.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00039.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00040.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00041.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00042.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00043.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00044.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00045.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00046.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00047.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00048.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00049.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00050.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00051.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00052.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00053.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00054.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00055.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00056.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00057.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00058.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00059.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00060.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00061.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00062.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00063.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00064.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00065.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00066.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00067.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00068.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/picture/9bedd89faf371092e1aaaacf5fd3b704/image00069.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/aimodels/search.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/aimodels/search.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/aimodels/subtitle.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/aimodels/subtitle.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/user.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules/videos.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/videos.py" afterDir="false" />
     </list>
@@ -110,7 +167,8 @@
       <workItem from="1588462926638" duration="4704000" />
       <workItem from="1588675960434" duration="3836000" />
       <workItem from="1588919472007" duration="304000" />
-      <workItem from="1588920177992" duration="5727000" />
+      <workItem from="1588920177992" duration="6602000" />
+      <workItem from="1588985747990" duration="14376000" />
     </task>
     <task id="LOCAL-00001" summary="首次提交">
       <created>1588469272551</created>
@@ -119,7 +177,21 @@
       <option name="project" value="LOCAL" />
       <updated>1588469272551</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="评论">
+      <created>1588938654916</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1588938654916</updated>
+    </task>
+    <task id="LOCAL-00003" summary="判断登陆">
+      <created>1588990209105</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1588990209105</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -127,7 +199,9 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="首次提交" />
-    <option name="LAST_COMMIT_MESSAGE" value="首次提交" />
+    <MESSAGE value="评论" />
+    <MESSAGE value="判断登陆" />
+    <option name="LAST_COMMIT_MESSAGE" value="判断登陆" />
   </component>
   <component name="WindowStateProjectService">
     <state x="496" y="198" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588471213682">
@@ -139,9 +213,10 @@
     </state>
     <state x="649" y="304" key="#xdebugger.evaluate/0.23.1792.1016@0.23.1792.1016" timestamp="1588934042445" />
     <state x="643" y="463" width="1012" height="579" key="#xdebugger.evaluate/0.23.1792.1019@0.23.1792.1019" timestamp="1588226610795" />
-    <state x="473" y="106" key="CommitChangelistDialog2" timestamp="1588469272246">
-      <screen x="0" y="23" width="1792" height="1019" />
+    <state x="473" y="106" key="CommitChangelistDialog2" timestamp="1588990208885">
+      <screen x="0" y="23" width="1792" height="1016" />
     </state>
+    <state x="473" y="106" key="CommitChangelistDialog2/0.23.1792.1016@0.23.1792.1016" timestamp="1588990208885" />
     <state x="473" y="106" key="CommitChangelistDialog2/0.23.1792.1019@0.23.1792.1019" timestamp="1588469272246" />
     <state x="763" y="436" key="Github.ShareDialog" timestamp="1588227823009">
       <screen x="0" y="23" width="1792" height="1019" />
@@ -151,60 +226,60 @@
       <screen x="0" y="23" width="1792" height="1019" />
     </state>
     <state x="660" y="243" key="Github.UntrackedFilesDialog/0.23.1792.1019@0.23.1792.1019" timestamp="1588227907829" />
-    <state width="1750" height="340" key="GridCell.Tab.0.bottom" timestamp="1588936710116">
+    <state width="893" height="340" key="GridCell.Tab.0.bottom" timestamp="1589007332982">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
     <state width="1750" height="342" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1588146827712" />
-    <state width="1750" height="340" key="GridCell.Tab.0.bottom/0.23.1792.1016@0.23.1792.1016" timestamp="1588936710116" />
+    <state width="893" height="340" key="GridCell.Tab.0.bottom/0.23.1792.1016@0.23.1792.1016" timestamp="1589007332982" />
     <state width="1750" height="342" key="GridCell.Tab.0.bottom/0.23.1792.1019@0.23.1792.1019" timestamp="1588243199676" />
     <state width="1750" height="342" key="GridCell.Tab.0.bottom/0.23.1792.1020@0.23.1792.1020" timestamp="1588137473318" />
-    <state width="1750" height="340" key="GridCell.Tab.0.center" timestamp="1588936710116">
+    <state width="893" height="340" key="GridCell.Tab.0.center" timestamp="1589007332981">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
     <state width="1750" height="342" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1588146827711" />
-    <state width="1750" height="340" key="GridCell.Tab.0.center/0.23.1792.1016@0.23.1792.1016" timestamp="1588936710116" />
+    <state width="893" height="340" key="GridCell.Tab.0.center/0.23.1792.1016@0.23.1792.1016" timestamp="1589007332981" />
     <state width="1750" height="342" key="GridCell.Tab.0.center/0.23.1792.1019@0.23.1792.1019" timestamp="1588243199675" />
     <state width="1750" height="342" key="GridCell.Tab.0.center/0.23.1792.1020@0.23.1792.1020" timestamp="1588137473317" />
-    <state width="1750" height="340" key="GridCell.Tab.0.left" timestamp="1588936710115">
+    <state width="893" height="340" key="GridCell.Tab.0.left" timestamp="1589007332980">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
     <state width="1750" height="342" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1588146827711" />
-    <state width="1750" height="340" key="GridCell.Tab.0.left/0.23.1792.1016@0.23.1792.1016" timestamp="1588936710115" />
+    <state width="893" height="340" key="GridCell.Tab.0.left/0.23.1792.1016@0.23.1792.1016" timestamp="1589007332980" />
     <state width="1750" height="342" key="GridCell.Tab.0.left/0.23.1792.1019@0.23.1792.1019" timestamp="1588243199675" />
     <state width="1750" height="342" key="GridCell.Tab.0.left/0.23.1792.1020@0.23.1792.1020" timestamp="1588137473316" />
-    <state width="1750" height="340" key="GridCell.Tab.0.right" timestamp="1588936710116">
+    <state width="893" height="340" key="GridCell.Tab.0.right" timestamp="1589007332981">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
     <state width="1750" height="342" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1588146827712" />
-    <state width="1750" height="340" key="GridCell.Tab.0.right/0.23.1792.1016@0.23.1792.1016" timestamp="1588936710116" />
+    <state width="893" height="340" key="GridCell.Tab.0.right/0.23.1792.1016@0.23.1792.1016" timestamp="1589007332981" />
     <state width="1750" height="342" key="GridCell.Tab.0.right/0.23.1792.1019@0.23.1792.1019" timestamp="1588243199675" />
     <state width="1750" height="342" key="GridCell.Tab.0.right/0.23.1792.1020@0.23.1792.1020" timestamp="1588137473317" />
-    <state width="1750" height="340" key="GridCell.Tab.1.bottom" timestamp="1588936707973">
+    <state width="893" height="340" key="GridCell.Tab.1.bottom" timestamp="1589007332983">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
     <state width="1750" height="342" key="GridCell.Tab.1.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1588146827585" />
-    <state width="1750" height="340" key="GridCell.Tab.1.bottom/0.23.1792.1016@0.23.1792.1016" timestamp="1588936707973" />
+    <state width="893" height="340" key="GridCell.Tab.1.bottom/0.23.1792.1016@0.23.1792.1016" timestamp="1589007332983" />
     <state width="1750" height="342" key="GridCell.Tab.1.bottom/0.23.1792.1019@0.23.1792.1019" timestamp="1588243199676" />
     <state width="1750" height="342" key="GridCell.Tab.1.bottom/0.23.1792.1020@0.23.1792.1020" timestamp="1588137473217" />
-    <state width="1750" height="340" key="GridCell.Tab.1.center" timestamp="1588936707973">
+    <state width="893" height="340" key="GridCell.Tab.1.center" timestamp="1589007332982">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
     <state width="1750" height="342" key="GridCell.Tab.1.center/0.0.1792.1120@0.0.1792.1120" timestamp="1588146827584" />
-    <state width="1750" height="340" key="GridCell.Tab.1.center/0.23.1792.1016@0.23.1792.1016" timestamp="1588936707973" />
+    <state width="893" height="340" key="GridCell.Tab.1.center/0.23.1792.1016@0.23.1792.1016" timestamp="1589007332982" />
     <state width="1750" height="342" key="GridCell.Tab.1.center/0.23.1792.1019@0.23.1792.1019" timestamp="1588243199676" />
     <state width="1750" height="342" key="GridCell.Tab.1.center/0.23.1792.1020@0.23.1792.1020" timestamp="1588137473217" />
-    <state width="1750" height="340" key="GridCell.Tab.1.left" timestamp="1588936707972">
+    <state width="893" height="340" key="GridCell.Tab.1.left" timestamp="1589007332982">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
     <state width="1750" height="342" key="GridCell.Tab.1.left/0.0.1792.1120@0.0.1792.1120" timestamp="1588146827584" />
-    <state width="1750" height="340" key="GridCell.Tab.1.left/0.23.1792.1016@0.23.1792.1016" timestamp="1588936707972" />
+    <state width="893" height="340" key="GridCell.Tab.1.left/0.23.1792.1016@0.23.1792.1016" timestamp="1589007332982" />
     <state width="1750" height="342" key="GridCell.Tab.1.left/0.23.1792.1019@0.23.1792.1019" timestamp="1588243199676" />
     <state width="1750" height="342" key="GridCell.Tab.1.left/0.23.1792.1020@0.23.1792.1020" timestamp="1588137473217" />
-    <state width="1750" height="340" key="GridCell.Tab.1.right" timestamp="1588936707973">
+    <state width="893" height="340" key="GridCell.Tab.1.right" timestamp="1589007332983">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
     <state width="1750" height="342" key="GridCell.Tab.1.right/0.0.1792.1120@0.0.1792.1120" timestamp="1588146827584" />
-    <state width="1750" height="340" key="GridCell.Tab.1.right/0.23.1792.1016@0.23.1792.1016" timestamp="1588936707973" />
+    <state width="893" height="340" key="GridCell.Tab.1.right/0.23.1792.1016@0.23.1792.1016" timestamp="1589007332983" />
     <state width="1750" height="342" key="GridCell.Tab.1.right/0.23.1792.1019@0.23.1792.1019" timestamp="1588243199676" />
     <state width="1750" height="342" key="GridCell.Tab.1.right/0.23.1792.1020@0.23.1792.1020" timestamp="1588137473217" />
     <state width="243" height="457" key="HiddenNamespacesPopup" timestamp="1588471224265">
@@ -215,6 +290,10 @@
       <screen x="0" y="23" width="1792" height="1019" />
     </state>
     <state x="397" y="171" key="SettingsEditor/0.23.1792.1019@0.23.1792.1019" timestamp="1588227735541" />
+    <state x="496" y="271" key="Vcs.Push.Dialog.v2" timestamp="1588990211116">
+      <screen x="0" y="23" width="1792" height="1016" />
+    </state>
+    <state x="496" y="271" key="Vcs.Push.Dialog.v2/0.23.1792.1016@0.23.1792.1016" timestamp="1588990211116" />
     <state x="716" y="418" key="com.intellij.database.actions.DdlActions$DeleteProvider2$1" timestamp="1588935636377">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
@@ -234,18 +313,7 @@
     <state x="561" y="247" width="670" height="675" key="search.everywhere.popup/0.23.1792.1016@0.23.1792.1016" timestamp="1588677141985" />
     <state x="561" y="248" width="670" height="676" key="search.everywhere.popup/0.23.1792.1019@0.23.1792.1019" timestamp="1588222977227" />
   </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/modules/videos.py</url>
-          <line>312</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/zhiqing_v1$main.coverage" NAME="main Coverage Results" MODIFIED="1588936573312" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/zhiqing_v1$main.coverage" NAME="main Coverage Results" MODIFIED="1589006738368" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

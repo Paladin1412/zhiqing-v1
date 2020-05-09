@@ -13,7 +13,6 @@ import math
 import os
 import re
 from ast import literal_eval
-from pprint import pprint
 from threading import Thread
 
 import cv2
@@ -283,6 +282,9 @@ class VideoHandler(object):
         return resp
 
     def func_generate_thumbnail(self):
+        """
+        生成缩略图
+        """
         user = g.user
         if not user:
             raise response_code.UserERR(errmsg='用户未登录')
@@ -294,7 +296,6 @@ class VideoHandler(object):
         input_path = video_info.get('video_path')
         height = 48
         out_path = 'static/picture/{}'.format(video_id)
-        pprint(os.listdir('static/picture/{}/'.format(video_id)))
         if not os.path.exists(out_path):
             os.makedirs(out_path)
             video_resolution = get_resolution2(input_path, height)
@@ -304,6 +305,24 @@ class VideoHandler(object):
                      filename in
                      os.listdir('static/picture/{}/'.format(video_id))]
         return set_resjson(res_array=sorted(file_list))
+
+    def func_check(self):
+        """
+        视频审核
+        """
+        user = g.user
+        if not user:
+            raise response_code.UserERR(errmsg='用户未登录')
+        task_id = self.extra_data.get('task_id', '')
+        video_data = self.extra_data.get('video_data', '')
+        if task_id == '' or video_data == '':
+            raise response_code.ParamERR(
+                errmsg="[task_id video_data] must be provided ！")
+
+        title = video_data.get('title', '')
+        description = video_data.get('description', )
+        category = video_data.get('category', )
+        play_list = video_data.get('play_list', )
 
 
 def upload():
