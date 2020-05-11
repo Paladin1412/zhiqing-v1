@@ -35,6 +35,7 @@ class UserHandler(object):
     def __init__(self, extra_data, model_action):
         self.extra_data = extra_data
         self.model_action = model_action
+        self.head_shot_path = 'http://api.haetek.com:9191/static/headershot/image.jpeg'
 
     def handle_model(self):
         func_name = 'func_{}'.format(self.model_action)
@@ -129,7 +130,7 @@ class UserHandler(object):
 
                 mongo.db.user.insert_one(
                     {"name": '{}'.format(mobile), "mobile": '{}'.format(mobile),
-                     "_id": _id,
+                     "_id": _id, "headshot": self.head_shot_path,
                      "create_time": now_time, "login_time": now_time})
             except Exception as error:
                 current_app.logger.error(error)
@@ -398,22 +399,6 @@ class UserHandler(object):
             response.headers["Authorization"] = encode_auth_token(_id)
             return response
 
-    def func_video_collect(self):
-        """
-        视频收藏
-        """
-        user = g.user
-        if not user:
-            raise response_code.UserERR(errmsg='用户未登录')
-        video_id = self.extra_data.get('video_id', '')
-        value = self.extra_data.get('value', '')
-        collect_time = self.extra_data.get('time', '')
-        if video_id == "" or value == "" or collect_time == "":
-            raise response_code.ParamERR(
-                errmsg="[video_id, value, time] must be provided")
-
-        return
-
     def func_is_login(self):
         """
         判断登陆
@@ -458,7 +443,7 @@ class UserHandler(object):
 
                 mongo.db.user.insert_one(
                     {"name": '{}'.format(phone), "mobile": '{}'.format(phone),
-                     "_id": _id,
+                     "_id": _id, "headershot" : self.head_shot_path,
                      "create_time": now_time, "login_time": now_time})
             except Exception as error:
                 current_app.logger.error(error)

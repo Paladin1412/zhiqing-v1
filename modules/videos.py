@@ -7,11 +7,11 @@
 @Email    : 18821723039@163.com
 @Software : PyCharm
 """
-import datetime
 import hashlib
 import math
 import os
 import re
+import time
 from ast import literal_eval
 from threading import Thread
 
@@ -53,10 +53,18 @@ class VideoHandler(object):
         全局搜索视频
         :return:
         """
+        res_list = []
         query_string = self.extra_data.get("query_string", "")
         video_ids = self.extra_data.get("video_ids", "")
         mode = 'global'
         ret = run_ai.play_video(query_string, mode, video_ids)
+        for video_info in ret:
+            user_id = video_info.pop("user_id")
+            user_info = mongo.db.user.find_one({"_id": user_id})
+            video_info["name"] = user_info['name']
+            video_info["headshot"] = user_info['headshot']
+            res_list.append(video_info)
+
         response = set_resjson(res_array=ret)
         return response
 
@@ -315,10 +323,18 @@ def func_check():
     if not user:
         raise response_code.UserERR(errmsg='用户未登录')
     task_id = request.form.get('task_id')
+    title = request.form.get('title')
     description = request.form.get('description')
     category = request.form.get('category')
     play_list = request.form.get('play_list', "")
     image = request.files.get('image')
+    image_name = None
+
+    try:
+        category = literal_eval(category)
+    except Exception as e:
+        raise response_code.ParamERR(
+            errmsg="Incorrect subtitling format: {}".format(e))
 
     if not all([task_id, description, category]):
         raise response_code.ParamERR(
@@ -330,7 +346,10 @@ def func_check():
         raise response_code.DatabaseERR(errmsg="{}".format(e))
     if not video_info:
         raise response_code.ParamERR(errmsg='task_id 不存在')
-    image_name = image.filename
+    try:
+        image_name = image.filename
+    except Exception as e:
+        pass
     if image_name:
         image_path = '/static/image/{}'.format(image_name)
         # TODO 后面加上去重  暂时 state 设置为 2
@@ -341,6 +360,9 @@ def func_check():
     else:
         update_video_info = {"description": description, "category": category,
                              "play_list": play_list, "state": 2}
+
+    if title:
+        update_video_info["title"] = title
 
     try:
         mongo.db.video.update_one({"_id": task_id}, {"$set": update_video_info})
@@ -468,7 +490,7 @@ def upload_success_update(file_type, task_id, subtitling_list, style, lang,
         os.remove(filename)
 
         video_path = response.pop("video_url")
-        upload_time = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        upload_time = time.time()
         video_info = {'_id': md5_token, 'video_message': response,
                       'video_path': video_path, "title": title,
                       'image_path': 'static/image/{}.jpg'.format(md5_token),
@@ -529,7 +551,8 @@ def upload_success(file_type, task_id, user_id, title):
         response = upload_video(filename)
         os.remove(filename)
         video_path = response.pop("video_url")
-        upload_date = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        # upload_date = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        upload_date = time.time()
         video_info = {'_id': md5_token, 'video_message': response,
                       'video_path': video_path, "title": title,
                       'image_path': 'static/image/{}.jpg'.format(md5_token),

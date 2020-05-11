@@ -15,8 +15,8 @@ ENV = os.getenv('APP_ENV', 'DEV')
 
 class Config(object):
     """Project configuration"""
-    MONGO_URI = 'mongodb://localhost:27017/ppvideo'
-    # MONGO_URI = 'mongodb://ppvideo:ppvid10123@web01cn.haetek.com:37018/ppvideo'
+    # MONGO_URI = 'mongodb://localhost:27017/ppvideo'
+    MONGO_URI = 'mongodb://ppvideo:ppvid10123@web01cn.haetek.com:37018/ppvideo'
     ALLOWED_VIDEO_EXTENSIONS = {'mp4', 'MP4'}
     ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'JPG', 'PNG', 'gif', 'GIF'}
     MAX_CONTENT_LENGTH = 200 * 1024 * 1024  # 100MB

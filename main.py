@@ -60,9 +60,13 @@ def index():
                 from modules.user import UserHandler
                 user_main = UserHandler(extra_data, model_action)
                 resp = user_main.handle_model()
-            elif model_action == "comment":
+            elif model_name == "comment":
                 from modules.comment import CommentHandler
                 comment_main = CommentHandler(extra_data, model_action)
+                resp = comment_main.handle_model()
+            elif model_name == "collect":
+                from modules.collect import CollectHandler
+                comment_main = CollectHandler(extra_data, model_action)
                 resp = comment_main.handle_model()
             else:
                 resp = set_resjson(err=-1, errmsg="model_name is incorrect")
