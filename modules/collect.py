@@ -62,39 +62,73 @@ class CollectHandler(object):
             except Exception as e:
                 raise response_code.DatabaseERR(errmsg="{}".format(e))
 
-            if not video_info:
-                raise response_code.DatabaseERR(
-                    errmsg="video_id is incorrect !")
-            else:
-                try:
-                    collect_info = mongo.db.collect.find_one(
-                        {"user_id": user["_id"], "relation_id": video_id})
-                except Exception as e:
-                    raise response_code.DatabaseERR(errmsg="{}".format(e))
-                if value == 1:
-                    if not collect_info:
-                        try:
-                            mongo.db.collect.insert_one(
-                                {"_id": create_uuid(), "user_id": user["_id"],
-                                 "relation_id": video_id, "type": collect_type,
-                                 "time": collect_time})
-                        except Exception as e:
-                            raise response_code.DatabaseERR(
-                                errmsg="{}".format(e))
-                    else:
-                        raise response_code.ParamERR(errmsg="该视频已经收藏")
-                else:
-                    if collect_info:
-                        try:
-                            mongo.db.collect.delete_one({"user_id": user["_id"],
-                                                         "relation_id": video_id})
-                        except Exception as e:
-                            raise response_code.DatabaseERR(
-                                errmsg="{}".format(e))
-                    else:
-                        raise response_code.ParamERR(errmsg="没有收藏此视频")
+            # if not video_info:
+            #     raise response_code.DatabaseERR(
+            #         errmsg="video_id is incorrect !")
+            # else:
+            #     try:
+            #         collect_info = mongo.db.collect.find_one(
+            #             {"user_id": user["_id"], "relation_id": video_id})
+            #     except Exception as e:
+            #         raise response_code.DatabaseERR(errmsg="{}".format(e))
+            #     if value == 1:
+            #         if not collect_info:
+            #             try:
+            #                 mongo.db.collect.insert_one(
+            #                     {"_id": create_uuid(), "user_id": user["_id"],
+            #                      "relation_id": video_id, "type": collect_type,
+            #                      "time": collect_time})
+            #             except Exception as e:
+            #                 raise response_code.DatabaseERR(
+            #                     errmsg="{}".format(e))
+            #         else:
+            #             raise response_code.ParamERR(errmsg="该视频已经收藏")
+            #     else:
+            #         if collect_info:
+            #             try:
+            #                 mongo.db.collect.delete_one({"user_id": user["_id"],
+            #                                              "relation_id": video_id})
+            #             except Exception as e:
+            #                 raise response_code.DatabaseERR(
+            #                     errmsg="{}".format(e))
+            #         else:
+            #             raise response_code.ParamERR(errmsg="没有收藏此视频")
         else:
-            # TODO 查询 课件数据库
-            return set_resjson(errmsg="请期待")
+            try:
+                video_info = mongo.db.document.find_one({"_id": video_id})
+            except Exception as e:
+                raise response_code.DatabaseERR(errmsg="{}".format(e))
+
+        if not video_info:
+            raise response_code.DatabaseERR(
+                errmsg="video_id is incorrect !")
+        else:
+            try:
+                collect_info = mongo.db.collect.find_one(
+                    {"user_id": user["_id"], "relation_id": video_id})
+            except Exception as e:
+                raise response_code.DatabaseERR(errmsg="{}".format(e))
+            if value == 1:
+                if not collect_info:
+                    try:
+                        mongo.db.collect.insert_one(
+                            {"_id": create_uuid(), "user_id": user["_id"],
+                             "relation_id": video_id, "type": collect_type,
+                             "time": collect_time})
+                    except Exception as e:
+                        raise response_code.DatabaseERR(
+                            errmsg="{}".format(e))
+                else:
+                    raise response_code.ParamERR(errmsg="该视频已经收藏")
+            else:
+                if collect_info:
+                    try:
+                        mongo.db.collect.delete_one({"user_id": user["_id"],
+                                                     "relation_id": video_id})
+                    except Exception as e:
+                        raise response_code.DatabaseERR(
+                            errmsg="{}".format(e))
+                else:
+                    raise response_code.ParamERR(errmsg="没有收藏此视频")
 
         return set_resjson()
