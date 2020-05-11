@@ -17,7 +17,8 @@ class Config(object):
     """Project configuration"""
     MONGO_URI = 'mongodb://localhost:27017/ppvideo'
     # MONGO_URI = 'mongodb://ppvideo:ppvid10123@web01cn.haetek.com:37018/ppvideo'
-    ALLOWED_EXTENSIONS = {'mp4'}
+    ALLOWED_VIDEO_EXTENSIONS = {'mp4', 'MP4'}
+    ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'JPG', 'PNG', 'gif', 'GIF'}
     MAX_CONTENT_LENGTH = 200 * 1024 * 1024  # 100MB
 
     REDIS_HOST = "127.0.0.1"
@@ -47,6 +48,14 @@ class Config(object):
     QQ_REDIRECT_URI = 'http://kengine.haetek.com/users/login'
     QQ_STATE = ''
     QQ_CLIENT_SECRET = 'b0cb59d333b1ce6030e8e9619f54c379'
+
+    # # QQ 移动端登陆
+    # QQ_PHONE_APP_ID = "101875580"
+    # QQ_PHONE_APP_Key = "a2aaa6150e7790843bea94f843289f37"
+
+    # QQ 移动端登陆
+    QQ_PHONE_APP_ID = "101842891"
+    QQ_PHONE_APP_Key = "5be5b3fc13d7615ec62207370f8bb499"
 
     # 微信登录
     WECHAT_APP_ID = 'wx7287a60bb700fd21'

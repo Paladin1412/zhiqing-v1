@@ -122,7 +122,6 @@ class UserHandler(object):
         except Exception as error:
             current_app.logger.error(error)
             raise response_code.DatabaseERR(errmsg='{}'.format(error))
-
         now_time = str(time.time())
         if not user_info:
             _id = create_uuid()
@@ -262,6 +261,76 @@ class UserHandler(object):
             log_url = wechat.get_wechat_url()
 
         return set_resjson(res_array=[{"url": log_url}])
+
+    def func_third_phone_login(self):
+        """
+        第三方移动端登陆
+        """
+        access_token = self.extra_data.get("access_token", "")
+        openid = self.extra_data.get("openid", "")
+        mode = self.extra_data.get('type', "")
+        if access_token == "" or openid == "":
+            raise response_code.ParamERR(
+                errmsg="[ access_token, openid ] must be provided")
+        elif mode not in ["qq", "wechat"]:
+            raise response_code.ParamERR(errmsg='type must be qq or wechat')
+        elif mode == "qq":
+            oauth_qq = OAuthQQ(client_id=config.QQ_PHONE_APP_ID,
+                               client_secret=config.QQ_PHONE_APP_Key)
+            unionid, openid = oauth_qq.get_unionid(access_token)
+            try:
+                user_info = mongo.db.user.find_one({"qq_unionid": unionid})
+            except Exception as e:
+                raise response_code.DatabaseERR(errmsg="{}".format(e))
+            if not user_info:
+                user_info = oauth_qq.get_user_info(access_token, openid)
+                try:
+                    pl = redis_conn.pipeline()
+                    pl.set("unionid_name_%s" % unionid, user_info['nickname'],
+                           constants.SMS_CODE_REDIS_EXPIRES)
+                    pl.set("unionid_photo_url_%s" % unionid,
+                           user_info['figureurl_qq_1'],
+                           constants.SMS_CODE_REDIS_EXPIRES)
+                    pl.execute()
+                except Exception as e:
+                    raise response_code.DatabaseERR(errmsg="{}".format(e))
+                access_token = generate_save_user_token(unionid, 'qq')
+
+                return set_resjson(res_array=[{"access_token": access_token}])
+
+            else:
+                response = not_first_login(user_info)
+
+            return response
+        elif mode == 'wechat':
+            wechatlogin = WeChat(client_id=config.QQ_PHONE_APP_ID,
+                                 client_secret=config.QQ_PHONE_APP_Key)
+            unionid, openid = wechatlogin.get_user_info(access_token, openid)
+            try:
+                user_info = mongo.db.user.find_one({"wechat_unionid": unionid})
+            except Exception as e:
+                raise response_code.DatabaseERR(errmsg="{}".format(e))
+            if not user_info:
+                # 第一次登录
+                nickname, headimgurl, unionid = wechatlogin.get_user_info(
+                    access_token,
+                    openid)
+                try:
+                    pl = redis_conn.pipeline()
+                    pl.set("unionid_name_%s" % unionid, nickname,
+                           constants.SMS_CODE_REDIS_EXPIRES)
+                    pl.set("unionid_photo_url_%s" % unionid, headimgurl,
+                           constants.SMS_CODE_REDIS_EXPIRES)
+                    pl.execute()
+                except Exception as e:
+                    raise response_code.DatabaseERR(errmsg="{}".format(e))
+                access_token = generate_save_user_token(unionid, 'wechat')
+
+                return set_resjson(res_array=[{"access_token": access_token}])
+            else:
+                response = not_first_login(user_info)
+
+            return response
 
     def func_third_login(self):
         resp = None
@@ -502,7 +571,8 @@ def wehcat_login(code):
         raise response_code.DatabaseERR(errmsg="{}".format(e))
     if not user_info:
         # 第一次登录
-        nickname, headimgurl = wechatlogin.get_user_info(access_token, openid)
+        nickname, headimgurl, _ = wechatlogin.get_user_info(access_token,
+                                                            openid)
         try:
             pl = redis_conn.pipeline()
             pl.set("unionid_name_%s" % unionid, nickname,
@@ -588,9 +658,9 @@ class WeChat(object):
         else:
             nickname = resp_dict.get('nickname', '')
             headimgurl = resp_dict.get('headimgurl', '')
-            # unionid = resp_dict.get('unionid', '')
+            unionid = resp_dict.get('unionid', '')
 
-        return nickname, headimgurl
+        return nickname, headimgurl, unionid
 
 
 class OAuthQQ(object):

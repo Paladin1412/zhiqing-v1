@@ -243,7 +243,7 @@ class VideoHandler(object):
         response = upload_video(editor_video_name)
         os.remove(editor_video_name)
         video_path = response.pop("video_url")
-        video__update_info = {'composite_video_message': response, 'state': 0,
+        video__update_info = {'composite_video_message': response,
                               "composite_video": video_path}
         try:
             mongo.db.video.update_one({"_id": task_id},
@@ -306,23 +306,48 @@ class VideoHandler(object):
                      os.listdir('static/picture/{}/'.format(video_id))]
         return set_resjson(res_array=sorted(file_list))
 
-    def func_check(self):
-        """
-        视频审核
-        """
-        user = g.user
-        if not user:
-            raise response_code.UserERR(errmsg='用户未登录')
-        task_id = self.extra_data.get('task_id', '')
-        video_data = self.extra_data.get('video_data', '')
-        if task_id == '' or video_data == '':
-            raise response_code.ParamERR(
-                errmsg="[task_id video_data] must be provided ！")
 
-        title = video_data.get('title', '')
-        description = video_data.get('description', )
-        category = video_data.get('category', )
-        play_list = video_data.get('play_list', )
+def func_check():
+    """
+    视频审核
+    """
+    user = g.user
+    if not user:
+        raise response_code.UserERR(errmsg='用户未登录')
+    task_id = request.form.get('task_id')
+    description = request.form.get('description')
+    category = request.form.get('category')
+    play_list = request.form.get('play_list', "")
+    image = request.files.get('image')
+
+    if not all([task_id, description, category]):
+        raise response_code.ParamERR(
+            errmsg="[task_id, description, category] must be provided ！")
+    try:
+        video_info = mongo.db.video.find_one(
+            {"_id": task_id, "user_id": user["_id"]})
+    except Exception as e:
+        raise response_code.DatabaseERR(errmsg="{}".format(e))
+    if not video_info:
+        raise response_code.ParamERR(errmsg='task_id 不存在')
+    image_name = image.filename
+    if image_name:
+        image_path = '/static/image/{}'.format(image_name)
+        # TODO 后面加上去重  暂时 state 设置为 2
+        image.save(image)
+        update_video_info = {"description": description, "category": category,
+                             "play_list": play_list, "image_path": image_path,
+                             "state": 2}
+    else:
+        update_video_info = {"description": description, "category": category,
+                             "play_list": play_list, "state": 2}
+
+    try:
+        mongo.db.video.update_one({"_id": task_id}, {"$set": update_video_info})
+    except Exception as e:
+        raise response_code.DatabaseERR(errmsg='{}'.format(e))
+
+    return set_resjson()
 
 
 def upload():
@@ -339,7 +364,7 @@ def upload():
     if not all([task_id, chunk, chunks, file_type]):
         resp = set_resjson(err=-1,
                            errmsg='[ task_id, chunk, chunks, file, video_type ] can not be empty!')
-    elif not allowed_file(file_type):
+    elif not allowed_video_file(file_type):
         resp = set_resjson(err=-1, errmsg='Incorrect file type!')
     else:
         if not os.path.isfile('static/upload/{}{}'.format(task_id, chunk)):
@@ -385,7 +410,7 @@ def upload_update():
     if not all([task_id, chunk, chunks, file_type, subtitling]):
         resp = set_resjson(err=-1,
                            errmsg='[ task_id, chunk, chunks, file, video_type ] can not be empty!')
-    elif not allowed_file(file_type):
+    elif not allowed_video_file(file_type):
         resp = set_resjson(err=-1, errmsg='Incorrect file type!')
     elif lang not in ['en', 'cn']:
         raise response_code.ParamERR(errmsg='lang must be en or cn')
@@ -447,8 +472,8 @@ def upload_success_update(file_type, task_id, subtitling_list, style, lang,
         video_info = {'_id': md5_token, 'video_message': response,
                       'video_path': video_path, "title": title,
                       'image_path': 'static/image/{}.jpg'.format(md5_token),
-                      "upload_time": upload_time, "user_id": user_id
-                      }
+                      "upload_time": upload_time, "user_id": user_id,
+                      "state":0}
         try:
             mongo.db.video.insert_one(video_info)
         except Exception as e:
@@ -508,8 +533,8 @@ def upload_success(file_type, task_id, user_id, title):
         video_info = {'_id': md5_token, 'video_message': response,
                       'video_path': video_path, "title": title,
                       'image_path': 'static/image/{}.jpg'.format(md5_token),
-                      "upload_time": upload_date, "user_id": user_id
-                      }
+                      "upload_time": upload_date, "user_id": user_id,
+                      "state":0 }
         try:
             mongo.db.video.insert_one(video_info)
         except Exception as e:
@@ -540,8 +565,13 @@ def converted_video_picture(video_name):
         return (is_run, "转化成功")
 
 
-def allowed_file(file_type):
-    return file_type in config.ALLOWED_EXTENSIONS
+def allowed_video_file(file_type):
+    return file_type in config.ALLOWED_VIDEO_EXTENSIONS
+
+
+def allowed_image_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[
+        1] in config.ALLOWED_IMAGE_EXTENSIONS
 
 
 def video_to_md5(_path):

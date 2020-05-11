@@ -1,0 +1,140 @@
+0
+00:00:04.390 --> 00:00:07.760
+我们从矢量乘标量开始。
+ We begin with multiplication of a vector by a scalar.
+
+1
+00:00:07.800 --> 00:00:10.420
+当你乘向量a时
+ When you multiply a vector a
+
+2
+00:00:10.420 --> 00:00:17.100
+通过标量，这个乘法因子只是重新缩放向量的大小或长度。
+ by a scalar, this multiplicative factor just re scales the magnitude or the length of the vector.
+
+3
+00:00:17.460 --> 00:00:20.660
+让我们看向量两次
+ Let us look at the vector two times a
+
+4
+00:00:20.850 --> 00:00:25.500
+这与向量a的方向相同，但长度是向量a的两倍。
+ this is in the same direction as the vector a but is twice as long.
+
+5
+00:00:26.550 --> 00:00:28.240
+这是向量b
+ This is vector b
+
+6
+00:00:28.550 --> 00:00:36.260
+矢量由其大小和方向来定义。所以这个向量b在空间的任何地方都是一样的，包括在原点。
+ a vector is defined by its magnitude and direction. So this vector b is the same anywhere in space, including at the origin.
+
+7
+00:00:36.260 --> 00:00:43.350
+如果我要负点乘以5，这个向量是b的反方向，是长度的一半。
+ If I want minus point five times be, this vector is in the opposite direction of b and is half the length.
+
+8
+00:00:46.440 --> 00:00:48.670
+现在让我们看看向量加法。
+ Now let's look at vector addition.
+
+9
+00:00:49.310 --> 00:00:53.660
+这里是向量a，这里是b，我们如何用图形方式添加它们？
+ Here's a vector a here is b how do we add them graphically?
+
+10
+00:00:54.960 --> 00:00:57.840
+我们把b的尾巴滑到a的头上
+ We slide the tail of b to the head of a
+
+11
+00:00:57.840 --> 00:01:01.940
+它们的和是从a的尾部到b的头部的向量
+ and their sum is the vector drawn from the tail of a to the head of b
+
+12
+00:01:02.440 --> 00:01:08.400
+我也可以把a的尾部滑动到b的头部来增加a到b
+ I could have also added a to b by sliding the tail of a to the head of b
+
+13
+00:01:09.220 --> 00:01:14.360
+你可以看到这是一个平行四边形，一些向量c
+ you can see that this makes a parallelogram, and the some vector c
+
+14
+00:01:14.360 --> 00:01:17.210
+只是这个平行四边形的对角线。
+ is just the diagonal of this parallelogram.
+
+15
+00:01:17.470 --> 00:01:18.480
+是 啊。
+ Yeah.
+
+16
+00:01:18.990 --> 00:01:24.500
+减法可以看作是乘法和加法。
+ Subtraction can be thought of as just multiplication and addition.
+
+17
+00:01:24.930 --> 00:01:28.080
+如果c等于a减去b
+ If I have c is equal to a minus b
+
+18
+00:01:28.270 --> 00:01:31.920
+我只需要把a加到向量减去b
+ I just need to add a to the vector minus b
+
+19
+00:01:32.410 --> 00:01:35.920
+负b是负的1乘以b
+ minus b is negative one times b
+
+20
+00:01:35.920 --> 00:01:37.480
+这就是向量。
+ which is this vector here.
+
+21
+00:01:37.850 --> 00:01:41.380
+现在我只需要把a加到-b
+ Now I only have to add a to minus b
+
+22
+00:01:42.790 --> 00:01:44.580
+再举一个例子
+ let's do another example
+
+23
+00:01:45.200 --> 00:01:53.150
+在这里。我的向量a和b不是从原点开始的。但是由于矢量在空间的任何地方都是一样的，我可以在这里进行这个过程。
+ here. My vectors a and b do not start at the origin. But since vectors are the same anywhere in space, I can go through the process here.
+
+24
+00:01:53.710 --> 00:01:55.740
+我要a减b
+ I want a minus b
+
+25
+00:01:55.850 --> 00:02:00.320
+所以我先乘以我的负1，得到负b
+ so I first multiply be my minus one to find minus b
+
+26
+00:02:01.300 --> 00:02:05.400
+然后我移动了负β的尾部
+ and then I moved the tail of minus beta, the head of a
+
+27
+00:02:05.430 --> 00:02:07.480
+把这两个加起来。
+ and add the two like this.
+

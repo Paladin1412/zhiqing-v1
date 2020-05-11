@@ -40,6 +40,9 @@ def index():
     elif model_action == 'update':
         from modules.videos import upload_update
         resp = upload_update()
+    elif model_action == "check":
+        from modules.videos import func_check
+        resp = func_check()
     else:
         post_data = request.get_json()
         model_name = post_data.get('model_name', "")

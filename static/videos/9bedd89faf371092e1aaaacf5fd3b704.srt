@@ -1,0 +1,110 @@
+0
+00:00:01.660 --> 00:00:05.280
+在这里，我们将学习如何区分向量。并按比例
+ Here, we will learn to distinguish between vectors. And scale as
+
+1
+00:00:05.720 --> 00:00:09.680
+向量是同时具有一个数量级和一个数字的对象
+ vectors are objects that have both a magnitude, a single number
+
+2
+00:00:09.690 --> 00:00:11.000
+还有方向，
+ and direction,
+
+3
+00:00:11.690 --> 00:00:14.220
+而比例尺只有一个量级。
+ whereas scale as have only a magnitude.
+
+4
+00:00:15.120 --> 00:00:17.250
+让我们看看每个例子。
+ Let's see some examples of each.
+
+5
+00:00:19.460 --> 00:00:21.550
+某物的长度是标量，
+ The length of something is a scalar,
+
+6
+00:00:21.590 --> 00:00:23.530
+因为这只是数量级，
+ because it's just the magnitude,
+
+7
+00:00:24.300 --> 00:00:27.460
+拉力某人拉动某物所施加的力量
+ a force exerted by someone pulling something
+
+8
+00:00:27.460 --> 00:00:28.630
+是一个向量，
+ is a vector,
+
+9
+00:00:28.630 --> 00:00:30.880
+因为我们关心力量的力量，
+ because we care about the strength of the force,
+
+10
+00:00:30.880 --> 00:00:31.960
+大小，
+ the magnitude,
+
+11
+00:00:31.980 --> 00:00:34.850
+以及力的作用方向
+ and the direction in which the forces acting
+
+12
+00:00:35.700 --> 00:00:36.760
+温度。
+ temperature.
+
+13
+00:00:37.280 --> 00:00:38.570
+这是一个定标器。
+ It's a scaler.
+
+14
+00:00:39.680 --> 00:00:42.130
+如果我们在天气图上显示温度，
+ If we display temperature on a weather map,
+
+15
+00:00:42.170 --> 00:00:45.950
+在空间中每个点的温度值不同的地方，
+ where the value of the temperature is different at each point in space,
+
+16
+00:00:45.950 --> 00:00:47.690
+这是一个标量场
+ this is a scalar field
+
+17
+00:00:48.340 --> 00:00:49.680
+相比之下。
+ in comparison.
+
+18
+00:00:49.680 --> 00:00:51.410
+这张风的天气图，
+ This weather map of wind,
+
+19
+00:00:51.410 --> 00:00:54.730
+或者空间中每个点的风速值，
+ or the value of the wind velocity at each point in space,
+
+20
+00:00:54.730 --> 00:00:56.640
+由矢量表示
+ is represented by a vector
+
+21
+00:00:57.470 --> 00:00:58.990
+是一个向量场。
+ is a vector field.
+
