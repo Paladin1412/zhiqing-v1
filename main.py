@@ -68,6 +68,10 @@ def index():
                 from modules.collect import CollectHandler
                 comment_main = CollectHandler(extra_data, model_action)
                 resp = comment_main.handle_model()
+            elif model_name == "like":
+                from modules.like import LikeHandler
+                comment_main = LikeHandler(extra_data, model_action)
+                resp = comment_main.handle_model()
             else:
                 resp = set_resjson(err=-1, errmsg="model_name is incorrect")
     return resp
