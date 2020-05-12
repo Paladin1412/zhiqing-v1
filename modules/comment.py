@@ -35,7 +35,7 @@ class CommentHandler(object):
 
     def func_comment_post(self):
         """
-        发布评论
+        发表评论
         """
         user = g.user
         if not user:
@@ -43,19 +43,44 @@ class CommentHandler(object):
         video_id = self.extra_data.get("video_id", "")
         parent_id = self.extra_data.get("parent_id", "")
         content = self.extra_data.get("content", "")
-        comment_time = self.extra_data.get("time", "")
-        if video_id == "" or content == "" or parent_id == "" or comment_time == "":
-            raise response_code.ParamERR(
-                errmsg="[video_id, content, parent_id, time] must be provided")
-        comment_info = {"_id": create_uuid(), "video_id": video_id,
-                        "content": content, "time": comment_time,
-                        "parent_id": parent_id, "user_id": user["_id"]}
+        ct_time = self.extra_data.get("time", "")
+
         try:
-            mongo.db.comment.insert(comment_info)
+            parent_id = int(parent_id)
+        except Exception as e:
+            raise response_code.ParamERR(errmsg="parent_id is incorrect")
+        if video_id == "" or content == "" or parent_id == "" or ct_time == "":
+            raise response_code.UserERR(
+                errmsg="[ video_id, parent_id, content time] must be provided")
+        try:
+            video_info = mongo.db.video.find_one({"_id": video_id})
         except Exception as e:
             raise response_code.DatabaseERR(errmsg="{}".format(e))
+        if not video_info:
+            raise response_code.ParamERR(errmsg="video_id is incorrect")
+        if parent_id != 0:
+            try:
+                comment_info = mongo.db.comment.find_one(
+                    {"_id": "{}".format(parent_id)})
+            except Exception as e:
+                raise response_code.DatabaseERR(errmsg="{}".format(e))
+            if not comment_info:
+                raise response_code.ParamERR(errmsg="parent_id is incorrect")
+            try:
+                mongo.db.comment.insert(
+                    {"_id": create_uuid(), "parent_id": "{}".format(parent_id),
+                     "content": content, "time": ct_time, "video_id": video_id,
+                     "to_user_id": comment_info["user_id"],
+                     "user_id": user["_id"]})
+            except Exception as e:
+                raise response_code.DatabaseERR(errmsg="{}".format(e))
+        else:
+            try:
+                mongo.db.comment.insert(
+                    {"_id": create_uuid(), "parent_id": "{}".format(parent_id),
+                     "content": content, "time": ct_time, "video_id": video_id,
+                     "user_id": user["_id"]})
+            except Exception as e:
+                raise response_code.DatabaseERR(errmsg="{}".format(e))
+
         return set_resjson()
-
-    def func_comment_like(self):
-
-        pass
