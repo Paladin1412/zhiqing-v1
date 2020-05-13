@@ -1,18 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6c7c281b-f7b3-43bc-8de8-c1cbc42d9bf8" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/08be9f31-4328-40b6-8055-a1767df7aa2b.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/5cb2cefc-15a6-4229-8f21-6bcdc8067c5b.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/collect.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/collect.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/comment.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/comment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/like.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/like.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/videos.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/videos.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/auth.py" afterDir="false" />
-    </list>
+    <list default="true" id="6c7c281b-f7b3-43bc-8de8-c1cbc42d9bf8" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -111,7 +100,7 @@
       <workItem from="1589185217367" duration="9347000" />
       <workItem from="1589245567523" duration="308000" />
       <workItem from="1589246017768" duration="25260000" />
-      <workItem from="1589331686321" duration="3897000" />
+      <workItem from="1589331686321" duration="4115000" />
     </task>
     <task id="LOCAL-00001" summary="首次提交">
       <created>1588469272551</created>
@@ -183,7 +172,21 @@
       <option name="project" value="LOCAL" />
       <updated>1589263970806</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="细节修改">
+      <created>1589337441655</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1589337441655</updated>
+    </task>
+    <task id="LOCAL-00012" summary="细节修改">
+      <created>1589337501131</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1589337501131</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -202,7 +205,8 @@
     <MESSAGE value="视频点赞" />
     <MESSAGE value="视频点赞main" />
     <MESSAGE value="评论" />
-    <option name="LAST_COMMIT_MESSAGE" value="评论" />
+    <MESSAGE value="细节修改" />
+    <option name="LAST_COMMIT_MESSAGE" value="细节修改" />
   </component>
   <component name="WindowStateProjectService">
     <state x="496" y="197" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1589279375482">
@@ -215,10 +219,10 @@
     </state>
     <state x="370" y="389" key="#xdebugger.evaluate/0.23.1792.1016@0.23.1792.1016" timestamp="1589173998084" />
     <state x="643" y="463" width="1012" height="579" key="#xdebugger.evaluate/0.23.1792.1019@0.23.1792.1019" timestamp="1588226610795" />
-    <state x="473" y="106" key="CommitChangelistDialog2" timestamp="1589337372374">
+    <state x="473" y="106" key="CommitChangelistDialog2" timestamp="1589337500974">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
-    <state x="473" y="106" key="CommitChangelistDialog2/0.23.1792.1016@0.23.1792.1016" timestamp="1589337372374" />
+    <state x="473" y="106" key="CommitChangelistDialog2/0.23.1792.1016@0.23.1792.1016" timestamp="1589337500974" />
     <state x="473" y="106" key="CommitChangelistDialog2/0.23.1792.1019@0.23.1792.1019" timestamp="1588469272246" />
     <state width="254" height="195" key="DatabaseViewActions_Filter" timestamp="1589337227001">
       <screen x="0" y="23" width="1792" height="1016" />
@@ -305,10 +309,10 @@
       <screen x="0" y="23" width="1792" height="1019" />
     </state>
     <state x="397" y="171" key="SettingsEditor/0.23.1792.1019@0.23.1792.1019" timestamp="1588227735541" />
-    <state x="496" y="271" key="Vcs.Push.Dialog.v2" timestamp="1589263973168">
+    <state x="496" y="271" key="Vcs.Push.Dialog.v2" timestamp="1589337443177">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
-    <state x="496" y="271" key="Vcs.Push.Dialog.v2/0.23.1792.1016@0.23.1792.1016" timestamp="1589263973168" />
+    <state x="496" y="271" key="Vcs.Push.Dialog.v2/0.23.1792.1016@0.23.1792.1016" timestamp="1589337443177" />
     <state x="716" y="418" key="com.intellij.database.actions.DdlActions$DeleteProvider2$1" timestamp="1589279410076">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
