@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="dataSourceStorageLocal">
-    <data-source name="知擎" uuid="5cb2cefc-15a6-4229-8f21-6bcdc8067c5b">
+    <data-source name="@localhost" uuid="6a4f288a-1d69-45b2-b101-4c42e61cbf78">
+      <database-info product="Mongo DB" version="4.2.6" jdbc-version="4.2" driver-name="MongoDB JDBC Driver" driver-version="1.7.1" dbms="MONGO" exact-version="4.2.6" exact-driver-version="1.7" />
+      <case-sensitivity plain-identifiers="mixed" quoted-identifiers="mixed" />
+      <secret-storage>master_key</secret-storage>
+      <schema-mapping>
+        <introspection-scope>
+          <node kind="schema" qname="ppvideo" />
+        </introspection-scope>
+      </schema-mapping>
+    </data-source>
+    <data-source name="知擎" uuid="1393f60e-c930-4d24-94ae-deca4371b0ca">
       <database-info product="Mongo DB" version="4.2.6" jdbc-version="4.2" driver-name="MongoDB JDBC Driver" driver-version="1.7.1" dbms="MONGO" exact-version="4.2.6" exact-driver-version="1.7" />
       <case-sensitivity plain-identifiers="mixed" quoted-identifiers="mixed" />
       <secret-storage>master_key</secret-storage>
@@ -9,19 +19,6 @@
       <schema-mapping>
         <introspection-scope>
           <node kind="schema" qname="@" />
-        </introspection-scope>
-      </schema-mapping>
-    </data-source>
-    <data-source name="@localhost" uuid="08be9f31-4328-40b6-8055-a1767df7aa2b">
-      <database-info product="Mongo DB" version="4.2.6" jdbc-version="4.2" driver-name="MongoDB JDBC Driver" driver-version="1.7.1" dbms="MONGO" exact-version="4.2.6" exact-driver-version="1.7" />
-      <case-sensitivity plain-identifiers="mixed" quoted-identifiers="mixed" />
-      <secret-storage>master_key</secret-storage>
-      <schema-mapping>
-        <introspection-scope>
-          <node kind="schema">
-            <name qname="@" />
-            <name qname="ppvideo" />
-          </node>
         </introspection-scope>
       </schema-mapping>
     </data-source>

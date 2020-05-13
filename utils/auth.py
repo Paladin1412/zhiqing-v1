@@ -71,5 +71,6 @@ def authenticate():
                 _id = payload["data"].get("_id")
                 user = mongo.db.user.find_one({"_id": _id})
     except Exception as e:
-        current_app.logger.error(e)
+        # current_app.logger.error(e)
+        pass
     g.user = user

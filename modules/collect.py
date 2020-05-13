@@ -7,6 +7,8 @@
 @Email   : 18821723039@163.com
 @Software: PyCharm
 """
+import time
+
 from flask import g
 
 from main import mongo
@@ -40,25 +42,24 @@ class CollectHandler(object):
         user = g.user
         if not user:
             raise response_code.UserERR(errmsg='用户未登录')
-        video_id = self.extra_data.get("video_id", "")
+        relation_id = self.extra_data.get("relation_id", "")
         value = self.extra_data.get("value", "")
-        collect_time = self.extra_data.get("time", "")
         collect_type = self.extra_data.get("type", "")
+        collect_time = str(time.time())
         try:
             value = int(value)
         except Exception as e:
             raise response_code.ParamERR(
                 errmsg="value type error: {}".format(e))
-        if video_id == "" or collect_time == "":
-            raise response_code.ParamERR(
-                "[video_id,  time] must be provided")
+        if relation_id == "":
+            raise response_code.ParamERR("[relation_id] must be provided")
         elif collect_type not in ["video", "series"]:
             raise response_code.ParamERR(errmsg="type must be video or series")
         elif value not in [1, 0]:
             raise response_code.ParamERR(errmsg="value must be 1 or 0")
         if collect_type == "video":
             try:
-                video_info = mongo.db.video.find_one({"_id": video_id})
+                video_info = mongo.db.video.find_one({"_id": relation_id})
             except Exception as e:
                 raise response_code.DatabaseERR(errmsg="{}".format(e))
 
@@ -67,14 +68,14 @@ class CollectHandler(object):
             #         errmsg="video_id is incorrect !")
             # else:
             #     try:
-            #         collect_info = mongo.db.collect.find_one(
+            #         collect_info = mongo.db.collection.find_one(
             #             {"user_id": user["_id"], "relation_id": video_id})
             #     except Exception as e:
             #         raise response_code.DatabaseERR(errmsg="{}".format(e))
             #     if value == 1:
             #         if not collect_info:
             #             try:
-            #                 mongo.db.collect.insert_one(
+            #                 mongo.db.collection.insert_one(
             #                     {"_id": create_uuid(), "user_id": user["_id"],
             #                      "relation_id": video_id, "type": collect_type,
             #                      "time": collect_time})
@@ -86,7 +87,7 @@ class CollectHandler(object):
             #     else:
             #         if collect_info:
             #             try:
-            #                 mongo.db.collect.delete_one({"user_id": user["_id"],
+            #                 mongo.db.collection.delete_one({"user_id": user["_id"],
             #                                              "relation_id": video_id})
             #             except Exception as e:
             #                 raise response_code.DatabaseERR(
@@ -95,25 +96,25 @@ class CollectHandler(object):
             #             raise response_code.ParamERR(errmsg="没有收藏此视频")
         else:
             try:
-                video_info = mongo.db.document.find_one({"_id": video_id})
+                video_info = mongo.db.document.find_one({"_id": relation_id})
             except Exception as e:
                 raise response_code.DatabaseERR(errmsg="{}".format(e))
 
         if not video_info:
             raise response_code.DatabaseERR(
-                errmsg="video_id is incorrect !")
+                errmsg="relation_id is incorrect !")
         else:
             try:
-                collect_info = mongo.db.collect.find_one(
-                    {"user_id": user["_id"], "relation_id": video_id})
+                collect_info = mongo.db.collection.find_one(
+                    {"user_id": user["_id"], "relation_id": relation_id})
             except Exception as e:
                 raise response_code.DatabaseERR(errmsg="{}".format(e))
             if value == 1:
                 if not collect_info:
                     try:
-                        mongo.db.collect.insert_one(
+                        mongo.db.collection.insert_one(
                             {"_id": create_uuid(), "user_id": user["_id"],
-                             "relation_id": video_id, "type": collect_type,
+                             "relation_id": relation_id, "type": collect_type,
                              "time": collect_time})
                     except Exception as e:
                         raise response_code.DatabaseERR(
@@ -123,8 +124,8 @@ class CollectHandler(object):
             else:
                 if collect_info:
                     try:
-                        mongo.db.collect.delete_one({"user_id": user["_id"],
-                                                     "relation_id": video_id})
+                        mongo.db.collection.delete_one({"user_id": user["_id"],
+                                                        "relation_id": relation_id})
                     except Exception as e:
                         raise response_code.DatabaseERR(
                             errmsg="{}".format(e))

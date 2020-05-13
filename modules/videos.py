@@ -24,6 +24,7 @@ from modules.aimodels import run_ai
 from modules.aimodels.run_ai import generate_subtitle as generate_subtitle1, \
     edit_video
 from utils import response_code
+from utils.mongo_id import create_uuid
 from utils.setResJson import set_resjson
 from utils.video_upload.uploadVideo import upload_video
 
@@ -74,7 +75,7 @@ class VideoHandler(object):
         :return:
         """
         query_string = self.extra_data.get('query_string', "")
-        video_ids = self.extra_data.get('video_ids', "")
+        video_ids = self.extra_data.get('video_id', "")
         if query_string == "":
             response = set_resjson(err=-1,
                                    errmsg="[ query_string ] must be provided ！")
@@ -314,6 +315,47 @@ class VideoHandler(object):
                      os.listdir('static/picture/{}/'.format(video_id))]
         return set_resjson(res_array=sorted(file_list))
 
+    # def func_video_play(self):
+    #     """
+    #     视频播放
+    #     """
+    #     user = g.user
+    #     if not user:
+    #         raise response_code.UserERR(errmsg='用户未登录')
+    #     video_id = self.extra_data.get('video_id', '')
+    #     if video_id == '':
+    #         raise response_code.ParamERR(errmsg="[video_id] must be provided")
+    #     try:
+    #         video_info = mongo.db.video.find_one({'_id': video_id},
+    #                                              {"video_path": 1,
+    #                                               "audio_path": 1, "lang": 1,
+    #                                               "ass_path": 1, "title": 1,
+    #                                               "user_id": 1,
+    #                                               "video_view": 1})
+    #         like_info = mongo.db.like.find_one(
+    #             {"user_id": user["_id"], "relation_id": video_id})
+    #         like_count = mongo.db.like.find(
+    #             {"relation_id": video_id}).count()
+    #         collect_info = mongo.db.collect.find_one(
+    #             {"user_id": user["_id"], "relation_id": video_id})
+    #         comment_cursor = mongo.db.comment.find({"video_id": video_id})
+    #
+    #     except Exception as e:
+    #         raise response_code.DatabaseERR(errmsg="{}".format(e))
+    #     for comment_dict in comment_cursor:
+    #         parent_id = comment_dict.get("parent_id", "")
+    #         if parent_id in comment_dict:
+    #             pass
+    #
+    #
+    #
+    #
+    #     video_info["is_like"] = 1 if like_info else 0
+    #     video_info["is_collect"] = 1 if collect_info else 0
+    #     video_info["like"] = 1 if like_count else 0
+    #     video_info["comment"] = [i for i in comment_cursor]
+    #
+    #     return set_resjson(res_array=[video_info])
 
 def func_check():
     """
@@ -326,8 +368,8 @@ def func_check():
     title = request.form.get('title')
     description = request.form.get('description')
     category = request.form.get('category')
-    play_list = request.form.get('play_list', "")
     image = request.files.get('image')
+    series_title = request.files.get('series_title')
     image_name = None
 
     try:
@@ -355,11 +397,11 @@ def func_check():
         # TODO 后面加上去重  暂时 state 设置为 2
         image.save(image)
         update_video_info = {"description": description, "category": category,
-                             "play_list": play_list, "image_path": image_path,
+                             "image_path": image_path,
                              "state": 2}
     else:
         update_video_info = {"description": description, "category": category,
-                             "play_list": play_list, "state": 2}
+                             "state": 2}
 
     if title:
         update_video_info["title"] = title
@@ -368,6 +410,26 @@ def func_check():
         mongo.db.video.update_one({"_id": task_id}, {"$set": update_video_info})
     except Exception as e:
         raise response_code.DatabaseERR(errmsg='{}'.format(e))
+
+    if series_title:
+        try:
+            series_info = mongo.db.series.find_one(
+                {"user_id": user["_id"], "title": series_title})
+            if series_info:
+                mongo.db.video.update_one(
+                    {"_id": task_id, "title": series_title})
+            else:
+                _id = create_uuid()
+                mongo.db.series.insert_one({"_id": _id, "title": title,
+                                            "description": description,
+                                            "image_path": image_path if image_path else
+                                            video_info["image_path"],
+                                            "user_id": user["_id"],
+                                            "time": str(time.time())})
+                mongo.db.video.update_one({"_id": task_id},
+                                          {"$set": {"series": _id}})
+        except Exception as e:
+            raise response_code.DatabaseERR(errmsg="{}".format(e))
 
     return set_resjson()
 
@@ -495,16 +557,14 @@ def upload_success_update(file_type, task_id, subtitling_list, style, lang,
                       'video_path': video_path, "title": title,
                       'image_path': 'static/image/{}.jpg'.format(md5_token),
                       "upload_time": upload_time, "user_id": user_id,
-                      "state":0}
+                      "state": 0}
         try:
             mongo.db.video.insert_one(video_info)
         except Exception as e:
             raise response_code.DatabaseERR(errmsg="{}".format(e))
 
         back_info = {'video_id': md5_token,
-                     'video_path': video_path,
-                     'image_path': 'static/image/{}.jpg'.format(md5_token)
-                     }
+                     'video_path': video_path}
         resp = set_resjson(errmsg='Video uploaded successfully!',
                            res_array=[back_info])
 
@@ -579,7 +639,7 @@ def upload_success(file_type, task_id, user_id, title):
 
 
 def converted_video_picture(video_name):
-    compress = "ffmpeg -i static/videos/{}.mp4 -y -ss 00:00:02 -vframes 1 -f image2  static/image/{}.jpg".format(
+    compress = "ffmpeg -i static/videos/{}.mp4 -y -ss 00:00:00 -vframes 1 -f image2  static/image/{}.jpg".format(
         video_name, video_name)
     is_run = os.system(compress)
     if is_run != 0:

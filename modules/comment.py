@@ -8,6 +8,7 @@
 @Software: PyCharm
 """
 import os
+import time
 
 from flask import g
 
@@ -43,15 +44,15 @@ class CommentHandler(object):
         video_id = self.extra_data.get("video_id", "")
         parent_id = self.extra_data.get("parent_id", "")
         content = self.extra_data.get("content", "")
-        ct_time = self.extra_data.get("time", "")
 
+        collect_time = str(time.time())
         try:
             parent_id = int(parent_id)
         except Exception as e:
             raise response_code.ParamERR(errmsg="parent_id is incorrect")
-        if video_id == "" or content == "" or parent_id == "" or ct_time == "":
+        if video_id == "" or content == "" or parent_id == "":
             raise response_code.UserERR(
-                errmsg="[ video_id, parent_id, content time] must be provided")
+                errmsg="[ video_id, parent_id, content ] must be provided")
         try:
             video_info = mongo.db.video.find_one({"_id": video_id})
         except Exception as e:
@@ -69,7 +70,7 @@ class CommentHandler(object):
             try:
                 mongo.db.comment.insert(
                     {"_id": create_uuid(), "parent_id": "{}".format(parent_id),
-                     "content": content, "time": ct_time, "video_id": video_id,
+                     "content": content, "time": collect_time, "video_id": video_id,
                      "to_user_id": comment_info["user_id"],
                      "user_id": user["_id"]})
             except Exception as e:
@@ -78,7 +79,7 @@ class CommentHandler(object):
             try:
                 mongo.db.comment.insert(
                     {"_id": create_uuid(), "parent_id": "{}".format(parent_id),
-                     "content": content, "time": ct_time, "video_id": video_id,
+                     "content": content, "time": collect_time, "video_id": video_id,
                      "user_id": user["_id"]})
             except Exception as e:
                 raise response_code.DatabaseERR(errmsg="{}".format(e))

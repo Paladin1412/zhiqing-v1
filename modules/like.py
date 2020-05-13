@@ -34,7 +34,7 @@ class LikeHandler(object):
                                    self.model_action))
         return resp
 
-    def func_video_like(self):
+    def func_give_like(self):
         """
         视频点赞
         :return:
@@ -42,7 +42,7 @@ class LikeHandler(object):
         user = g.user
         if not user:
             raise response_code.UserERR(errmsg='用户未登录')
-        video_id = self.extra_data.get("video_id", "")
+        relation_id = self.extra_data.get("relation_id", "")
         value = self.extra_data.get("value", "")
         like_type = self.extra_data.get("type", "")
         try:
@@ -50,8 +50,8 @@ class LikeHandler(object):
         except Exception as e:
             raise response_code.ParamERR(
                 errmsg="value type error: {}".format(e))
-        if video_id == "":
-            raise response_code.ParamERR("[video_id] must be provided")
+        if relation_id == "":
+            raise response_code.ParamERR("[relation_id] must be provided")
         elif like_type not in ["video", "series", "comment"]:
             raise response_code.ParamERR(errmsg="type must be video or series")
         elif value not in [1, 0]:
@@ -59,36 +59,36 @@ class LikeHandler(object):
 
         if like_type == "video":
             try:
-                video_info = mongo.db.video.find_one({"_id": video_id})
+                video_info = mongo.db.video.find_one({"_id": relation_id})
             except Exception as e:
                 raise response_code.DatabaseERR(errmsg="{}".format(e))
         elif like_type == "series":
             try:
-                video_info = mongo.db.document.find_one({"_id": video_id})
+                video_info = mongo.db.document.find_one({"_id": relation_id})
             except Exception as e:
                 raise response_code.DatabaseERR(errmsg="{}".format(e))
         else:
             try:
-                video_info = mongo.db.comment.find_one({"_id": video_id})
+                video_info = mongo.db.comment.find_one({"_id": relation_id})
             except Exception as e:
                 raise response_code.DatabaseERR(errmsg="{}".format(e))
 
         if not video_info:
             raise response_code.DatabaseERR(
-                errmsg="video_id is incorrect !")
+                errmsg="relation_id is incorrect !")
         else:
             try:
                 like_info = mongo.db.like.find_one(
-                    {"user_id": user["_id"], "relation_id": video_id})
+                    {"user_id": user["_id"], "relation_id": relation_id})
             except Exception as e:
                 raise response_code.DatabaseERR(errmsg="{}".format(e))
-            like_time = time.time()
+            like_time = str(time.time())
             if value == 1:
                 if not like_info:
                     try:
                         mongo.db.like.insert_one(
                             {"_id": create_uuid(), "user_id": user["_id"],
-                             "relation_id": video_id, "type": like_type,
+                             "relation_id": relation_id, "type": like_type,
                              "time": like_time})
                     except Exception as e:
                         raise response_code.DatabaseERR(
@@ -99,7 +99,7 @@ class LikeHandler(object):
                 if like_info:
                     try:
                         mongo.db.like.delete_one({"user_id": user["_id"],
-                                                  "relation_id": video_id})
+                                                  "relation_id": relation_id})
                     except Exception as e:
                         raise response_code.DatabaseERR(
                             errmsg="{}".format(e))
