@@ -13,6 +13,7 @@ import os
 import re
 import time
 from ast import literal_eval
+from copy import deepcopy
 from threading import Thread
 
 import cv2
@@ -57,15 +58,23 @@ class VideoHandler(object):
         res_list = []
         query_string = self.extra_data.get("query_string", "")
         video_ids = self.extra_data.get("video_ids", "")
-        mode = 'global'
-        ret = run_ai.play_video(query_string, mode, video_ids)
-        for video_info in ret:
-            user_id = video_info.pop("user_id")
-            user_info = mongo.db.user.find_one({"_id": user_id})
-            video_info["name"] = user_info['name']
-            video_info["headshot"] = user_info['headshot']
-            res_list.append(video_info)
+        mode = self.extra_data.get("type", "")
+        max_size = self.extra_data.get("max_size", "")
+        page = self.extra_data.get("page", 1)
+        if query_string == "":
+            raise response_code.ParamERR(errmsg="query_string is provided")
+        if mode not in ["all", "video", "series", "user"]:
+            raise response_code.ParamERR(
+                errmsg="type must be all or video or series or user")
+        try:
+            max_size = int(max_size)
+            page = int(page)
+        except Exception as e:
+            raise response_code.ParamERR(
+                errmsg="max_size or page type incorrect")
 
+        ret = run_ai.global_play_video(query_string, mode, video_ids, max_size,
+                                       page)
         response = set_resjson(res_array=ret)
         return response
 
@@ -75,16 +84,12 @@ class VideoHandler(object):
         :return:
         """
         query_string = self.extra_data.get('query_string', "")
-        video_ids = self.extra_data.get('video_id', "")
-        if query_string == "":
+        video_id = self.extra_data.get('video_id', "")
+        if query_string == "" or video_id == "":
             response = set_resjson(err=-1,
-                                   errmsg="[ query_string ] must be provided ！")
-        elif video_ids == "":
-            response = set_resjson(err=-2,
-                                   errmsg="[ video_ids ] must be provided ！")
+                                   errmsg="[ query_string, video_id] must be provided ！")
         else:
-            mode = 'local'
-            ret = run_ai.play_video(query_string, mode, video_ids)
+            ret = run_ai.local_play_video(query_string, video_id)
             response = set_resjson(res_array=ret)
 
         return response
@@ -315,47 +320,120 @@ class VideoHandler(object):
                      os.listdir('static/picture/{}/'.format(video_id))]
         return set_resjson(res_array=sorted(file_list))
 
-    # def func_video_play(self):
-    #     """
-    #     视频播放
-    #     """
-    #     user = g.user
-    #     if not user:
-    #         raise response_code.UserERR(errmsg='用户未登录')
-    #     video_id = self.extra_data.get('video_id', '')
-    #     if video_id == '':
-    #         raise response_code.ParamERR(errmsg="[video_id] must be provided")
-    #     try:
-    #         video_info = mongo.db.video.find_one({'_id': video_id},
-    #                                              {"video_path": 1,
-    #                                               "audio_path": 1, "lang": 1,
-    #                                               "ass_path": 1, "title": 1,
-    #                                               "user_id": 1,
-    #                                               "video_view": 1})
-    #         like_info = mongo.db.like.find_one(
-    #             {"user_id": user["_id"], "relation_id": video_id})
-    #         like_count = mongo.db.like.find(
-    #             {"relation_id": video_id}).count()
-    #         collect_info = mongo.db.collect.find_one(
-    #             {"user_id": user["_id"], "relation_id": video_id})
-    #         comment_cursor = mongo.db.comment.find({"video_id": video_id})
-    #
-    #     except Exception as e:
-    #         raise response_code.DatabaseERR(errmsg="{}".format(e))
-    #     for comment_dict in comment_cursor:
-    #         parent_id = comment_dict.get("parent_id", "")
-    #         if parent_id in comment_dict:
-    #             pass
-    #
-    #
-    #
-    #
-    #     video_info["is_like"] = 1 if like_info else 0
-    #     video_info["is_collect"] = 1 if collect_info else 0
-    #     video_info["like"] = 1 if like_count else 0
-    #     video_info["comment"] = [i for i in comment_cursor]
-    #
-    #     return set_resjson(res_array=[video_info])
+    def func_video_play(self):
+        """
+        视频播放
+        """
+        res_data = []
+        user = g.user
+        if not user:
+            raise response_code.UserERR(errmsg='用户未登录')
+        video_id = self.extra_data.get('video_id', '')
+        if video_id == '':
+            raise response_code.ParamERR(errmsg="[video_id] must be provided")
+
+        # video = mongo.db.video.find_one({'_id': video_id})
+        # author_id = video['user_id']
+        # comment_list = []
+        # comments = mongo.db.comment.find(
+        #     {'video_id': video_id, "parent_id": "0"})
+        # for comment in comments:
+        #     # [todo]is_like的判断
+        #     comment['is_like'] = 0
+        #     comment_list.append(comment)
+        # data_dict = {}
+        # data_dict['video_path'] = video['video_path']
+        # data_dict['audio_path'] = video['audio_path']
+        # data_dict['lang'] = video['lang']
+        # data_dict['ass_path'] = video['ass_path']
+        # data_dict['upload_time'] = video['upload_time']
+        # data_dict['comment'] = comment_list
+        #
+        # like = mongo.db.like.find_one(
+        #     {'relation_id': video_id, 'type': 'video', 'user_id': user["_id"]})
+        # collection = mongo.db.collection.find_one(
+        #     {'relation_id': video_id, 'type': 'video', 'user_id': user["_id"]})
+        # subscription = mongo.db.subscription.find_one(
+        #     {'relation_id': author_id, 'type': 'author',
+        #      'user_id': user["_id"]})
+        # data_dict['is_like'] = 1 if like else 0
+        # data_dict['is_collect'] = 1 if collection else 0
+        # data_dict['is_subscribe'] = 1 if subscription else 0
+        # res_data.append(data_dict)
+
+        tool = mongo.db.tool.find_one({'type': 'category'})
+        video = mongo.db.video.find_one({'_id': video_id})
+        # user = mongo.db.collection.find_one({"_id": user["_id"]},
+        #                                     {"name": 1, "_id": 1,
+        #                                      "headshot": 1})
+        like_counts = mongo.db.like.find(
+            {"relation_id": video_id, "type": "video"}).count()
+        comment_counts = mongo.db.comment.find({"video_id": video_id}).count()
+        author_id = video['user_id']
+        view_counts = 0 if 'view_counts' not in list(video.keys()) else video[
+            'view_counts']
+        comment_list = []
+        comments = mongo.db.comment.find(
+            {'video_id': video_id, 'parent_id': "0"})
+        for comment in comments:
+            # [todo]is_like的判断
+            comment['is_like'] = 0
+            comment_list.append(comment)
+        data_dict = {}
+        data_dict['video_id'] = video_id
+        data_dict['video_path'] = video['video_path']
+        data_dict['audio_path'] = video['audio_path']
+        data_dict['lang'] = video['lang']
+        data_dict['ass_path'] = video['ass_path']
+        data_dict['upload_time'] = video['upload_time']
+        data_dict['title'] = video['title']
+        data_dict['comment'] = comment_list
+        data_dict['user_id'] = user["_id"]
+        data_dict['user_name'] = user['name']
+        data_dict['headshot'] = user['headshot']
+        data_dict['category'] = tool['data'][video['category'][0]]
+        data_dict['lang'] = video['lang']
+        data_dict['description'] = video['description']
+        data_dict['image_path'] = video['image_path']
+        data_dict['view_counts'] = video.get("view_counts", None) if video.get(
+            "view_counts", None) else 0
+        data_dict['like_counts'] = like_counts
+        data_dict['comment_counts'] = comment_counts
+        if user["_id"]:
+            like = mongo.db.like.find_one(
+                {'relation_id': video_id, 'type': 'video',
+                 'user_id': user["_id"]})
+            collection = mongo.db.collection.find_one(
+                {'relation_id': video_id, 'type': 'video',
+                 'user_id': user["_id"]})
+            subscription = mongo.db.subscription.find_one(
+                {'relation_id': author_id, 'type': 'author',
+                 'user_id': user["_id"]})
+            data_dict['is_like'] = 1 if like else 0
+            data_dict['is_collect'] = 1 if collection else 0
+            data_dict['is_subscribe'] = 1 if subscription else 00
+        res_data.append(data_dict)
+        mongo.db.video.update_one({'_id': video_id},
+                                  {'$set': {'view_counts': view_counts + 1}})
+        return set_resjson(res_array=res_data)
+
+    def func_video_list(self):
+        """
+        获取视频列表
+        """
+        try:
+            video_cursor = mongo.db.video.find({"state": 2},
+                                               {"video_id": 1, "video_path": 1,
+                                                "upload_time": 1, "title": 1,
+                                                "image_path": 1})
+        except Exception as e:
+            raise response_code.DatabaseERR(errmsg="{}".format(e))
+        res_list = []
+        for video in video_cursor:
+            video["upload_date"] = video.pop("upload_time")
+            res_list.append(deepcopy(video))
+        return set_resjson(res_array=res_list)
+
 
 def func_check():
     """
@@ -369,7 +447,7 @@ def func_check():
     description = request.form.get('description')
     category = request.form.get('category')
     image = request.files.get('image')
-    series_title = request.files.get('series_title')
+    series_title = request.form.get('series_title')
     image_name = None
 
     try:
@@ -388,6 +466,9 @@ def func_check():
         raise response_code.DatabaseERR(errmsg="{}".format(e))
     if not video_info:
         raise response_code.ParamERR(errmsg='task_id 不存在')
+
+    # if video_info["state"] == 1:
+    #     raise response_code.ReqERR(errmsg="正在审核请耐心等待")
     try:
         image_name = image.filename
     except Exception as e:
@@ -419,11 +500,13 @@ def func_check():
                 mongo.db.video.update_one(
                     {"_id": task_id, "title": series_title})
             else:
+                image_path_info = mongo.db.video.find_one({"_id": task_id})
                 _id = create_uuid()
-                mongo.db.series.insert_one({"_id": _id, "title": title,
+                mongo.db.series.insert_one({"_id": _id, "title": series_title,
                                             "description": description,
-                                            "image_path": image_path if image_path else
-                                            video_info["image_path"],
+                                            "image_path": image_path_info[
+                                                "image_path"],
+                                            "category": category,
                                             "user_id": user["_id"],
                                             "time": str(time.time())})
                 mongo.db.video.update_one({"_id": task_id},

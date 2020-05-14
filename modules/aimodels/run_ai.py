@@ -12,18 +12,25 @@ from modules.aimodels.subtitle import Subtitle
 from utils import response_code
 
 
-def play_video(query_str, mode, video_ids):
+def global_play_video(query_str, mode, video_ids, max_size, page):
     """
-    查询视频
-    :param query_str:
-    :param mode:
-    :param video_ids:
-    :return:
+    全局查询视频
     """
     s = Search()
     try:
-        result = s.video_search(query_str=query_str, mode=mode,
-                                video_ids=video_ids)
+        result = s.global_search(query_str, video_ids, mode, max_size, page)
+    except Exception as e:
+        raise response_code.RoleERR(errmsg='{}'.format(e))
+    return result
+
+
+def local_play_video(query_str, video_ids):
+    """
+    局部查询视频
+    """
+    s = Search()
+    try:
+        result = s.local_search(query_str, video_ids)
     except Exception as e:
         raise response_code.RoleERR(errmsg='{}'.format(e))
     return result

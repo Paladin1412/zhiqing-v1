@@ -129,13 +129,13 @@ class UserHandler(object):
             try:
 
                 mongo.db.user.insert_one(
-                    {"name": '{}'.format(mobile), "mobile": '{}'.format(mobile),
+                    {"name": ranstr(16), "mobile": '{}'.format(mobile),
                      "_id": _id, "headshot": self.head_shot_path,
                      "create_time": now_time, "login_time": now_time})
             except Exception as error:
                 current_app.logger.error(error)
                 raise response_code.DatabaseERR(errmsg='{}'.format(error))
-            user_info = {"name": '{}'.format(mobile), "headshot": ""}
+            user_info = {"name": ranstr(16), "headshot": self.head_shot_path}
         else:
             _id = user_info.pop("_id")
             try:
@@ -306,6 +306,7 @@ class UserHandler(object):
         elif mode == 'wechat':
             wechatlogin = WeChat(client_id=config.QQ_PHONE_APP_ID,
                                  client_secret=config.QQ_PHONE_APP_Key)
+
             unionid, openid = wechatlogin.get_user_info(access_token, openid)
             try:
                 user_info = mongo.db.user.find_one({"wechat_unionid": unionid})
@@ -442,13 +443,13 @@ class UserHandler(object):
             try:
 
                 mongo.db.user.insert_one(
-                    {"name": '{}'.format(phone), "mobile": '{}'.format(phone),
-                     "_id": _id, "headershot" : self.head_shot_path,
+                    {"name": ranstr(16), "mobile": '{}'.format(phone),
+                     "_id": _id, "headershot": self.head_shot_path,
                      "create_time": now_time, "login_time": now_time})
             except Exception as error:
                 current_app.logger.error(error)
                 raise response_code.DatabaseERR(errmsg='{}'.format(error))
-            user_info = {"name": '{}'.format(phone), "headshot": ""}
+            user_info = {"name": ranstr(16), "headshot": self.head_shot_path}
         else:
             _id = user_info.pop("_id")
             try:
@@ -872,3 +873,15 @@ def send_request_to_third(url):
         current_app.logger.error('获取access_token异常: %s' % e)
         raise response_code.ThirdERR(errmsg="{}".format(e))
     return resp_dict
+
+
+def ranstr(num):
+    """
+    生成随机字母
+    """
+    salt = ''
+    for i in range(num):
+        salt += random.choice(
+            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789')
+
+    return salt

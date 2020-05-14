@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6c7c281b-f7b3-43bc-8de8-c1cbc42d9bf8" name="Default Changelist" comment="" />
+    <list default="true" id="6c7c281b-f7b3-43bc-8de8-c1cbc42d9bf8" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/modules/aimodels/api.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules/aimodels/search(2).py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules/series.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/document/Vectors__Dot_Products__Cross_Products__3D_Kinematics (2).pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/document/Vectors__Dot_Products__Cross_Products__3D_Kinematics (2).png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/1393f60e-c930-4d24-94ae-deca4371b0ca.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/1393f60e-c930-4d24-94ae-deca4371b0ca.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/aimodels/run_ai.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/aimodels/run_ai.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/aimodels/search.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/aimodels/search.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/comment.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/comment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/user.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/videos.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/videos.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -32,22 +46,24 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="database.data.extractors.current.id" value="SQL Inserts" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/static/headershot" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/static/document" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="vcs.Git" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/static/document" />
+      <recent name="$PROJECT_DIR$/modules/aimodels" />
+      <recent name="$PROJECT_DIR$/static/headershot" />
+      <recent name="$PROJECT_DIR$" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules" />
       <recent name="$PROJECT_DIR$/utils" />
       <recent name="$PROJECT_DIR$" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/static/headershot" />
-      <recent name="$PROJECT_DIR$" />
-    </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.search (1)">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="zhiqing-v1" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -70,9 +86,55 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="search (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="zhiqing-v1" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules/aimodels" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/modules/aimodels/search(2).py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="search(2)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="zhiqing-v1" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/Library/Containers/com.tencent.xinWeChat/Data/Library/Application Support/com.tencent.xinWeChat/2.0b4.0.9/771f280c7b7d343f0f53961b9556b31e/Message/MessageTemp/c31154925da1ccc5f93a283987094636/File" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$USER_HOME$/Library/Containers/com.tencent.xinWeChat/Data/Library/Application Support/com.tencent.xinWeChat/2.0b4.0.9/771f280c7b7d343f0f53961b9556b31e/Message/MessageTemp/c31154925da1ccc5f93a283987094636/File/search(2).py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.search (1)" />
         <item itemvalue="Python.main" />
+        <item itemvalue="Python.search(2)" />
       </list>
     </recent_temporary>
   </component>
@@ -100,7 +162,11 @@
       <workItem from="1589185217367" duration="9347000" />
       <workItem from="1589245567523" duration="308000" />
       <workItem from="1589246017768" duration="25260000" />
-      <workItem from="1589331686321" duration="4115000" />
+      <workItem from="1589331686321" duration="14580000" />
+      <workItem from="1589350729664" duration="12772000" />
+      <workItem from="1589418342296" duration="598000" />
+      <workItem from="1589422554900" duration="883000" />
+      <workItem from="1589423498508" duration="8812000" />
     </task>
     <task id="LOCAL-00001" summary="首次提交">
       <created>1588469272551</created>
@@ -186,7 +252,14 @@
       <option name="project" value="LOCAL" />
       <updated>1589337501131</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="细节修改">
+      <created>1589337754188</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1589337754188</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -214,15 +287,15 @@
     </state>
     <state x="496" y="197" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1792.1016@0.23.1792.1016" timestamp="1589279375482" />
     <state x="496" y="198" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1792.1019@0.23.1792.1019" timestamp="1588471213682" />
-    <state x="370" y="389" width="1012" height="579" key="#xdebugger.evaluate" timestamp="1589173998084">
+    <state x="370" y="389" width="832" height="579" key="#xdebugger.evaluate" timestamp="1589428570690">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
-    <state x="370" y="389" key="#xdebugger.evaluate/0.23.1792.1016@0.23.1792.1016" timestamp="1589173998084" />
+    <state x="370" y="389" width="832" height="579" key="#xdebugger.evaluate/0.23.1792.1016@0.23.1792.1016" timestamp="1589428570690" />
     <state x="643" y="463" width="1012" height="579" key="#xdebugger.evaluate/0.23.1792.1019@0.23.1792.1019" timestamp="1588226610795" />
-    <state x="473" y="106" key="CommitChangelistDialog2" timestamp="1589337500974">
+    <state x="473" y="106" key="CommitChangelistDialog2" timestamp="1589337754042">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
-    <state x="473" y="106" key="CommitChangelistDialog2/0.23.1792.1016@0.23.1792.1016" timestamp="1589337500974" />
+    <state x="473" y="106" key="CommitChangelistDialog2/0.23.1792.1016@0.23.1792.1016" timestamp="1589337754042" />
     <state x="473" y="106" key="CommitChangelistDialog2/0.23.1792.1019@0.23.1792.1019" timestamp="1588469272246" />
     <state width="254" height="195" key="DatabaseViewActions_Filter" timestamp="1589337227001">
       <screen x="0" y="23" width="1792" height="1016" />
@@ -236,67 +309,67 @@
       <screen x="0" y="23" width="1792" height="1019" />
     </state>
     <state x="660" y="243" key="Github.UntrackedFilesDialog/0.23.1792.1019@0.23.1792.1019" timestamp="1588227907829" />
-    <state width="974" height="238" key="GridCell.Tab.0.bottom" timestamp="1589293731175">
+    <state width="1750" height="331" key="GridCell.Tab.0.bottom" timestamp="1589437036706">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
     <state width="1750" height="340" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1589016007426" />
-    <state width="974" height="238" key="GridCell.Tab.0.bottom/0.23.1792.1016@0.23.1792.1016" timestamp="1589293731175" />
+    <state width="1750" height="331" key="GridCell.Tab.0.bottom/0.23.1792.1016@0.23.1792.1016" timestamp="1589437036706" />
     <state width="1750" height="238" key="GridCell.Tab.0.bottom/0.23.1792.1017@0.23.1792.1017" timestamp="1589208318805" />
     <state width="1750" height="342" key="GridCell.Tab.0.bottom/0.23.1792.1019@0.23.1792.1019" timestamp="1588243199676" />
     <state width="1750" height="238" key="GridCell.Tab.0.bottom/0.23.1792.1020@0.23.1792.1020" timestamp="1589185205196" />
-    <state width="974" height="238" key="GridCell.Tab.0.center" timestamp="1589293731175">
+    <state width="1750" height="331" key="GridCell.Tab.0.center" timestamp="1589437036706">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
     <state width="1750" height="340" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1589016007425" />
-    <state width="974" height="238" key="GridCell.Tab.0.center/0.23.1792.1016@0.23.1792.1016" timestamp="1589293731175" />
+    <state width="1750" height="331" key="GridCell.Tab.0.center/0.23.1792.1016@0.23.1792.1016" timestamp="1589437036706" />
     <state width="1750" height="238" key="GridCell.Tab.0.center/0.23.1792.1017@0.23.1792.1017" timestamp="1589208318805" />
     <state width="1750" height="342" key="GridCell.Tab.0.center/0.23.1792.1019@0.23.1792.1019" timestamp="1588243199675" />
     <state width="1750" height="238" key="GridCell.Tab.0.center/0.23.1792.1020@0.23.1792.1020" timestamp="1589185205196" />
-    <state width="974" height="238" key="GridCell.Tab.0.left" timestamp="1589293731175">
+    <state width="1750" height="331" key="GridCell.Tab.0.left" timestamp="1589437036705">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
     <state width="1750" height="340" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1589016007424" />
-    <state width="974" height="238" key="GridCell.Tab.0.left/0.23.1792.1016@0.23.1792.1016" timestamp="1589293731175" />
+    <state width="1750" height="331" key="GridCell.Tab.0.left/0.23.1792.1016@0.23.1792.1016" timestamp="1589437036705" />
     <state width="1750" height="238" key="GridCell.Tab.0.left/0.23.1792.1017@0.23.1792.1017" timestamp="1589208318805" />
     <state width="1750" height="342" key="GridCell.Tab.0.left/0.23.1792.1019@0.23.1792.1019" timestamp="1588243199675" />
     <state width="1750" height="238" key="GridCell.Tab.0.left/0.23.1792.1020@0.23.1792.1020" timestamp="1589185205195" />
-    <state width="974" height="238" key="GridCell.Tab.0.right" timestamp="1589293731175">
+    <state width="1750" height="331" key="GridCell.Tab.0.right" timestamp="1589437036706">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
     <state width="1750" height="340" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1589016007425" />
-    <state width="974" height="238" key="GridCell.Tab.0.right/0.23.1792.1016@0.23.1792.1016" timestamp="1589293731175" />
+    <state width="1750" height="331" key="GridCell.Tab.0.right/0.23.1792.1016@0.23.1792.1016" timestamp="1589437036706" />
     <state width="1750" height="238" key="GridCell.Tab.0.right/0.23.1792.1017@0.23.1792.1017" timestamp="1589208318805" />
     <state width="1750" height="342" key="GridCell.Tab.0.right/0.23.1792.1019@0.23.1792.1019" timestamp="1588243199675" />
     <state width="1750" height="238" key="GridCell.Tab.0.right/0.23.1792.1020@0.23.1792.1020" timestamp="1589185205196" />
-    <state width="974" height="238" key="GridCell.Tab.1.bottom" timestamp="1589293731176">
+    <state width="1750" height="238" key="GridCell.Tab.1.bottom" timestamp="1589429861754">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
     <state width="1750" height="340" key="GridCell.Tab.1.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1589016007428" />
-    <state width="974" height="238" key="GridCell.Tab.1.bottom/0.23.1792.1016@0.23.1792.1016" timestamp="1589293731176" />
+    <state width="1750" height="238" key="GridCell.Tab.1.bottom/0.23.1792.1016@0.23.1792.1016" timestamp="1589429861754" />
     <state width="1750" height="238" key="GridCell.Tab.1.bottom/0.23.1792.1017@0.23.1792.1017" timestamp="1589208318806" />
     <state width="1750" height="342" key="GridCell.Tab.1.bottom/0.23.1792.1019@0.23.1792.1019" timestamp="1588243199676" />
     <state width="1750" height="238" key="GridCell.Tab.1.bottom/0.23.1792.1020@0.23.1792.1020" timestamp="1589185205197" />
-    <state width="974" height="238" key="GridCell.Tab.1.center" timestamp="1589293731176">
+    <state width="1750" height="238" key="GridCell.Tab.1.center" timestamp="1589429861753">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
     <state width="1750" height="340" key="GridCell.Tab.1.center/0.0.1792.1120@0.0.1792.1120" timestamp="1589016007427" />
-    <state width="974" height="238" key="GridCell.Tab.1.center/0.23.1792.1016@0.23.1792.1016" timestamp="1589293731176" />
+    <state width="1750" height="238" key="GridCell.Tab.1.center/0.23.1792.1016@0.23.1792.1016" timestamp="1589429861753" />
     <state width="1750" height="238" key="GridCell.Tab.1.center/0.23.1792.1017@0.23.1792.1017" timestamp="1589208318806" />
     <state width="1750" height="342" key="GridCell.Tab.1.center/0.23.1792.1019@0.23.1792.1019" timestamp="1588243199676" />
     <state width="1750" height="238" key="GridCell.Tab.1.center/0.23.1792.1020@0.23.1792.1020" timestamp="1589185205196" />
-    <state width="974" height="238" key="GridCell.Tab.1.left" timestamp="1589293731176">
+    <state width="1750" height="238" key="GridCell.Tab.1.left" timestamp="1589429861753">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
     <state width="1750" height="340" key="GridCell.Tab.1.left/0.0.1792.1120@0.0.1792.1120" timestamp="1589016007426" />
-    <state width="974" height="238" key="GridCell.Tab.1.left/0.23.1792.1016@0.23.1792.1016" timestamp="1589293731176" />
+    <state width="1750" height="238" key="GridCell.Tab.1.left/0.23.1792.1016@0.23.1792.1016" timestamp="1589429861753" />
     <state width="1750" height="238" key="GridCell.Tab.1.left/0.23.1792.1017@0.23.1792.1017" timestamp="1589208318806" />
     <state width="1750" height="342" key="GridCell.Tab.1.left/0.23.1792.1019@0.23.1792.1019" timestamp="1588243199676" />
     <state width="1750" height="238" key="GridCell.Tab.1.left/0.23.1792.1020@0.23.1792.1020" timestamp="1589185205196" />
-    <state width="974" height="238" key="GridCell.Tab.1.right" timestamp="1589293731176">
+    <state width="1750" height="238" key="GridCell.Tab.1.right" timestamp="1589429861754">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
     <state width="1750" height="340" key="GridCell.Tab.1.right/0.0.1792.1120@0.0.1792.1120" timestamp="1589016007427" />
-    <state width="974" height="238" key="GridCell.Tab.1.right/0.23.1792.1016@0.23.1792.1016" timestamp="1589293731176" />
+    <state width="1750" height="238" key="GridCell.Tab.1.right/0.23.1792.1016@0.23.1792.1016" timestamp="1589429861754" />
     <state width="1750" height="238" key="GridCell.Tab.1.right/0.23.1792.1017@0.23.1792.1017" timestamp="1589208318806" />
     <state width="1750" height="342" key="GridCell.Tab.1.right/0.23.1792.1019@0.23.1792.1019" timestamp="1588243199676" />
     <state width="1750" height="238" key="GridCell.Tab.1.right/0.23.1792.1020@0.23.1792.1020" timestamp="1589185205196" />
@@ -309,14 +382,14 @@
       <screen x="0" y="23" width="1792" height="1019" />
     </state>
     <state x="397" y="171" key="SettingsEditor/0.23.1792.1019@0.23.1792.1019" timestamp="1588227735541" />
-    <state x="496" y="271" key="Vcs.Push.Dialog.v2" timestamp="1589337443177">
+    <state x="496" y="271" key="Vcs.Push.Dialog.v2" timestamp="1589337757595">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
-    <state x="496" y="271" key="Vcs.Push.Dialog.v2/0.23.1792.1016@0.23.1792.1016" timestamp="1589337443177" />
-    <state x="716" y="418" key="com.intellij.database.actions.DdlActions$DeleteProvider2$1" timestamp="1589279410076">
+    <state x="496" y="271" key="Vcs.Push.Dialog.v2/0.23.1792.1016@0.23.1792.1016" timestamp="1589337757595" />
+    <state x="716" y="418" key="com.intellij.database.actions.DdlActions$DeleteProvider2$1" timestamp="1589363924323">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
-    <state x="716" y="418" key="com.intellij.database.actions.DdlActions$DeleteProvider2$1/0.23.1792.1016@0.23.1792.1016" timestamp="1589279410076" />
+    <state x="716" y="418" key="com.intellij.database.actions.DdlActions$DeleteProvider2$1/0.23.1792.1016@0.23.1792.1016" timestamp="1589363924323" />
     <state x="716" y="419" key="com.intellij.database.actions.DdlActions$DeleteProvider2$1/0.23.1792.1019@0.23.1792.1019" timestamp="1588146200444" />
     <state x="725" y="311" key="com.intellij.database.view.ui.AbstractDbRefactoringDialog" timestamp="1589337255417">
       <screen x="0" y="23" width="1792" height="1016" />
@@ -336,7 +409,25 @@
     <state x="561" y="247" width="670" height="675" key="search.everywhere.popup/0.23.1792.1016@0.23.1792.1016" timestamp="1589189498104" />
     <state x="561" y="248" width="670" height="676" key="search.everywhere.popup/0.23.1792.1019@0.23.1792.1019" timestamp="1588222977227" />
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/modules/videos.py</url>
+          <line>375</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/modules/aimodels/search(2).py</url>
+          <line>106</line>
+          <option name="timeStamp" value="27" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/zhiqing_v1$main.coverage" NAME="main Coverage Results" MODIFIED="1589276800613" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/zhiqing_v1$search__1_.coverage" NAME="search (1) Coverage Results" MODIFIED="1589437036700" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/modules/aimodels" />
+    <SUITE FILE_PATH="coverage/zhiqing_v1$search_2_.coverage" NAME="search(2) Coverage Results" MODIFIED="1589424388940" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/Library/Containers/com.tencent.xinWeChat/Data/Library/Application Support/com.tencent.xinWeChat/2.0b4.0.9/771f280c7b7d343f0f53961b9556b31e/Message/MessageTemp/c31154925da1ccc5f93a283987094636/File" />
+    <SUITE FILE_PATH="coverage/zhiqing_v1$main.coverage" NAME="main Coverage Results" MODIFIED="1589426583246" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
