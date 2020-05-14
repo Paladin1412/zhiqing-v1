@@ -76,6 +76,14 @@ def index():
                 from modules.series import SeriesHandler
                 comment_main = SeriesHandler(extra_data, model_action)
                 resp = comment_main.handle_model()
+            elif model_name == "document":
+                from modules.document import DocumentHandler
+                comment_main = DocumentHandler(extra_data, model_action)
+                resp = comment_main.handle_model()
+            elif model_name == "category":
+                from modules.category import CategoryHandler
+                comment_main = CategoryHandler(extra_data, model_action)
+                resp = comment_main.handle_model()
             else:
                 resp = set_resjson(err=-1, errmsg="model_name is incorrect")
     return resp

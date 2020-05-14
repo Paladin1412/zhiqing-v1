@@ -55,7 +55,6 @@ class VideoHandler(object):
         全局搜索视频
         :return:
         """
-        res_list = []
         query_string = self.extra_data.get("query_string", "")
         video_ids = self.extra_data.get("video_ids", "")
         mode = self.extra_data.get("type", "")

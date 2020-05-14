@@ -11,7 +11,7 @@ redis_conn = redis.Redis(host=config.REDIS_HOST, port=config.REDIS_PORT,
 
 # from rediscluster import RedisCluster
 #
-# startup_nodes = [{"host": "web02cn.haetek.com", "port": "7001"}]
+# startup_nodes = [{"host": config.REDIS_HOST, "port": config.REDIS_PORT}]
 #
 # redis_conn = RedisCluster(startup_nodes=startup_nodes, decode_responses=True,
-#                   password='!password123')
+#                   password=config.REDIS_PASSWORD)

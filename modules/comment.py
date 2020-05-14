@@ -9,7 +9,6 @@
 """
 import os
 import time
-from copy import deepcopy
 
 from flask import g
 
@@ -94,8 +93,6 @@ class CommentHandler(object):
 
 
     def func_database(self):
-        from random import choice
-        from pprint import pprint
         content_list = ["有关Strang教授有关OCW的相关课程的链接，请访问完整资源网站上的“相关资源”页面：https : //ocw.mit.edu/2020-vision ",
                         "当我在18.06中看到作业中的一个小错误时，我给他发送了电子邮件。他是如此客气，几乎立即做出了回应。活着的传奇",
                         "很高兴见到教授。斯特朗仍然表现良好。请保持健康的教授",
@@ -128,7 +125,14 @@ class CommentHandler(object):
         #     # user_dict["relation_id"] = choice(video_id_list)
         #     user_dict["content"] = choice(content_list)
         #     res_list.append(deepcopy(user_dict))
+        document = {"_id": create_uuid(),
+                    "file_name": "标量与矢量",
+                    "file_path": "static/document/Vectors__Dot_Products__Cross_Products__3D_Kinematics (2).pdf",
+                    "image_path": "static/document/Vectors__Dot_Products__Cross_Products__3D_Kinematics (2).png",
+                    "price": 8.00,
+                    "video_id": "5c82d69504419c65f4aec21db403e904",
+                    "time": str(time.time())}
 
-        mongo.db.comment.update_one({"_id": "20200513140205686541"},{"$unset":{"relation_id": ""}})
+        mongo.db.document.update({"_id": "20200514151052476294"}, {"$set": {"file_name": "牛顿定律"}})
 
         return set_resjson(res_array=res_list)
