@@ -63,9 +63,11 @@ class VideoHandler(object):
         page = self.extra_data.get("page", 1)
         if query_string == "":
             raise response_code.ParamERR(errmsg="query_string is provided")
-        if mode not in ["all", "video", "series", "user"]:
+        elif mode not in ["all", "video", "series", "user"]:
             raise response_code.ParamERR(
                 errmsg="type must be all or video or series or user")
+        elif video_ids == "":
+            video_ids = []
         try:
             max_size = int(max_size)
             page = int(page)
