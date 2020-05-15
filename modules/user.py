@@ -125,7 +125,7 @@ class UserHandler(object):
         except Exception as error:
             current_app.logger.error(error)
             raise response_code.DatabaseERR(errmsg='{}'.format(error))
-        now_time = str(time.time())
+        now_time = time.time()
         if not user_info:
             _id = create_uuid()
             try:
@@ -240,7 +240,7 @@ class UserHandler(object):
         if not user:
             raise response_code.UserERR(errmsg='用户未登录')
         response = make_response(set_resjson())
-        logout_time = str(time.time())
+        logout_time = time.time()
         try:
             del response.headers["Authorization"]
             mongo.db.user.update_one({"_id": user['_id']},
@@ -363,7 +363,7 @@ class UserHandler(object):
         elif not mobile_re.match('{}'.format(mobile)):
             raise response_code.ParamERR(errmsg="Wrong phone number format!")
         sms_verify(mobile, code)
-        now_time = str(time.time())
+        now_time = time.time()
         unionid, third_type = check_save_user_token(access_token)
         if unionid is None:
             raise response_code.ReqERR(errmsg="access_token is wrong!")
@@ -441,7 +441,7 @@ class UserHandler(object):
         phone = get_num(encrypt_phone, config.JI_GUANG_PRIKEY)
         user_info = mongo.db.user.find_one({"mobile": phone},
                                            {"headshot": 1, "name": 1})
-        now_time = str(time.time())
+        now_time = time.time()
         if not user_info:
             _id = create_uuid()
             try:
@@ -854,7 +854,7 @@ def check_save_user_token(access_token):
 def not_first_login(user_info):
     """ 已经登陆过 """
     _id = user_info['_id']
-    login_time = str(time.time())
+    login_time = time.time()
     try:
         mongo.db.user.update_one({"_id": '{}'.format(_id)},
                                  {"$set": {"login_time": login_time}})

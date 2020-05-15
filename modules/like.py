@@ -82,7 +82,7 @@ class LikeHandler(object):
                     {"user_id": user["_id"], "relation_id": relation_id})
             except Exception as e:
                 raise response_code.DatabaseERR(errmsg="{}".format(e))
-            like_time = str(time.time())
+            like_time = time.time()
             if value == 1:
                 if not like_info:
                     try:

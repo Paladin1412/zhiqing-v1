@@ -45,7 +45,7 @@ class CommentHandler(object):
         parent_id = self.extra_data.get("parent_id", "")
         content = self.extra_data.get("content", "")
 
-        collect_time = str(time.time())
+        collect_time = time.time()
         try:
             parent_id = int(parent_id)
         except Exception as e:

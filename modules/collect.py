@@ -45,7 +45,7 @@ class CollectHandler(object):
         relation_id = self.extra_data.get("relation_id", "")
         value = self.extra_data.get("value", "")
         collect_type = self.extra_data.get("type", "")
-        collect_time = str(time.time())
+        collect_time = time.time()
         try:
             value = int(value)
         except Exception as e:

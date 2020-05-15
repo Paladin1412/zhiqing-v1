@@ -398,6 +398,16 @@ class VideoHandler(object):
             res_list.append(deepcopy(video))
         return set_resjson(res_array=res_list)
 
+    def func_get_related_video(self):
+        """
+        获取相关视频
+        """
+
+        video_id = self.extra_data.get("video_id", "")
+        related_type = self.extra_data.get("related_type", "")
+        max_size = self.extra_data.get("max_size", "")
+        page = self.extra_data.get("page", "")
+
 
 def func_check():
     """
@@ -411,7 +421,7 @@ def func_check():
     description_title = request.form.get('description_title', "")
     description = request.form.get('description')
     category = request.form.get('category')
-    image = request.files.get('image')
+    image_file = request.files["image"]
     series_title = request.form.get('series_title')
     image_name = None
 
@@ -427,21 +437,28 @@ def func_check():
     try:
         video_info = mongo.db.video.find_one(
             {"_id": task_id, "user_id": user["_id"]})
+        category_cursor = mongo.db.tool.find({}, {"_id": 0, "data": 1})
+        category_list = [category for category in category_cursor][0].get(
+            "data")
     except Exception as e:
         raise response_code.DatabaseERR(errmsg="{}".format(e))
+
+    for i in category:
+        if i not in category_list:
+            raise response_code.ParamERR(errmsg="{} 标签不存在".format(i))
     if not video_info:
         raise response_code.ParamERR(errmsg='task_id 不存在')
 
     # if video_info["state"] == 1:
     #     raise response_code.ReqERR(errmsg="正在审核请耐心等待")
     try:
-        image_name = image.filename
+        image_name = image_file.filename
     except Exception as e:
         pass
     if image_name:
-        image_path = '/static/image/{}'.format(image_name)
-        # TODO 后面加上去重  暂时 state 设置为 2
-        image.save(image)
+
+        image_path = 'static/image/{}.{}'.format(task_id, image_name.rsplit('.', 1)[1])
+        image_file.save(image_path)
         update_video_info = {"description": description, "category": category,
                              "image_path": image_path,
                              "state": 2}
@@ -462,8 +479,10 @@ def func_check():
             series_info = mongo.db.series.find_one(
                 {"user_id": user["_id"], "title": series_title})
             if series_info:
-                mongo.db.video.update_one(
-                    {"_id": task_id, "title": series_title})
+                mongo.db.video.update_one({"_id": task_id},
+                                          {"$set": {
+                                              "series": series_info["_id"]}})
+
             else:
                 image_path_info = mongo.db.video.find_one({"_id": task_id})
                 _id = create_uuid()
@@ -473,7 +492,7 @@ def func_check():
                                                 "image_path"],
                                             "category": category,
                                             "user_id": user["_id"],
-                                            "time": str(time.time())})
+                                            "time": time.time()})
                 mongo.db.video.update_one({"_id": task_id},
                                           {"$set": {"series": _id}})
         except Exception as e:

@@ -948,41 +948,41 @@ def main():
     print()
     ###### Sample One (Local Search) ######
 
-    video_ids = ['162fb70b08169805aab916f75711b015']
-    query_str = '宇宙的维度是'
-
-    ss = time.time()
-    s = Search()
-    res_list = s.local_search(query_str, video_ids)
-
-    ee = time.time()
-
-    print('###### Sample One (Local Search) ######')
-    print('Query:',query_str)
-    pprint.pprint(res_list)
-    print('Video Size:',len(video_ids))
-    print('Time Cost: ', ee-ss)
-    print()
-
-    ###### Sample Two (Global Search) ######
-
-    # video_ids = []
-    # query_str = '黑马'
+    # video_ids = ['162fb70b08169805aab916f75711b015']
+    # query_str = '宇宙的维度是'
     #
     # ss = time.time()
     # s = Search()
-    # type = 'all'
-    # max_size = 10
-    # page = 1
-    # res_list = s.global_search(query_str, video_ids, type, max_size, page)
+    # res_list = s.local_search(query_str, video_ids)
     #
     # ee = time.time()
     #
-    # print('###### Sample Two (Global Search) ######')
-    # print('Query:', query_str)
+    # print('###### Sample One (Local Search) ######')
+    # print('Query:',query_str)
     # pprint.pprint(res_list)
-    # print('Video Size:', len(video_ids))
-    # print('Time Cost: ', ee - ss)
+    # print('Video Size:',len(video_ids))
+    # print('Time Cost: ', ee-ss)
+    # print()
+
+    ###### Sample Two (Global Search) ######
+
+    video_ids = []
+    query_str = '向量'
+
+    ss = time.time()
+    s = Search()
+    type = 'all'
+    max_size = 10
+    page = 1
+    res_list = s.global_search(query_str, video_ids, type, max_size, page)
+
+    ee = time.time()
+
+    print('###### Sample Two (Global Search) ######')
+    print('Query:', query_str)
+    pprint.pprint(res_list)
+    print('Video Size:', len(video_ids))
+    print('Time Cost: ', ee - ss)
 
 
 if __name__ == "__main__":
