@@ -29,7 +29,7 @@ class Config(object):
     # REDIS_PASSWORD = "!password123"
 
     JWT_SECRET = 'TPmi4aLWRbyVq8zu9v82dWYW17/z+UvRnYTt4P6fAXA'
-    JWT_EXPIRY_HOURS = 4
+    JWT_EXPIRY_HOURS = 336
 
     # 一键登陆
     JI_GUANG_APP_KEY = '0deb5b6a0767422785826e08'
@@ -48,10 +48,6 @@ class Config(object):
     QQ_REDIRECT_URI = 'http://kengine.haetek.com/users/login'
     QQ_STATE = ''
     QQ_CLIENT_SECRET = 'b0cb59d333b1ce6030e8e9619f54c379'
-
-    # # QQ 移动端登陆
-    # QQ_PHONE_APP_ID = "101875580"
-    # QQ_PHONE_APP_Key = "a2aaa6150e7790843bea94f843289f37"
 
     # QQ 移动端登陆
     QQ_PHONE_APP_ID = "101842891"

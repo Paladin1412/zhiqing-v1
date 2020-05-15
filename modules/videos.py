@@ -89,6 +89,9 @@ class VideoHandler(object):
         if query_string == "" or video_id == "":
             response = set_resjson(err=-1,
                                    errmsg="[ query_string, video_id] must be provided ！")
+
+        elif type(video_id) is not list:
+            response = set_resjson(err=-1, errmsg="video_id type must array")
         else:
             ret = run_ai.local_play_video(query_string, video_id)
             response = set_resjson(res_array=ret)
@@ -332,54 +335,16 @@ class VideoHandler(object):
         video_id = self.extra_data.get('video_id', '')
         if video_id == '':
             raise response_code.ParamERR(errmsg="[video_id] must be provided")
-
-        # video = mongo.db.video.find_one({'_id': video_id})
-        # author_id = video['user_id']
-        # comment_list = []
-        # comments = mongo.db.comment.find(
-        #     {'video_id': video_id, "parent_id": "0"})
-        # for comment in comments:
-        #     # [todo]is_like的判断
-        #     comment['is_like'] = 0
-        #     comment_list.append(comment)
-        # data_dict = {}
-        # data_dict['video_path'] = video['video_path']
-        # data_dict['audio_path'] = video['audio_path']
-        # data_dict['lang'] = video['lang']
-        # data_dict['ass_path'] = video['ass_path']
-        # data_dict['upload_time'] = video['upload_time']
-        # data_dict['comment'] = comment_list
-        #
-        # like = mongo.db.like.find_one(
-        #     {'relation_id': video_id, 'type': 'video', 'user_id': user["_id"]})
-        # collection = mongo.db.collection.find_one(
-        #     {'relation_id': video_id, 'type': 'video', 'user_id': user["_id"]})
-        # subscription = mongo.db.subscription.find_one(
-        #     {'relation_id': author_id, 'type': 'author',
-        #      'user_id': user["_id"]})
-        # data_dict['is_like'] = 1 if like else 0
-        # data_dict['is_collect'] = 1 if collection else 0
-        # data_dict['is_subscribe'] = 1 if subscription else 0
-        # res_data.append(data_dict)
-
+        user_id = user["_id"]
         tool = mongo.db.tool.find_one({'type': 'category'})
         video = mongo.db.video.find_one({'_id': video_id})
-        # user = mongo.db.collection.find_one({"_id": user["_id"]},
-        #                                     {"name": 1, "_id": 1,
-        #                                      "headshot": 1})
         like_counts = mongo.db.like.find(
             {"relation_id": video_id, "type": "video"}).count()
-        comment_counts = mongo.db.comment.find({"video_id": video_id}).count()
+        collection_counts = mongo.db.collection.find(
+            {"relation_id": video_id}).count()
         author_id = video['user_id']
         view_counts = 0 if 'view_counts' not in list(video.keys()) else video[
             'view_counts']
-        comment_list = []
-        comments = mongo.db.comment.find(
-            {'video_id': video_id, 'parent_id': "0"})
-        for comment in comments:
-            # [todo]is_like的判断
-            comment['is_like'] = 0
-            comment_list.append(comment)
         data_dict = {}
         data_dict['video_id'] = video_id
         data_dict['video_path'] = video['video_path']
@@ -388,8 +353,8 @@ class VideoHandler(object):
         data_dict['ass_path'] = video['ass_path']
         data_dict['upload_time'] = video['upload_time']
         data_dict['title'] = video['title']
-        data_dict['comment'] = comment_list
-        data_dict['user_id'] = user["_id"]
+
+        data_dict['user_id'] = user_id
         data_dict['user_name'] = user['name']
         data_dict['headshot'] = user['headshot']
         data_dict['category'] = tool['data'][video['category'][0]]
@@ -399,17 +364,15 @@ class VideoHandler(object):
         data_dict['view_counts'] = video.get("view_counts", None) if video.get(
             "view_counts", None) else 0
         data_dict['like_counts'] = like_counts
-        data_dict['comment_counts'] = comment_counts
-        if user["_id"]:
+        data_dict['collection_counts'] = collection_counts
+        if user_id:
             like = mongo.db.like.find_one(
-                {'relation_id': video_id, 'type': 'video',
-                 'user_id': user["_id"]})
+                {'relation_id': video_id, 'type': 'video', 'user_id': user_id})
             collection = mongo.db.collection.find_one(
-                {'relation_id': video_id, 'type': 'video',
-                 'user_id': user["_id"]})
+                {'relation_id': video_id, 'type': 'video', 'user_id': user_id})
             subscription = mongo.db.subscription.find_one(
                 {'relation_id': author_id, 'type': 'author',
-                 'user_id': user["_id"]})
+                 'user_id': user_id})
             data_dict['is_like'] = 1 if like else 0
             data_dict['is_collect'] = 1 if collection else 0
             data_dict['is_subscribe'] = 1 if subscription else 00
@@ -445,6 +408,7 @@ def func_check():
         raise response_code.UserERR(errmsg='用户未登录')
     task_id = request.form.get('task_id')
     title = request.form.get('title')
+    description_title = request.form.get('description_title', "")
     description = request.form.get('description')
     category = request.form.get('category')
     image = request.files.get('image')
@@ -504,7 +468,7 @@ def func_check():
                 image_path_info = mongo.db.video.find_one({"_id": task_id})
                 _id = create_uuid()
                 mongo.db.series.insert_one({"_id": _id, "title": series_title,
-                                            "description": description,
+                                            "description": description_title,
                                             "image_path": image_path_info[
                                                 "image_path"],
                                             "category": category,

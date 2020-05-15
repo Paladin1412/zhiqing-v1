@@ -36,6 +36,8 @@ class UserHandler(object):
         self.extra_data = extra_data
         self.model_action = model_action
         self.head_shot_path = 'http://api.haetek.com:9191/static/headershot/image.jpeg'
+        self.background_path = 'http://api.haetek.com:9191/static/background/background.jpg'
+        self.introduction = '好好学习， 天天向上'
 
     def handle_model(self):
         func_name = 'func_{}'.format(self.model_action)
@@ -131,7 +133,8 @@ class UserHandler(object):
                 mongo.db.user.insert_one(
                     {"name": ranstr(16), "mobile": '{}'.format(mobile),
                      "_id": _id, "headshot": self.head_shot_path,
-                     "create_time": now_time, "login_time": now_time})
+                     "create_time": now_time, "login_time": now_time,
+                     "background": self.background_path, "introduction": self.introduction})
             except Exception as error:
                 current_app.logger.error(error)
                 raise response_code.DatabaseERR(errmsg='{}'.format(error))
@@ -390,7 +393,8 @@ class UserHandler(object):
                          "_id": _id,
                          '{}_unionid'.format(third_type): unionid,
                          "headshot": headshot,
-                         "create_time": now_time, "login_time": now_time})
+                         "create_time": now_time, "login_time": now_time,
+                         "background": self.background_path, "introduction": self.introduction})
                 except Exception as error:
                     current_app.logger.error(error)
                     raise response_code.ThirdERR(errmsg="{}".format(error))
@@ -445,7 +449,8 @@ class UserHandler(object):
                 mongo.db.user.insert_one(
                     {"name": ranstr(16), "mobile": '{}'.format(phone),
                      "_id": _id, "headershot": self.head_shot_path,
-                     "create_time": now_time, "login_time": now_time})
+                     "create_time": now_time, "login_time": now_time,
+                     "background": self.background_path, "introduction": self.introduction})
             except Exception as error:
                 current_app.logger.error(error)
                 raise response_code.DatabaseERR(errmsg='{}'.format(error))

@@ -1,8 +1,3 @@
-# # -*- coding: utf-8 -*-
-# #
-#
-#
-#
 # import json
 # import os
 # import time
@@ -16,21 +11,7 @@
 # from configparser import ConfigParser
 # from pymongo import MongoClient, ReadPreference
 #
-# # def generate_picture(input_path, output_path, time):
-#
-# #     compress = "ffmpeg -i {} -y -f image2 -ss {} -vframes 1 {}".format(input_path, time, output_path)
-# #     is_run = os.system(compress)
-# #     if is_run != 0:
-# #         return ''
-# #     else:
-# #         return output_path
-#
-# # def time_format(float_data):
-#
-# #     data_string = time.strftime('%H:%M:%S', time.gmtime(float_data))
-# #     return data_string
-#
-#
+# #
 # class Search:
 #     def __init__(self):
 #         database = connect_mongodb()
@@ -44,18 +25,18 @@
 #
 #     def get_series(self):
 #         res_dict = {}
-#         results = self.series_collection.find({},{'title':1,'_id':1,'description':1})
+#         results = self.series_collection.find({}, {'title': 1, '_id': 1,
+#                                                    'description': 1})
 #         for result in results:
 #             key = result["_id"]
-#             res_dict[key] = result["description"]
-#             if "title" in result and result["title"]:
-#                 res_dict["title"+key] = result["title"]
+#             res_dict[key] = result["title"]
 #         return res_dict
 #
 #     def series_search(self, query_str):
 #         inputs_dict = self.get_series()
 #         res_dict = {}
-#         bluE_results = self.bluE_standard(query_str, inputs_dict, lang='ch', isSemantic=0, max_size=100)
+#         bluE_results = self.bluE_standard(query_str, inputs_dict, lang='ch',
+#                                           isSemantic=0, max_size=100)
 #         for item in bluE_results:
 #             curr_key = item['key_id']
 #             str_pos = item['str_position']
@@ -63,30 +44,22 @@
 #                 res_dict[curr_key] = {
 #                     'pos': str_pos,
 #                     'matched_str': item['matched_str'],
-#                     'type': "description",
+#                     'type': "title",
 #                     'score': item['match_score']
 #                 }
-#         title_dict = {}
-#         title_dict = res_dict.copy()
-#         for key in list(title_dict.keys()):
-#             if "title" in key:
-#                 new_key = key[key.index('_')+1:]
-#                 if new_key not in title_dict:
-#                     title_dict[new_key] = res_dict[key]
-#                     title_dict[new_key]["type"] = "title"
-#                     title_dict.pop(key)
-#         return title_dict
+#         return res_dict
 #
 #     def get_users(self):
 #         res_dict = {}
-#         results = self.user_collection.find({},{'name':1,'_id':1})
+#         results = self.user_collection.find({}, {'name': 1, '_id': 1})
 #         for result in results:
 #             res_dict[result['_id']] = result['name']
 #         return res_dict
 #
 #     def user_search(self, query_str):
 #         inputs_dict = self.get_users()
-#         bluE_results = self.bluE_standard(query_str, inputs_dict, lang='ch', isSemantic=0, max_size=100)
+#         bluE_results = self.bluE_standard(query_str, inputs_dict, lang='ch',
+#                                           isSemantic=0, max_size=100)
 #         res_dict = {}
 #         for item in bluE_results:
 #             curr_key = item['key_id']
@@ -103,9 +76,12 @@
 #         result_data = []
 #         match_frame = {}
 #         match_frames = []
-#         tool = self.tool_collection.find_one({'type':'category'})
-#         res_dict = self.local_video_search(query_str, video_ids[0], isSemantic=isSemantic)
-#         result = self.video_collection.find_one({"_id":video_ids[0]},{"video_path":1,"_id":1, "full_cn_str":1})
+#         tool = self.tool_collection.find_one({'type': 'category'})
+#         res_dict = self.local_video_search(query_str, video_ids[0],
+#                                            isSemantic=isSemantic)
+#         result = self.video_collection.find_one({"_id": video_ids[0]},
+#                                                 {"video_path": 1, "_id": 1,
+#                                                  "full_cn_str": 1})
 #         video_path = result['video_path']
 #         full_cn_str = result['full_cn_str']
 #         for _num in res_dict:
@@ -118,7 +94,7 @@
 #                 "start_time": time_dur[0],
 #                 "end_time": time_dur[1],
 #                 "subs_pos": char_dur,
-#                 "whole_str": full_cn_str[char_dur[0]:char_dur[1]+1],
+#                 "whole_str": full_cn_str[char_dur[0]:char_dur[1] + 1],
 #                 "video_id": video_id}
 #             match_frames.append(match_frame)
 #         dict_search = {}
@@ -127,8 +103,8 @@
 #
 #         return result_data
 #
-#     # def global_search(self, query_str, video_ids, type, max_size, page, isBluE=True, isSemantic=True):
-#     def global_search(self, query_str, video_ids, type, max_size, page, isBluE=True, isSemantic=True):
+#     def global_search(self, query_str, video_ids, type, max_size, page,
+#                       isBluE=True, isSemantic=True):
 #
 #         result_data = []
 #         temp_data = []
@@ -136,41 +112,47 @@
 #         match_frame = {}
 #         match_frames = []
 #         match_ids = []
-#         tool = self.tool_collection.find_one({'type':'category'})
+#         tool = self.tool_collection.find_one({'type': 'category'})
 #         if not video_ids:
-#             results = self.video_collection.find({"state":2},{"_id":1})
+#             results = self.video_collection.find({"state": 2}, {"_id": 1})
 #             for result in results:
 #                 video_ids.append(result["_id"])
 #         video_num = 0
 #         series_num = 0
 #         user_num = 0
-#         if type in ['video','all']:
-#             print('Video Size: ',video_ids)
+#         if type in ['video', 'all']:
+#             print('Video Size: ', video_ids)
 #             res_dict = self.video_search(query_str, video_ids, isBluE=isBluE)
-#             # print('res_dict: ',res_dict)
+#             print('res_dict: ', res_dict)
 #             for video_id in res_dict:
-#                 result = self.video_collection.find_one({"_id":video_id},{"_id":1, "full_cn_str":1})
+#                 result = self.video_collection.find_one({"_id": video_id},
+#                                                         {"_id": 1,
+#                                                          "full_cn_str": 1})
 #                 full_cn_str = result['full_cn_str']
 #                 if res_dict[video_id]["type"] == "subtitle":
-#                     char_dur, time_dur = self.result_transformer(video_id, res_dict[video_id]['pos'])
+#                     char_dur, time_dur = self.result_transformer(video_id,
+#                                                                  res_dict[
+#                                                                      video_id][
+#                                                                      'pos'])
 #                     match_frame[video_id] = {
 #                         "matched_str": res_dict[video_id]['matched_str'],
 #                         "score": res_dict[video_id]['score'],
 #                         "start_time": time_dur[0],
 #                         "end_time": time_dur[1],
 #                         "subs_pos": char_dur,
-#                         "whole_str": full_cn_str[char_dur[0]:char_dur[1]+1],
-#                         "type":"subtitle"}
+#                         "whole_str": full_cn_str[char_dur[0]:char_dur[1] + 1],
+#                         "type": "subtitle"}
 #                 else:
 #                     match_frame[video_id] = {
 #                         "matched_str": res_dict[video_id]['matched_str'],
-#                         "type":res_dict[video_id]["type"],
+#                         "type": res_dict[video_id]["type"],
 #                         "score": res_dict[video_id]['score']
-#                         }
+#                     }
 #                 match_ids.append(video_id)
 #
 #             if match_ids:
-#                 results = self.video_collection.find({"_id":{"$in":match_ids}, "state":2})
+#                 results = self.video_collection.find(
+#                     {"_id": {"$in": match_ids}, "state": 2})
 #                 for result in results:
 #                     category = []
 #                     for category_number in result['category']:
@@ -178,9 +160,13 @@
 #                     video_num += 1
 #                     user_id = result['user_id']
 #                     video_id = result['_id']
-#                     user = self.user_collection.find_one({"_id":user_id},{"name":1,"_id":1,"headshot":1})
-#                     like_counts = self.like_collection.find({"relation_id":video_id,"type":"video"}).count()
-#                     comment_counts = self.comment_collection.find({"video_id":video_id}).count()
+#                     user = self.user_collection.find_one({"_id": user_id},
+#                                                          {"name": 1, "_id": 1,
+#                                                           "headshot": 1})
+#                     like_counts = self.like_collection.find(
+#                         {"relation_id": video_id, "type": "video"}).count()
+#                     comment_counts = self.comment_collection.find(
+#                         {"video_id": video_id}).count()
 #                     dict_search = {}
 #                     dict_search['source'] = 'video'
 #                     data = dict_search['data'] = {}
@@ -202,16 +188,19 @@
 #                         result_data.append(dict_search)
 #                     else:
 #                         temp_data.append(dict_search)
-#                         compare[str(video_num-4)] = match_frame[result['_id']]['score']
+#                         compare[str(video_num - 4)] = \
+#                         match_frame[result['_id']]['score']
 #
-#         if type in ['user','all']:
+#         if type in ['user', 'all']:
 #             user_dict = self.user_search(query_str)
 #             for user_id in user_dict:
 #                 if user_id:
 #                     user_num += 1
-#                     user = self.user_collection.find_one({'_id':user_id})
-#                     video_counts = self.video_collection.find({"user_id":user_id}).count()
-#                     subscription_counts = self.subscription_collection.find({"user_id":user_id}).count()
+#                     user = self.user_collection.find_one({'_id': user_id})
+#                     video_counts = self.video_collection.find(
+#                         {"user_id": user_id}).count()
+#                     subscription_counts = self.subscription_collection.find(
+#                         {"user_id": user_id}).count()
 #                     dict_search = {}
 #                     dict_search['source'] = 'user'
 #                     data = dict_search['data'] = {}
@@ -221,32 +210,40 @@
 #                     data['introduction'] = user['introduction']
 #                     data['video_counts'] = video_counts
 #                     data['subscription_counts'] = subscription_counts
-#                     dict_search['match_frame'] = {'matched_str':user_dict[user_id]['matched_str'], 'score':user_dict[user_id]['score']}
+#                     dict_search['match_frame'] = {
+#                         'matched_str': user_dict[user_id]['matched_str'],
+#                         'score': user_dict[user_id]['score']}
 #                     if user_num < 4:
 #                         result_data.append(dict_search)
 #                     else:
 #                         temp_data.append(dict_search)
-#                         compare[str(video_num + user_num -4)] = match_frame[result['_id']]['score']
+#                         compare[str(video_num + user_num - 4)] = \
+#                         match_frame[result['_id']]['score']
 #
-#
-#         if type in ['series','all']:
-#             series_dict= self.series_search(query_str)
+#         if type in ['series', 'all']:
+#             series_dict = self.series_search(query_str)
 #             for series_id in series_dict:
 #                 if series_id:
 #                     series_num += 1
-#                     series = self.series_collection.find_one({'_id':series_id})
+#                     series = self.series_collection.find_one({'_id': series_id})
 #                     category = []
 #                     for category_number in series['category']:
 #                         category.append(tool['data'][category_number])
 #                     view_counts = 0
 #                     video_ids = []
-#                     results = self.video_collection.find({'series_id':series_id})
+#                     results = self.video_collection.find(
+#                         {'series_id': series_id})
 #                     for result in results:
 #                         video_ids.append(result['_id'])
 #                         view_counts += result['view_counts']
-#                     user = self.user_collection.find_one({"_id":series['user_id']},{"name":1,"_id":1,"headshot":1})
-#                     like_counts = self.like_collection.find({"relation_id":{'$in':video_id},"type":"video"}).count()
-#                     comment_counts = self.comment_collection.find({"video_id":{'$in':video_id}}).count()
+#                     user = self.user_collection.find_one(
+#                         {"_id": series['user_id']},
+#                         {"name": 1, "_id": 1, "headshot": 1})
+#                     like_counts = self.like_collection.find(
+#                         {"relation_id": {'$in': video_id},
+#                          "type": "video"}).count()
+#                     comment_counts = self.comment_collection.find(
+#                         {"video_id": {'$in': video_id}}).count()
 #                     dict_search = {}
 #                     dict_search['source'] = 'series'
 #                     data = dict_search['data'] = {}
@@ -262,14 +259,19 @@
 #                     data['view_counts'] = view_counts
 #                     data['like_counts'] = like_counts
 #                     data['comment_counts'] = comment_counts
-#                     dict_search['match_frame'] = {'matched_str':series_dict[series_id]['matched_str'], 'type':series_dict[series_id]['type'], 'score':series_dict[series_id]['score']}
+#                     dict_search['match_frame'] = {
+#                         'matched_str': series_dict[series_id]['matched_str'],
+#                         'type': series_dict[series_id]['type'],
+#                         'score': series_dict[series_id]['score']}
 #                     if user_num < 4:
 #                         result_data.append(dict_search)
 #                     else:
 #                         temp_data.append(dict_search)
-#                         compare[str(series_num + video_num + user_num -4)] = match_frame[result['_id']]['score']
-#         compare_list = sorted(compare.items(), key = lambda x: x[1], reverse=True)
-#         for num in compare_list[max_size*(page-1):max_size*page]:
+#                         compare[str(series_num + video_num + user_num - 4)] = \
+#                         match_frame[result['_id']]['score']
+#         compare_list = sorted(compare.items(), key=lambda x: x[1], reverse=True)
+#         for num in compare_list[max_size * (page - 1):max_size * page]:
+#             # result_data.append(temp_data[num])
 #             result_data.append(temp_data[int(num[0])])
 #         return result_data
 #
@@ -284,12 +286,14 @@
 #                 if query_str in curr_str:
 #                     matched_index = curr_str.index(query_str)
 #                     res_dict[video_id] = {
-#                         'pos': [matched_index, matched_index+len(query_str)+1],
+#                         'pos': [matched_index,
+#                                 matched_index + len(query_str) + 1],
 #                         'matched_str': query_str
 #                     }
 #
 #         if isBluE:
-#             bluE_results = self.bluE_standard(query_str, inputs_dict, lang='ch', isSemantic=0, max_size=100)
+#             bluE_results = self.bluE_standard(query_str, inputs_dict, lang='ch',
+#                                               isSemantic=0, max_size=100)
 #             for item in bluE_results:
 #                 # print(item)
 #                 curr_key = item['key_id']
@@ -301,37 +305,28 @@
 #                         'type': "subtitle",
 #                         'score': item['match_score']
 #                     }
-#             des_dict = {}
-#             des_dict = res_dict.copy()
-#             # print('des_dict:',des_dict)
-#             for key in list(des_dict.keys()):
-#                 if "description" in key:
-#                     # new_key = key.split('_')[1]
-#                     new_key = key[key.index('_')+1:]
-#                     if new_key not in des_dict:
-#                         des_dict[new_key] = res_dict[key]
-#                         des_dict[new_key]["type"] = "description"
-#                         des_dict.pop(key)
 #             title_dict = {}
-#             title_dict = des_dict.copy()
+#             title_dict = res_dict.copy()
 #             # print('title_dict:',title_dict)
 #             for key in list(title_dict.keys()):
 #                 if "title" in key:
 #                     # new_key = key.split('_')[1]
-#                     new_key = key[key.index('_')+1:]
-#                     if new_key not in title_dict:
-#                         title_dict[new_key] = des_dict[key]
-#                         title_dict[new_key]["type"] = "title"
-#                         title_dict.pop(key)
+#                     new_key = key[key.index('_') + 1:]
+#                     title_dict[new_key] = res_dict[key]
+#                     title_dict[new_key]["type"] = "title"
+#                     title_dict.pop(key)
 #         return title_dict
 #
 #     def get_input_dict(self, video_ids):
 #
 #         res_dict = {}
 #         if video_ids:
-#             results = self.video_collection.find({"_id":{"$in":video_ids}, "state":2},{"full_cn_str":1,"_id":1})
+#             results = self.video_collection.find(
+#                 {"_id": {"$in": video_ids}, "state": 2},
+#                 {"full_cn_str": 1, "_id": 1})
 #         else:
-#             results = self.video_collection.find({"state":2},{"full_cn_str":1,"_id":1})
+#             results = self.video_collection.find({"state": 2},
+#                                                  {"full_cn_str": 1, "_id": 1})
 #         for result in results:
 #             res_dict[result["_id"]] = result["full_cn_str"]
 #         return res_dict
@@ -340,20 +335,24 @@
 #
 #         res_dict = {}
 #         if video_ids:
-#             results = self.video_collection.find({"_id":{"$in":video_ids}, "state":2},{"full_cn_str":1,"_id":1,"title":1,"description":1})
+#             results = self.video_collection.find(
+#                 {"_id": {"$in": video_ids}, "state": 2},
+#                 {"full_cn_str": 1, "_id": 1, "title": 1, "description": 1})
 #         else:
-#             results = self.video_collection.find({"state":2},{"full_cn_str":1,"_id":1,"title":1,"description":1})
+#             results = self.video_collection.find({"state": 2},
+#                                                  {"full_cn_str": 1, "_id": 1,
+#                                                   "title": 1, "description": 1})
 #         for result in results:
 #             key = result["_id"]
 #             res_dict[key] = result["full_cn_str"]
 #             if "title" in result and result["title"]:
-#                 res_dict["title_"+key] = result["title"]
+#                 res_dict["title_" + key] = result["title"]
 #             if "description" in result and result["description"]:
-#                 res_dict["description_"+key] = result["description"]
+#                 res_dict["description_" + key] = result["description"]
 #         return res_dict
 #
-#     def bluE_standard(self, query_str, input_paragraph, lang='ch', isSemantic=0, max_size=10):
-#
+#     def bluE_standard(self, query_str, input_paragraph, lang='ch', isSemantic=0,
+#                       max_size=10):
 #
 #         _url = 'http://codes.haetek.com:6675/blue'
 #         _data = {
@@ -370,7 +369,7 @@
 #         }
 #         res = requests.post(url=_url, json=_data)
 #         res = json.loads(res.text)['resultdata']
-#         raw_res = res[1:max_size+1]
+#         raw_res = res[1:max_size + 1]
 #
 #         return raw_res
 #
@@ -379,7 +378,8 @@
 #         res_dict = {}
 #         curr_key = 0
 #         inputs_dict = self.get_input_dict([video_id])
-#         bluE_results = self.bluE_standard(query_str, inputs_dict, lang='ch', isSemantic=isSemantic, max_size=10)
+#         bluE_results = self.bluE_standard(query_str, inputs_dict, lang='ch',
+#                                           isSemantic=isSemantic, max_size=10)
 #         for item in bluE_results:
 #             video_id = item['key_id']
 #             str_pos = item['str_position']
@@ -398,8 +398,8 @@
 #
 #         res_charId_bg = int(res_pos[0])
 #         res_charId_ed = int(res_pos[1])
-#
-#         result = self.video_collection.find_one({"_id":video_id},{"char_id_to_time":1})
+#         result = self.video_collection.find_one({"_id": video_id},
+#                                                 {"char_id_to_time": 1})
 #
 #         charId_to_time = result["char_id_to_time"]
 #
@@ -419,7 +419,9 @@
 #         extrinsic_time_bg = charId_to_time[str(extrinsic_char_bg)]
 #         extrinsic_time_ed = charId_to_time[str(extrinsic_char_ed)]
 #
-#         return [extrinsic_char_bg, extrinsic_char_ed], [extrinsic_time_bg, extrinsic_time_ed]
+#         return [extrinsic_char_bg, extrinsic_char_ed], [extrinsic_time_bg,
+#                                                         extrinsic_time_ed]
+#
 #
 # def connect_mongodb():
 #     '''
@@ -436,57 +438,56 @@
 #     mongodb_password = parser.get('mongodb', 'password')
 #     mongodb_authMechanism = parser.get('mongodb', 'authMechanism')
 #     mongodb_port = int(parser.get('mongodb', 'port'))
-#     client = MongoClient(host=mongodb_host, username=mongodb_user, password=mongodb_password,
-#                             authSource=mongodb_db, authMechanism=mongodb_authMechanism, port=mongodb_port)
+#     client = MongoClient(host=mongodb_host, username=mongodb_user,
+#                          password=mongodb_password,
+#                          authSource=mongodb_db,
+#                          authMechanism=mongodb_authMechanism, port=mongodb_port)
 #     database = client.get_database(mongodb_db)
 #     return database
 #
-# def main():
 #
+# def main():
 #     print('Start')
 #     print()
 #     ###### Sample One (Local Search) ######
 #
-#     video_ids = ['9e93fb16598d44560364e80aa0892cf6']
-#     query_str = '向量'
 #     # video_ids = ['4339af28471e62289847391fab65b149']
-#     # query_str = '超弦理论一共存在几种类型？'
-#
-#     ss = time.time()
-#     s = Search()
-#     res_list = s.local_search(query_str, video_ids)
-#
-#     ee = time.time()
-#
-#     print('###### Sample One (Local Search) ######')
-#     print('Query:',query_str)
-#     pprint.pprint(res_list)
-#     print('Video Size:',len(video_ids))
-#     print('Time Cost: ', ee-ss)
-#     print()
-#
-#     ###### Sample Two (Global Search) ######
-#
-#     # # video_ids = ['unique_id1','unique_id2','unique_id5','unique_id7']
-#     # video_ids = []
-#     # # query_str = '什么是因果'
 #     # query_str = '向量'
-#     # # query_str = '大家'
-#     #
+#
 #     # ss = time.time()
 #     # s = Search()
-#     # type = 'video'
-#     # max_size = 10
-#     # page = 1
-#     # res_list = s.global_search(query_str, video_ids, type, max_size, page)
-#     #
+#     # res_list = s.local_search(query_str, video_ids)
+#
 #     # ee = time.time()
-#     #
-#     # print('###### Sample Two (Global Search) ######')
+#
+#     # print('###### Sample One (Local Search) ######')
 #     # print('Query:',query_str)
 #     # pprint.pprint(res_list)
 #     # print('Video Size:',len(video_ids))
 #     # print('Time Cost: ', ee-ss)
+#     # print()
+#
+#     ###### Sample Two (Global Search) ######
+#
+#     video_ids = []
+#     # query_str = '向量'
+#     query_str = 'python'
+#
+#     ss = time.time()
+#     s = Search()
+#     type = 'all'
+#     max_size = 10
+#     page = 1
+#     res_list = s.global_search(query_str, video_ids, type, max_size, page)
+#
+#     ee = time.time()
+#
+#     print('###### Sample Two (Global Search) ######')
+#     print('Query:', query_str)
+#     pprint.pprint(res_list)
+#     print('Video Size:', len(video_ids))
+#     print('Time Cost: ', ee - ss)
+#
 #
 # if __name__ == "__main__":
 #     main()
@@ -500,31 +501,12 @@
 
 import json
 import os
-import time
 import pprint
-import random
-import string
-import hashlib
-import urllib
-import requests
-import http.client
+import time
 from configparser import ConfigParser
-from pymongo import MongoClient, ReadPreference
 
-
-# def generate_picture(input_path, output_path, time):
-
-#     compress = "ffmpeg -i {} -y -f image2 -ss {} -vframes 1 {}".format(input_path, time, output_path)
-#     is_run = os.system(compress)
-#     if is_run != 0:
-#         return ''
-#     else:
-#         return output_path
-
-# def time_format(float_data):
-
-#     data_string = time.strftime('%H:%M:%S', time.gmtime(float_data))
-#     return data_string
+import requests
+from pymongo import MongoClient
 
 
 class Search:
@@ -636,34 +618,36 @@ class Search:
         series_num = 0
         user_num = 0
         if type in ['video', 'all']:
-            print('Video Size: ', video_ids)
+            # print('Video Size: ',video_ids)
             res_dict = self.video_search(query_str, video_ids, isBluE=isBluE)
-            print('res_dict: ', res_dict)
+            # print('res_dict: ',res_dict)
             for video_id in res_dict:
-                result = self.video_collection.find_one({"_id": video_id},
-                                                        {"_id": 1,
-                                                         "full_cn_str": 1})
-                full_cn_str = result['full_cn_str']
-                if res_dict[video_id]["type"] == "subtitle":
-                    char_dur, time_dur = self.result_transformer(video_id,
-                                                                 res_dict[
-                                                                     video_id][
-                                                                     'pos'])
-                    match_frame[video_id] = {
-                        "matched_str": res_dict[video_id]['matched_str'],
-                        "score": res_dict[video_id]['score'],
-                        "start_time": time_dur[0],
-                        "end_time": time_dur[1],
-                        "subs_pos": char_dur,
-                        "whole_str": full_cn_str[char_dur[0]:char_dur[1] + 1],
-                        "type": "subtitle"}
-                else:
-                    match_frame[video_id] = {
-                        "matched_str": res_dict[video_id]['matched_str'],
-                        "type": res_dict[video_id]["type"],
-                        "score": res_dict[video_id]['score']
-                    }
-                match_ids.append(video_id)
+                if video_id:
+                    result = self.video_collection.find_one({"_id": video_id},
+                                                            {"_id": 1,
+                                                             "full_cn_str": 1})
+                    full_cn_str = result['full_cn_str']
+                    if res_dict[video_id]["type"] == "subtitle":
+                        char_dur, time_dur = self.result_transformer(video_id,
+                                                                     res_dict[
+                                                                         video_id][
+                                                                         'pos'])
+                        match_frame[video_id] = {
+                            "matched_str": res_dict[video_id]['matched_str'],
+                            "score": res_dict[video_id]['score'],
+                            "start_time": time_dur[0],
+                            "end_time": time_dur[1],
+                            "subs_pos": char_dur,
+                            "whole_str": full_cn_str[
+                                         char_dur[0]:char_dur[1] + 1],
+                            "type": "subtitle"}
+                    else:
+                        match_frame[video_id] = {
+                            "matched_str": res_dict[video_id]['matched_str'],
+                            "type": res_dict[video_id]["type"],
+                            "score": res_dict[video_id]['score']
+                        }
+                    match_ids.append(video_id)
 
             if match_ids:
                 results = self.video_collection.find(
@@ -822,7 +806,7 @@ class Search:
                     }
             title_dict = {}
             title_dict = res_dict.copy()
-            # print('title_dict:',title_dict)
+            print('title_dict:', title_dict)
             for key in list(title_dict.keys()):
                 if "title" in key:
                     # new_key = key.split('_')[1]
@@ -852,18 +836,16 @@ class Search:
         if video_ids:
             results = self.video_collection.find(
                 {"_id": {"$in": video_ids}, "state": 2},
-                {"full_cn_str": 1, "_id": 1, "title": 1, "description": 1})
+                {"full_cn_str": 1, "_id": 1, "title": 1})
         else:
             results = self.video_collection.find({"state": 2},
                                                  {"full_cn_str": 1, "_id": 1,
-                                                  "title": 1, "description": 1})
+                                                  "title": 1})
         for result in results:
             key = result["_id"]
             res_dict[key] = result["full_cn_str"]
             if "title" in result and result["title"]:
                 res_dict["title_" + key] = result["title"]
-            if "description" in result and result["description"]:
-                res_dict["description_" + key] = result["description"]
         return res_dict
 
     def bluE_standard(self, query_str, input_paragraph, lang='ch', isSemantic=0,
@@ -966,41 +948,41 @@ def main():
     print()
     ###### Sample One (Local Search) ######
 
-    # video_ids = ['4339af28471e62289847391fab65b149']
-    # query_str = '向量'
-
-    # ss = time.time()
-    # s = Search()
-    # res_list = s.local_search(query_str, video_ids)
-
-    # ee = time.time()
-
-    # print('###### Sample One (Local Search) ######')
-    # print('Query:',query_str)
-    # pprint.pprint(res_list)
-    # print('Video Size:',len(video_ids))
-    # print('Time Cost: ', ee-ss)
-    # print()
-
-    ###### Sample Two (Global Search) ######
-
-    video_ids = []
-    query_str = '向量'
+    video_ids = ['162fb70b08169805aab916f75711b015']
+    query_str = '宇宙的维度是'
 
     ss = time.time()
     s = Search()
-    type = 'all'
-    max_size = 10
-    page = 1
-    res_list = s.global_search(query_str, video_ids, type, max_size, page)
+    res_list = s.local_search(query_str, video_ids)
 
     ee = time.time()
 
-    print('###### Sample Two (Global Search) ######')
-    print('Query:', query_str)
+    print('###### Sample One (Local Search) ######')
+    print('Query:',query_str)
     pprint.pprint(res_list)
-    print('Video Size:', len(video_ids))
-    print('Time Cost: ', ee - ss)
+    print('Video Size:',len(video_ids))
+    print('Time Cost: ', ee-ss)
+    print()
+
+    ###### Sample Two (Global Search) ######
+
+    # video_ids = []
+    # query_str = '黑马'
+    #
+    # ss = time.time()
+    # s = Search()
+    # type = 'all'
+    # max_size = 10
+    # page = 1
+    # res_list = s.global_search(query_str, video_ids, type, max_size, page)
+    #
+    # ee = time.time()
+    #
+    # print('###### Sample Two (Global Search) ######')
+    # print('Query:', query_str)
+    # pprint.pprint(res_list)
+    # print('Video Size:', len(video_ids))
+    # print('Time Cost: ', ee - ss)
 
 
 if __name__ == "__main__":

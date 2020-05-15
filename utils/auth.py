@@ -17,7 +17,7 @@ def encode_auth_token(_id):
     try:
         payload = {
             'exp': datetime.utcnow() + timedelta(
-                hours=config['JWT_EXPIRY_HOURS']),
+                hours=current_app.config['JWT_EXPIRY_HOURS']),
             'iat': datetime.utcnow(),
             'iss': 'heidunkeji',
             'data': {
@@ -25,7 +25,7 @@ def encode_auth_token(_id):
             }
         }
 
-        token = jwt.encode(payload, config['JWT_SECRET'],
+        token = jwt.encode(payload, current_app.config['JWT_SECRET'],
                            algorithm='HS256').decode()
 
         return token
@@ -45,7 +45,7 @@ def query_user_data(func):
             authorization = request.headers.get("Authorization")
             if authorization:
                 token = authorization.strip()[7:]
-                payload = jwt.decode(token, config['JWT_SECRET'],
+                payload = jwt.decode(token, current_app.config['JWT_SECRET'],
                                      algorithm=['HS256'])
                 if payload:
                     _id = payload["data"].get("_id")
