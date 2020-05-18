@@ -93,6 +93,61 @@ class CommentHandler(object):
 
         return set_resjson()
 
+    # def func_get_comment(self):
+    #     '''
+    #     获取评论
+    #     :param video_id:
+    #     :param parent_id:
+    #     :param max_size:
+    #     :param page:
+    #     :return res_data:
+    #     '''
+    #     user = g.user
+    #     if not user:
+    #         raise response_code.UserERR(errmsg='用户未登录')
+    #
+    #     video_id = self.extra_data.get("video_id", "")
+    #     parent_id = self.extra_data.get("parent_id", "")
+    #     max_size = self.extra_data.get("max_size", "")
+    #     page = self.extra_data.get("page", "")
+    #     user_id = user["_id"]
+    #     try:
+    #         res_data = []
+    #
+    #         likes = mongo.db.like.find({'user_id': user_id, 'type': 'comment'},
+    #                                    {'_id': 1})
+    #         like_list = []
+    #         if likes:
+    #             for like in likes:
+    #                 like_list.append(like['_id'])
+    #         if parent_id:
+    #             comments = mongo.db.comment.find(
+    #                 {'video_id': video_id, 'parent_id': parent_id}).sort('time',
+    #                                                                      -1).limit(
+    #                 max_size).skip(max_size * (page - 1))
+    #         else:
+    #             comments = mongo.db.comment.find(
+    #                 {'video_id': video_id, 'parent_id': "0"}).sort(
+    #                 'time', -1).limit(max_size).skip(max_size * (page - 1))
+    #         if comments:
+    #             for comment in comments:
+    #                 if comment['_id'] in like_list:
+    #                     comment['is_like'] = 1
+    #                 else:
+    #                     comment['is_like'] = 0
+    #                 like_counts = mongo.db.like.find(
+    #                     {"relation_id": comment['_id'], "type": "comment"}).count()
+    #                 comment['like_counts'] = like_counts
+    #                 if not parent_id:
+    #                     comment_counts = mongo.db.comment.find(
+    #                         {"parent_id": comment['_id'],
+    #                          "type": "comment"}).count()
+    #                     comment['comment_counts'] = comment_counts
+    #                 res_data.append(comment)
+    #     except Exception as e:
+    #         raise response_code.DatabaseERR(errmsg="{}".format(e))
+    #     return set_resjson(res_array=res_data)
+
     def func_get_comment(self):
         '''
         获取评论
@@ -102,52 +157,16 @@ class CommentHandler(object):
         :param page:
         :return res_data:
         '''
-        user = g.user
-        if not user:
-            raise response_code.UserERR(errmsg='用户未登录')
-
         video_id = self.extra_data.get("video_id", "")
         parent_id = self.extra_data.get("parent_id", "")
         max_size = self.extra_data.get("max_size", "")
         page = self.extra_data.get("page", "")
-        user_id = user["_id"]
-        #
-        # try:
-        #     res_data = []
-        #     likes = mongo.db.like.find({'user_id': user_id, 'type': 'comment'},
-        #                                {'_id': 1})
-        #     like_list = []
-        #     if likes:
-        #         for like in likes:
-        #             like_list.append(like['_id'])
-        #     if parent_id:
-        #         comments = mongo.db.comment.find(
-        #             {'video_id': video_id, 'parent_id': parent_id})
-        #     else:
-        #         comments = mongo.db.comment.find(
-        #             {'video_id': video_id, 'parent_id': "0"})
-        #     if comments:
-        #         for comment in comments:
-        #             if comment['_id'] in like_list:
-        #                 comment['is_like'] = 1
-        #             else:
-        #                 comment['is_like'] = 0
-        #             like_counts = mongo.db.like.find(
-        #                 {"relation_id": comment['_id'], "type": "comment"}).count()
-        #             comment['like_counts'] = like_counts
-        #             if not parent_id:
-        #                 comment_counts = mongo.db.comment.find(
-        #                     {"parent_id": comment['_id'],
-        #                      "type": "comment"}).count()
-        #                 comment['comment_counts'] = comment_counts
-        #             res_data.append(comment)
-        # except Exception as e:
-        #     raise response_code.RoleERR(errmsg="{}".format(e))
         try:
             res_data = []
 
-            likes = mongo.db.like.find({'user_id': user_id, 'type': 'comment'},
-                                       {'_id': 1})
+            likes = mongo.db.like.find(
+                {'relation_id': video_id, 'type': 'comment'},
+                {'_id': 1})
             like_list = []
             if likes:
                 for like in likes:

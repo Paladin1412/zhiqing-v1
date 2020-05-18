@@ -31,6 +31,10 @@ from utils.video_upload.uploadVideo import upload_video
 
 
 class VideoHandler(object):
+    """
+    视频
+    """
+
     def __init__(self, extra_data, model_action):
         self.temporary_path = os.path.abspath(
             os.path.dirname(os.path.dirname(__file__)))
@@ -330,14 +334,14 @@ class VideoHandler(object):
         """
         res_data = []
         user = g.user
-        if not user:
-            raise response_code.UserERR(errmsg='用户未登录')
         video_id = self.extra_data.get('video_id', '')
         if video_id == '':
             raise response_code.ParamERR(errmsg="[video_id] must be provided")
-        user_id = user["_id"]
         tool = mongo.db.tool.find_one({'type': 'category'})
         video = mongo.db.video.find_one({'_id': video_id})
+        video_user_info = mongo.db.user.find_one({"_id": video["user_id"]},
+                                                 {"name": 1, "_id": 1,
+                                                  "headshot": 1})
         like_counts = mongo.db.like.find(
             {"relation_id": video_id, "type": "video"}).count()
         collection_counts = mongo.db.collection.find(
@@ -349,18 +353,22 @@ class VideoHandler(object):
                      'audio_path': video['audio_path'],
                      'lang': video['lang'], 'ass_path': video['ass_path'],
                      'upload_time': video['upload_time'],
-                     'title': video['title'], 'user_id': user_id,
-                     'user_name': user['name'], 'headshot': user['headshot'],
+                     'title': video['title'], 'user_id': video_user_info["_id"],
+                     'user_name': video_user_info['name'],
+                     'headshot': video_user_info['headshot'],
                      # 'category': tool['data'][video['category']],
                      'category': tool['data'][video['category'][0]],
                      'description': video['description'],
                      'image_path': video['image_path'],
-                     'view_counts': video.get("view_counts", None) if video.get(
-                         "view_counts", None) else 0,
+                     'view_counts': video["view_counts"],
                      'like_counts': like_counts,
-                     'collection_counts': collection_counts}
+                     'collection_counts': collection_counts,
+                     "is_like": 0,
+                     "is_collect": 0,
+                     "is_subscribe": 0}
 
-        if user_id:
+        if user:
+            user_id = user["_id"]
             like = mongo.db.like.find_one(
                 {'relation_id': video_id, 'type': 'video', 'user_id': user_id})
             collection = mongo.db.collection.find_one(
@@ -397,7 +405,6 @@ class VideoHandler(object):
         """
         获取相关视频
         """
-
         video_id = self.extra_data.get("video_id", "")
         related_type = self.extra_data.get("related_type", "")
         max_size = self.extra_data.get("max_size", 10)
@@ -445,7 +452,9 @@ class VideoHandler(object):
             series_dict["video_data"] = video_list
             res_list.append(series_dict)
         else:
-            video_cursor = mongo.db.video.find({"state": 2}).sort("view_counts", -1).limit(max_size).skip(max_size*(page-1))
+            video_cursor = mongo.db.video.find({"state": 2}).sort("view_counts",
+                                                                  -1).limit(
+                max_size).skip(max_size * (page - 1))
             for video in video_cursor:
                 video_dict["video_id"] = video["_id"]
                 video_dict["video_title"] = video["title"]
@@ -504,7 +513,8 @@ def func_check():
         pass
     if image_name:
 
-        image_path = 'static/image/{}.{}'.format(task_id, image_name.rsplit('.', 1)[1])
+        image_path = 'static/image/{}.{}'.format(task_id,
+                                                 image_name.rsplit('.', 1)[1])
         image_file.save(image_path)
         update_video_info = {"description": description, "category": category,
                              "image_path": image_path,

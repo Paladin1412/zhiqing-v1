@@ -35,9 +35,6 @@ class DocumentHandler(object):
         """
         查看课件
         """
-        user = g.user
-        if not user:
-            raise response_code.UserERR(errmsg='用户未登录')
         video_id = self.extra_data.get('video_id')
         try:
             video_document = mongo.db.document.find_one({"video_id": video_id},

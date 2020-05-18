@@ -84,6 +84,10 @@ def index():
                 from modules.category import CategoryHandler
                 comment_main = CategoryHandler(extra_data, model_action)
                 resp = comment_main.handle_model()
+            elif model_name == "subscription":
+                from modules.subscription import SubscriptionHandler
+                comment_main = SubscriptionHandler(extra_data, model_action)
+                resp = comment_main.handle_model()
             else:
                 resp = set_resjson(err=-1, errmsg="model_name is incorrect")
     return resp

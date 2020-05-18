@@ -32,6 +32,9 @@ from utils.setResJson import set_resjson
 
 
 class UserHandler(object):
+    """
+    用户账户
+    """
     def __init__(self, extra_data, model_action):
         self.extra_data = extra_data
         self.model_action = model_action

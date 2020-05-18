@@ -15,6 +15,10 @@ from utils.setResJson import set_resjson
 
 
 class SeriesHandler(object):
+    """
+    系列
+    """
+
     def __init__(self, extra_data, model_action):
         self.extra_data = extra_data
         self.model_action = model_action
