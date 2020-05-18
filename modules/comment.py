@@ -111,9 +111,41 @@ class CommentHandler(object):
         max_size = self.extra_data.get("max_size", "")
         page = self.extra_data.get("page", "")
         user_id = user["_id"]
-
+        #
+        # try:
+        #     res_data = []
+        #     likes = mongo.db.like.find({'user_id': user_id, 'type': 'comment'},
+        #                                {'_id': 1})
+        #     like_list = []
+        #     if likes:
+        #         for like in likes:
+        #             like_list.append(like['_id'])
+        #     if parent_id:
+        #         comments = mongo.db.comment.find(
+        #             {'video_id': video_id, 'parent_id': parent_id})
+        #     else:
+        #         comments = mongo.db.comment.find(
+        #             {'video_id': video_id, 'parent_id': "0"})
+        #     if comments:
+        #         for comment in comments:
+        #             if comment['_id'] in like_list:
+        #                 comment['is_like'] = 1
+        #             else:
+        #                 comment['is_like'] = 0
+        #             like_counts = mongo.db.like.find(
+        #                 {"relation_id": comment['_id'], "type": "comment"}).count()
+        #             comment['like_counts'] = like_counts
+        #             if not parent_id:
+        #                 comment_counts = mongo.db.comment.find(
+        #                     {"parent_id": comment['_id'],
+        #                      "type": "comment"}).count()
+        #                 comment['comment_counts'] = comment_counts
+        #             res_data.append(comment)
+        # except Exception as e:
+        #     raise response_code.RoleERR(errmsg="{}".format(e))
         try:
             res_data = []
+
             likes = mongo.db.like.find({'user_id': user_id, 'type': 'comment'},
                                        {'_id': 1})
             like_list = []
@@ -122,10 +154,13 @@ class CommentHandler(object):
                     like_list.append(like['_id'])
             if parent_id:
                 comments = mongo.db.comment.find(
-                    {'video_id': video_id, 'parent_id': parent_id})
+                    {'video_id': video_id, 'parent_id': parent_id}).sort('time',
+                                                                         -1).limit(
+                    max_size).skip(max_size * (page - 1))
             else:
                 comments = mongo.db.comment.find(
-                    {'video_id': video_id, 'parent_id': "0"})
+                    {'video_id': video_id, 'parent_id': "0"}).sort(
+                    'time', -1).limit(max_size).skip(max_size * (page - 1))
             if comments:
                 for comment in comments:
                     if comment['_id'] in like_list:
@@ -142,5 +177,15 @@ class CommentHandler(object):
                         comment['comment_counts'] = comment_counts
                     res_data.append(comment)
         except Exception as e:
-            raise response_code.RoleERR(errmsg="{}".format(e))
+            raise response_code.DatabaseERR(errmsg="{}".format(e))
         return set_resjson(res_array=res_data)
+
+    # def func_database(self):
+    #     video_id_list = [i for i in mongo.db.comment.find() if "time" not in i]
+    #     for i in video_id_list:
+    #         time.sleep(0.5)
+    #         print(i)
+    #         mongo.db.comment.update_one({"_id": i.get("_id")}, {"$set": {"time": time.time()}})
+    #     # mongo.db.video.update_one({"_id": "0293f09cab3a46af845e83ca29dfb033"}, {"$set": {"upload_time": time.time()}})
+    #
+    #     return set_resjson()

@@ -341,30 +341,25 @@ class VideoHandler(object):
         like_counts = mongo.db.like.find(
             {"relation_id": video_id, "type": "video"}).count()
         collection_counts = mongo.db.collection.find(
-            {"relation_id": video_id}).count()
+            {"video_id": video_id}).count()
         author_id = video['user_id']
         view_counts = 0 if 'view_counts' not in list(video.keys()) else video[
             'view_counts']
-        data_dict = {}
-        data_dict['video_id'] = video_id
-        data_dict['video_path'] = video['video_path']
-        data_dict['audio_path'] = video['audio_path']
-        data_dict['lang'] = video['lang']
-        data_dict['ass_path'] = video['ass_path']
-        data_dict['upload_time'] = video['upload_time']
-        data_dict['title'] = video['title']
+        data_dict = {'video_id': video_id, 'video_path': video['video_path'],
+                     'audio_path': video['audio_path'],
+                     'lang': video['lang'], 'ass_path': video['ass_path'],
+                     'upload_time': video['upload_time'],
+                     'title': video['title'], 'user_id': user_id,
+                     'user_name': user['name'], 'headshot': user['headshot'],
+                     # 'category': tool['data'][video['category']],
+                     'category': tool['data'][video['category'][0]],
+                     'description': video['description'],
+                     'image_path': video['image_path'],
+                     'view_counts': video.get("view_counts", None) if video.get(
+                         "view_counts", None) else 0,
+                     'like_counts': like_counts,
+                     'collection_counts': collection_counts}
 
-        data_dict['user_id'] = user_id
-        data_dict['user_name'] = user['name']
-        data_dict['headshot'] = user['headshot']
-        data_dict['category'] = tool['data'][video['category'][0]]
-        data_dict['lang'] = video['lang']
-        data_dict['description'] = video['description']
-        data_dict['image_path'] = video['image_path']
-        data_dict['view_counts'] = video.get("view_counts", None) if video.get(
-            "view_counts", None) else 0
-        data_dict['like_counts'] = like_counts
-        data_dict['collection_counts'] = collection_counts
         if user_id:
             like = mongo.db.like.find_one(
                 {'relation_id': video_id, 'type': 'video', 'user_id': user_id})
@@ -405,8 +400,60 @@ class VideoHandler(object):
 
         video_id = self.extra_data.get("video_id", "")
         related_type = self.extra_data.get("related_type", "")
-        max_size = self.extra_data.get("max_size", "")
-        page = self.extra_data.get("page", "")
+        max_size = self.extra_data.get("max_size", 10)
+        page = self.extra_data.get("page", 1)
+        video_dict = {}
+        series_dict = {}
+        video_list = []
+        res_list = []
+        if video_id == "" or related_type == "":
+            raise response_code.ParamERR(
+                errmsg="video_id related_type must be provide")
+        elif related_type not in ["series", "recommend"]:
+            raise response_code.ParamERR(
+                errmsg="related_type must be series or recommend")
+        try:
+            max_size = int(max_size)
+            page = int(page)
+        except Exception as e:
+            raise response_code.ParamERR(
+                errmsg="max_size or page type is incorrect")
+        try:
+            video_info = mongo.db.video.find_one({"_id": video_id, "state": 2})
+        except Exception as e:
+            raise response_code.DatabaseERR(errmsg="{}".format(e))
+        if not video_info:
+            raise response_code.ParamERR(errmsg="video_id 不存在")
+        elif related_type == "series":
+            related_cursor = mongo.db.video.find(
+                {"series": video_info["series"], "state": 2}).sort(
+                "view_counts", -1).limit(max_size).skip(max_size * (page - 1))
+            series_info = mongo.db.series.find_one(
+                {"_id": video_info["series"]})
+            for video in related_cursor:
+                video_dict["video_id"] = video["_id"]
+                video_dict["video_title"] = video["title"]
+                video_dict["video_time"] = video["video_time"]
+                video_dict["image_path"] = video["image_path"]
+                video_dict["view_counts"] = video["view_counts"]
+
+                video_list.append(deepcopy(video_dict))
+
+            series_dict["series_id"] = series_info["_id"]
+            series_dict["series_title"] = series_info["title"]
+            series_dict["video_counts"] = len(video_list)
+            series_dict["video_data"] = video_list
+            res_list.append(series_dict)
+        else:
+            video_cursor = mongo.db.video.find({"state": 2}).sort("view_counts", -1).limit(max_size).skip(max_size*(page-1))
+            for video in video_cursor:
+                video_dict["video_id"] = video["_id"]
+                video_dict["video_title"] = video["title"]
+                video_dict["video_time"] = video["video_time"]
+                video_dict["image_path"] = video["image_path"]
+                video_dict["view_counts"] = video["view_counts"]
+                res_list.append(deepcopy(video_dict))
+        return set_resjson(res_array=res_list)
 
 
 def func_check():
@@ -614,6 +661,7 @@ def upload_success_update(file_type, task_id, subtitling_list, style, lang,
 
         filename = 'static/videos/{}.{}'.format(md5_token, file_type)
         os.rename(current_name, filename)
+        video_time = get_video_time(filename)
         converted_video_picture(md5_token)
         response = upload_video(filename)
         os.remove(filename)
@@ -624,7 +672,7 @@ def upload_success_update(file_type, task_id, subtitling_list, style, lang,
                       'video_path': video_path, "title": title,
                       'image_path': 'static/image/{}.jpg'.format(md5_token),
                       "upload_time": upload_time, "user_id": user_id,
-                      "state": 0}
+                      "state": 0, "video_time": video_time, "view_counts": 0}
         try:
             mongo.db.video.insert_one(video_info)
         except Exception as e:
@@ -674,6 +722,7 @@ def upload_success(file_type, task_id, user_id, title):
 
         filename = 'static/videos/{}.{}'.format(md5_token, file_type)
         os.rename(current_name, filename)
+        video_time = get_video_time(filename)
         converted_video_picture(md5_token)
         response = upload_video(filename)
         os.remove(filename)
@@ -684,7 +733,7 @@ def upload_success(file_type, task_id, user_id, title):
                       'video_path': video_path, "title": title,
                       'image_path': 'static/image/{}.jpg'.format(md5_token),
                       "upload_time": upload_date, "user_id": user_id,
-                      "state":0 }
+                      "state": 0, "video_time": video_time, "view_counts": 0}
         try:
             mongo.db.video.insert_one(video_info)
         except Exception as e:
@@ -752,3 +801,18 @@ def video_to_image(input_path, out_path, video_resolution):
         raise response_code.RoleERR(errmsg="{} 没有安装 ffmpeg".format(is_run))
     else:
         return (is_run, "转化成功")
+
+
+def time_format(float_data):
+    data_string = time.strftime('%H:%M:%S', time.gmtime(float_data))
+    return data_string
+
+
+def get_video_time(input_path):
+    cap = cv2.VideoCapture(input_path)
+    if cap.isOpened():
+        rate = cap.get(5)  # 帧速率
+        FrameNumber = cap.get(7)  # 视频文件的帧数
+        duration = FrameNumber / rate
+        data_string = time.strftime('%H:%M:%S', time.gmtime(duration))
+    return data_string

@@ -36,6 +36,7 @@ class SeriesHandler(object):
         获得系列信息
         """
         user = g.user
+        print(user)
         if not user:
             raise response_code.UserERR(errmsg='用户未登录')
         try:
@@ -47,4 +48,5 @@ class SeriesHandler(object):
         # for result in results:
         #     data_dict = {'title': result['title']}
         #     res_data.append(data_dict)
-        return set_resjson(res_array=[i for i in series_cursor])
+        res_list = [i for i in series_cursor]
+        return set_resjson(res_array=res_list)
