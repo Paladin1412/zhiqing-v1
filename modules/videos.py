@@ -349,6 +349,9 @@ class VideoHandler(object):
         author_id = video['user_id']
         view_counts = 0 if 'view_counts' not in list(video.keys()) else video[
             'view_counts']
+        category_list = []
+        for category in video['category']:
+            category_list.append(tool["data"].get(category))
         data_dict = {'video_id': video_id, 'video_path': video['video_path'],
                      'audio_path': video['audio_path'],
                      'lang': video['lang'], 'ass_path': video['ass_path'],
@@ -357,7 +360,7 @@ class VideoHandler(object):
                      'user_name': video_user_info['name'],
                      'headshot': video_user_info['headshot'],
                      # 'category': tool['data'][video['category']],
-                     'category': tool['data'][video['category'][0]],
+                     'category': category_list,
                      'description': video['description'],
                      'image_path': video['image_path'],
                      'view_counts': video["view_counts"],
@@ -432,12 +435,16 @@ class VideoHandler(object):
         if not video_info:
             raise response_code.ParamERR(errmsg="video_id 不存在")
         elif related_type == "series":
+            series_id = video_info.get("series", "")
+            if not series_id:
+                raise response_code.ParamERR(errmsg="There's no video")
             related_cursor = mongo.db.video.find(
-                {"series": video_info["series"], "state": 2}).sort(
+                {"series": series_id, "state": 2}).sort(
                 "view_counts", -1).limit(max_size).skip(max_size * (page - 1))
-            series_info = mongo.db.series.find_one(
-                {"_id": video_info["series"]})
+            series_info = mongo.db.series.find_one({"_id": series_id})
             for video in related_cursor:
+                if video["_id"] == video_id:
+                    continue
                 video_dict["video_id"] = video["_id"]
                 video_dict["video_title"] = video["title"]
                 video_dict["video_time"] = video["video_time"]
@@ -462,6 +469,54 @@ class VideoHandler(object):
                 video_dict["image_path"] = video["image_path"]
                 video_dict["view_counts"] = video["view_counts"]
                 res_list.append(deepcopy(video_dict))
+        return set_resjson(res_array=res_list)
+
+    def func_hot_video(self):
+        """
+        热门视频
+        @return:
+        """
+        max_size = self.extra_data.get("max_size", 10)
+        page = self.extra_data.get("page", 1)
+        res_dict = {}
+        res_list = []
+        try:
+            max_size = int(max_size)
+            page = int(page)
+        except Exception as e:
+            raise response_code.ParamERR(errmsg="max_size or page type error")
+        if max_size > 50:
+            raise response_code.ParamERR(errmsg="max_size No more than fifty")
+        try:
+            video_cursor = mongo.db.video.find({"state": 2}).sort("view_counts",
+                                                                  -1).limit(
+                max_size).skip(
+                max_size * (page - 1))
+            for video in video_cursor:
+                likes = mongo.db.like.find(
+                    {"relation_id": video.get("_id"), "type": "video"}).count()
+                comments = mongo.db.comments.find(
+                    {"video_id": video.get("_id")}).count()
+                user_info = mongo.db.user.find_one(
+                    {"_id": video.get("user_id")})
+                tool = mongo.db.tool.find_one({'type': 'category'})
+                category_list = []
+                for category in video['category']:
+                    category_list.append(tool["data"].get(category))
+                res_dict["video_id"] = video["_id"]
+                res_dict["image_path"] = video["image_path"]
+                res_dict["title"] = video["title"]
+                res_dict["category"] = category_list
+                res_dict["update_time"] = video["upload_time"]
+                res_dict["user_id"] = video["user_id"]
+                res_dict["view_counts"] = video["view_counts"]
+                res_dict["user_name"] = user_info["name"]
+                res_dict["head_shot"] = user_info["headshot"]
+                res_dict["comment_counts"] = comments
+                res_dict["like_counts"] = likes
+                res_list.append(deepcopy(res_dict))
+        except Exception as e:
+            raise response_code.DatabaseERR(errmsg="{}".format(e))
         return set_resjson(res_array=res_list)
 
 
