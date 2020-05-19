@@ -13,6 +13,7 @@ import os
 import re
 import time
 from ast import literal_eval
+from collections import Counter
 from copy import deepcopy
 from threading import Thread
 
@@ -519,6 +520,64 @@ class VideoHandler(object):
             raise response_code.DatabaseERR(errmsg="{}".format(e))
         return set_resjson(res_array=res_list)
 
+    def func_hot_author(self):
+        """
+        热门作者
+        @return:
+        """
+        max_size = self.extra_data.get("max_size", 10)
+        # page = self.extra_data.get("page", 1)
+        video_size = self.extra_data.get("video_size", 4)
+        res_dict = {}
+        res_list = []
+        try:
+            max_size = int(max_size)
+            # page = int(page)
+            video_size = int(video_size)
+        except Exception as e:
+            raise response_code.ParamERR(errmsg="max_size or page type error")
+        if max_size > 50 or video_size > 10:
+            raise response_code.ParamERR(
+                errmsg="max_size No more than fifty or video_size No more than ten")
+        try:
+            relation_id_cursor = mongo.db.subscription.find({"type": "author"},
+                                       {"_id": 0,
+                                        "relation_id": 1})
+            relation_id_list = [user_id.get("relation_id") for user_id in relation_id_cursor]
+            relation_sort = sorted(Counter(relation_id_list).items(), key= lambda x: x[1], reverse=True)[:2]
+            video_dict = {}
+            video_list = []
+            for relation_id_set in relation_sort:
+                author_info = mongo.db.user.find_one({"_id": relation_id_set[0]}, {"name": 1, "headshot": 1, "introduction": 1})
+                res_dict["user_id"] = author_info["_id"]
+                res_dict["user_name"] = author_info["name"]
+                res_dict["headshot"] = author_info["headshot"]
+                res_dict["introduction"] = author_info["introduction"]
+                res_dict["description_counts"] = relation_id_set[1]
+                video_cursor = mongo.db.video.find({"user_id": relation_id_set[0], "state": 2}).sort("view_counts", -1).limit(video_size)
+                for video in video_cursor:
+                    tool = mongo.db.tool.find_one({'type': 'category'})
+                    category_list = []
+                    for category in video['category']:
+                        category_list.append(tool["data"].get(category))
+                    like_counts = mongo.db.like.find({"relation_id": video["_id"], "type": "video"}).count()
+                    comment_counts = mongo.db.comments.find( {"video_id": video["_id"]}).count()
+                    video_dict["video_id"] = video["_id"]
+                    video_dict["image_path"] = video["image_path"]
+                    video_dict["title"] = video["title"]
+                    video_dict["update_time"] = video["upload_time"]
+                    video_dict["view_counts"] = video["view_counts"]
+                    video_dict["category"] = category_list
+                    video_dict["comment_counts"] = comment_counts
+                    video_dict["like_counts"] = like_counts
+                    video_list.append(deepcopy(video_dict))
+                res_dict["video_data"] = video_list
+
+                res_list.append(deepcopy(res_dict))
+        except Exception as e:
+            raise response_code.DatabaseERR(errmsg="{}".format(e))
+
+        return set_resjson(res_array=res_list)
 
 def func_check():
     """
