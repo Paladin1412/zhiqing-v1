@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6c7c281b-f7b3-43bc-8de8-c1cbc42d9bf8" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/aimodels/search(2).py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/aimodels/search(2).py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/aimodels/search.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/aimodels/search.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/videos.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/videos.py" afterDir="false" />
-    </list>
+    <list default="true" id="6c7c281b-f7b3-43bc-8de8-c1cbc42d9bf8" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -117,7 +112,7 @@
       <workItem from="1589505053234" duration="271000" />
       <workItem from="1589505847972" duration="26851000" />
       <workItem from="1589763735780" duration="20916000" />
-      <workItem from="1589850154655" duration="14904000" />
+      <workItem from="1589850154655" duration="15166000" />
     </task>
     <task id="LOCAL-00001" summary="首次提交">
       <created>1588469272551</created>
@@ -287,7 +282,14 @@
       <option name="project" value="LOCAL" />
       <updated>1589856735729</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="获取热门作者， 修改了全局搜索">
+      <created>1589875262514</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1589875262514</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -316,7 +318,8 @@
     <MESSAGE value="获取相关视频" />
     <MESSAGE value="首页获取订阅信息" />
     <MESSAGE value="获取热门视频， 修改了视频标签信息" />
-    <option name="LAST_COMMIT_MESSAGE" value="获取热门视频， 修改了视频标签信息" />
+    <MESSAGE value="获取热门作者， 修改了全局搜索" />
+    <option name="LAST_COMMIT_MESSAGE" value="获取热门作者， 修改了全局搜索" />
   </component>
   <component name="WindowStateProjectService">
     <state x="496" y="192" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1589853994594">
@@ -330,10 +333,10 @@
     </state>
     <state x="896" y="459" width="832" height="579" key="#xdebugger.evaluate/0.23.1792.1016@0.23.1792.1016" timestamp="1589869266511" />
     <state x="643" y="463" width="1012" height="579" key="#xdebugger.evaluate/0.23.1792.1019@0.23.1792.1019" timestamp="1588226610795" />
-    <state x="473" y="106" key="CommitChangelistDialog2" timestamp="1589856735473">
+    <state x="473" y="106" key="CommitChangelistDialog2" timestamp="1589875262265">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
-    <state x="473" y="106" key="CommitChangelistDialog2/0.23.1792.1016@0.23.1792.1016" timestamp="1589856735473" />
+    <state x="473" y="106" key="CommitChangelistDialog2/0.23.1792.1016@0.23.1792.1016" timestamp="1589875262265" />
     <state x="473" y="106" key="CommitChangelistDialog2/0.23.1792.1017@0.23.1792.1017" timestamp="1589797766030" />
     <state x="473" y="106" key="CommitChangelistDialog2/0.23.1792.1019@0.23.1792.1019" timestamp="1588469272246" />
     <state width="254" height="195" key="DatabaseViewActions_Filter" timestamp="1589337227001">
@@ -430,10 +433,10 @@
     </state>
     <state x="397" y="171" key="SettingsEditor/0.23.1792.1016@0.23.1792.1016" timestamp="1589784494609" />
     <state x="397" y="171" key="SettingsEditor/0.23.1792.1019@0.23.1792.1019" timestamp="1588227735541" />
-    <state x="496" y="271" key="Vcs.Push.Dialog.v2" timestamp="1589856738700">
+    <state x="496" y="271" key="Vcs.Push.Dialog.v2" timestamp="1589875264937">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
-    <state x="496" y="271" key="Vcs.Push.Dialog.v2/0.23.1792.1016@0.23.1792.1016" timestamp="1589856738700" />
+    <state x="496" y="271" key="Vcs.Push.Dialog.v2/0.23.1792.1016@0.23.1792.1016" timestamp="1589875264937" />
     <state x="496" y="271" key="Vcs.Push.Dialog.v2/0.23.1792.1017@0.23.1792.1017" timestamp="1589797768499" />
     <state x="716" y="418" key="com.intellij.database.actions.DdlActions$DeleteProvider2$1" timestamp="1589363924323">
       <screen x="0" y="23" width="1792" height="1016" />

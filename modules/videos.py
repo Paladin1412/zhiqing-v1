@@ -67,9 +67,9 @@ class VideoHandler(object):
         page = self.extra_data.get("page", 1)
         if query_string == "":
             raise response_code.ParamERR(errmsg="query_string is provided")
-        elif mode not in ["all", "video", "series", "user"]:
+        elif mode not in ["all", "video", "series", "user", "document"]:
             raise response_code.ParamERR(
-                errmsg="type must be all or video or series or user")
+                errmsg="type must be all or video or series or user or document")
         elif video_ids == "":
             video_ids = []
         try:
