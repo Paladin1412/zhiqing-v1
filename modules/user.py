@@ -47,7 +47,7 @@ class UserHandler(object):
         func_name = func_name.lower()
         try:
             handle_function = getattr(UserHandler, func_name)
-            if self.model_action not in ["generate_qrcode", "logout"]:
+            if self.model_action not in ["generate_qrcode", "logout", "is_login"]:
                 if self.extra_data == '':
                     raise response_code.ParamERR(
                         errmsg="[ extra_data ] must be provided ")

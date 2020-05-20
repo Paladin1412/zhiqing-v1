@@ -68,12 +68,24 @@ class DocumentHandler(object):
             raise response_code.ParamERR(
                 errmsg="file_id be provide or type must array")
         for document_id in file_id:
-            video_document = mongo.db.document.find_one({"_id": document_id},
-                                                        {"_id": 0,
-                                                         "file_path": 1})
-            if not video_document:
-                video_document = {document_id: "此ID不存在"}
+            try:
+                video_document = mongo.db.document.find_one(
+                    {"_id": document_id},
+                    {"_id": 0,
+                     "file_path": 1, "download_counts": 1})
 
-            res_list.append(deepcopy(video_document))
+                if not video_document:
+                    video_document = {document_id: "此ID不存在"}
+                else:
+                    if "download_counts" in video_document.keys():
+                        download_counts = video_document.pop("download_counts")
+                    else:
+                        download_counts = 0
+                    mongo.db.document.update_one({"_id": document_id}, {
+                        "$set": {"download_counts": download_counts + 1}})
+
+                res_list.append(deepcopy(video_document))
+            except Exception as e:
+                raise response_code.DatabaseERR(errmsg="{}".format(e))
 
         return set_resjson(res_array=res_list)

@@ -44,7 +44,8 @@ class CommentHandler(object):
         video_id = self.extra_data.get("video_id", "")
         parent_id = self.extra_data.get("parent_id", "")
         content = self.extra_data.get("content", "")
-
+        # to_user_id = self.extra_data.get("to_user_id", "")
+        # to_user_name = self.extra_data.get("to_user_name", "")
         collect_time = time.time()
         try:
             parent_id = int(parent_id)

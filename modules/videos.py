@@ -677,7 +677,7 @@ def func_check():
     description_title = request.form.get('description_title', "")
     description = request.form.get('description')
     category = request.form.get('category')
-    image_file = request.files["image"]
+
     series_title = request.form.get('series_title')
     image_name = None
 
@@ -708,6 +708,7 @@ def func_check():
     # if video_info["state"] == 1:
     #     raise response_code.ReqERR(errmsg="正在审核请耐心等待")
     try:
+        image_file = request.files["image"]
         image_name = image_file.filename
     except Exception as e:
         pass
