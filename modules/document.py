@@ -40,14 +40,7 @@ class DocumentHandler(object):
         res_list = []
         try:
             video_document_cursor = mongo.db.document.find(
-                {"video_id": video_id},
-                {
-                    "file_name": 1,
-                    "file_path": 1,
-                    "image_path": 1,
-                    "price": 1,
-                    "time": 1,
-                })
+                {"video_id": video_id})
 
         except Exception as e:
             raise response_code.DatabaseERR(errmsg="{}".format(e))
@@ -62,4 +55,25 @@ class DocumentHandler(object):
 
         if not video_document:
             raise response_code.RoleERR(errmsg="这个视频没有课件")
+        return set_resjson(res_array=res_list)
+
+    def func_download_file(self):
+        """
+        课件下载
+        @return:
+        """
+        res_list = []
+        file_id = self.extra_data.get("file_id", "")
+        if file_id == "" or type(file_id) != list:
+            raise response_code.ParamERR(
+                errmsg="file_id be provide or type must array")
+        for document_id in file_id:
+            video_document = mongo.db.document.find_one({"_id": document_id},
+                                                        {"_id": 0,
+                                                         "file_path": 1})
+            if not video_document:
+                video_document = {document_id: "此ID不存在"}
+
+            res_list.append(deepcopy(video_document))
+
         return set_resjson(res_array=res_list)

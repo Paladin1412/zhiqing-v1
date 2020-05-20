@@ -2,7 +2,7 @@
 <project version="4">
   <component name="SshConfigs">
     <configs>
-      <sshConfig authType="PASSWORD" host="codes.haetek.com" id="2075a76d-c1ae-45b1-9358-328fa70b7766" port="22" customName="qikang" nameFormat="CUSTOM" username="notes" />
+      <sshConfig authType="PASSWORD" host="codes.haetek.com" id="f99febca-b35d-4942-b3a0-55ff44b5188a" port="22" nameFormat="DESCRIPTIVE" username="notes" />
     </configs>
   </component>
 </project>

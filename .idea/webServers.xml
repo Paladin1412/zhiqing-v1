@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="1b7e3a81-48b6-4459-ae46-10b1e676b381" name="知擎">
+        <fileTransfer rootFolder="/apps/docker_containers/nginx/uwsgi/test" accessType="SFTP" host="codes.haetek.com" port="22" sshConfigId="f99febca-b35d-4942-b3a0-55ff44b5188a" sshConfig="notes@codes.haetek.com:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
