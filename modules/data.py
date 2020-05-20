@@ -56,5 +56,15 @@ class DataHandler(object):
         subscription_counts = mongo.db.subcription.find({"relation_id": user["_id"]}).count()
         video_cursor = mongo.db.video.find({"user_id": user["_id"]})
         for video in video_cursor:
-            pass
+            view_counts += video["view_counts"]
+            if "share_counts" in video.keys():
+                share_counts += video.pop("download_counts")
+            document_cursor = mongo.db.document.find({"video_id": video["_id"]})
+            for document in document_cursor:
+                if "download_counts" in document.keys():
+                    download_counts += document.pop("download_counts")
+            like_counts += mongo.db.like.find({"relation_id": video["_id"]}).count()
+            collections_counts += mongo.db.collection.find({"relation_id": video["_id"]}).count()
+            comment_counts += 1
+
 

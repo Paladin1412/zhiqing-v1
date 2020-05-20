@@ -541,6 +541,7 @@ class VideoHandler(object):
                                                                   -1).limit(
                 max_size).skip(
                 max_size * (page - 1))
+            tool = mongo.db.tool.find_one({'type': 'category'})
             for video in video_cursor:
                 likes = mongo.db.like.find(
                     {"relation_id": video.get("_id"), "type": "video"}).count()
@@ -548,7 +549,7 @@ class VideoHandler(object):
                     {"video_id": video.get("_id")}).count()
                 user_info = mongo.db.user.find_one(
                     {"_id": video.get("user_id")})
-                tool = mongo.db.tool.find_one({'type': 'category'})
+
                 category_list = []
                 for category in video['category']:
                     category_list.append(tool["data"].get(category))
@@ -634,20 +635,28 @@ class VideoHandler(object):
             video_dict = {}
             video_list = []
             for relation_id_set in relation_sort:
-                author_info = mongo.db.user.find_one({"_id": relation_id_set[0]}, {"name": 1, "headshot": 1, "introduction": 1})
+                author_info = mongo.db.user.find_one(
+                    {"_id": relation_id_set[0]},
+                    {"name": 1, "headshot": 1, "introduction": 1,
+                     "background": 1})
                 res_dict["user_id"] = author_info["_id"]
                 res_dict["user_name"] = author_info["name"]
                 res_dict["headshot"] = author_info["headshot"]
+                res_dict["background"] = author_info["background"]
                 res_dict["introduction"] = author_info["introduction"]
                 res_dict["description_counts"] = relation_id_set[1]
-                video_cursor = mongo.db.video.find({"user_id": relation_id_set[0], "state": 2}).sort("view_counts", -1).limit(video_size)
+                video_cursor = mongo.db.video.find(
+                    {"user_id": relation_id_set[0], "state": 2}).sort(
+                    "view_counts", -1).limit(video_size)
                 for video in video_cursor:
                     tool = mongo.db.tool.find_one({'type': 'category'})
                     category_list = []
                     for category in video['category']:
                         category_list.append(tool["data"].get(category))
-                    like_counts = mongo.db.like.find({"relation_id": video["_id"], "type": "video"}).count()
-                    comment_counts = mongo.db.comment.find( {"video_id": video["_id"]}).count()
+                    like_counts = mongo.db.like.find(
+                        {"relation_id": video["_id"], "type": "video"}).count()
+                    comment_counts = mongo.db.comment.find(
+                        {"video_id": video["_id"]}).count()
                     video_dict["video_id"] = video["_id"]
                     video_dict["image_path"] = video["image_path"]
                     video_dict["title"] = video["title"]

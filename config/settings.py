@@ -21,12 +21,12 @@ class Config(object):
     ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'JPG', 'PNG', 'gif', 'GIF'}
     MAX_CONTENT_LENGTH = 200 * 1024 * 1024  # 100MB
 
-    REDIS_HOST = "127.0.0.1"
-    REDIS_PORT = 6379
+    # REDIS_HOST = "127.0.0.1"
+    # REDIS_PORT = 6379
 
-    # REDIS_HOST = "web02cn.haetek.com"
-    # REDIS_PORT = 7001
-    # REDIS_PASSWORD = "!password123"
+    REDIS_HOST = "web02cn.haetek.com"
+    REDIS_PORT = 7001
+    REDIS_PASSWORD = "!password123"
 
     JWT_SECRET = 'TPmi4aLWRbyVq8zu9v82dWYW17/z+UvRnYTt4P6fAXA'
     JWT_EXPIRY_HOURS = 336

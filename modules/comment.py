@@ -201,11 +201,13 @@ class CommentHandler(object):
         return set_resjson(res_array=res_data)
 
     # def func_database(self):
-    #     video_id_list = [i for i in mongo.db.comment.find() if "time" not in i]
-    #     for i in video_id_list:
-    #         time.sleep(0.5)
-    #         print(i)
-    #         mongo.db.comment.update_one({"_id": i.get("_id")}, {"$set": {"time": time.time()}})
-    #     # mongo.db.video.update_one({"_id": "0293f09cab3a46af845e83ca29dfb033"}, {"$set": {"upload_time": time.time()}})
+    #     info = {
+    #         "background": "http://api.haetek.com:9191/static/background/background.jpg",
+    #         "introduction": "这是一个学习的视频， 好好看， 好好学"
+    #     }
+    #     user = mongo.db.user.find()
+    #     for i in user:
+    #
+    #         mongo.db.user.update({"_id": i["_id"]}, {"$set": info})
     #
     #     return set_resjson()

@@ -55,8 +55,10 @@ class SubscriptionHandler(object):
         sub_cursor = mongo.db.subscription.find({"user_id": user["_id"]},
                                                 {"_id": 0,
                                                  "relation_id": 1})
+        if sub_cursor.count() == 0:
+            raise response_code.RoleERR(errmsg="你还没有订阅")
+        tool = mongo.db.tool.find_one({'type': 'category'})
         for user_id in sub_cursor:
-            print(user_id)
             video_cursor = mongo.db.video.find(
                 {"user_id": user_id.get("relation_id"), "state": 2},
                 {"image_path": 1, "title": 1, "category": 1,
@@ -64,11 +66,13 @@ class SubscriptionHandler(object):
             user_info = mongo.db.user.find_one(
                 {"_id": user_id.get("relation_id")})
             for video in video_cursor:
-                print(video)
+                category_list = []
+                for category in video['category']:
+                    category_list.append(tool["data"].get(category))
                 video_dict["video_id"] = video["_id"]
                 video_dict["image_path"] = video["image_path"]
                 video_dict["title"] = video["title"]
-                video_dict["category"] = video["category"]
+                video_dict["category"] = category_list
                 video_dict["update_time"] = video["upload_time"]
                 video_dict["video_time"] = video["video_time"]
                 video_dict["user_id"] = video["user_id"]
