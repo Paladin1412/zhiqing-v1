@@ -472,6 +472,54 @@ class VideoHandler(object):
                 res_list.append(deepcopy(video_dict))
         return set_resjson(res_array=res_list)
 
+    # def func_hot_video(self):
+    #     """
+    #     热门视频
+    #     @return:
+    #     """
+    #     max_size = self.extra_data.get("max_size", 10)
+    #     page = self.extra_data.get("page", 1)
+    #     res_dict = {}
+    #     res_list = []
+    #     try:
+    #         max_size = int(max_size)
+    #         page = int(page)
+    #     except Exception as e:
+    #         raise response_code.ParamERR(errmsg="max_size or page type error")
+    #     if max_size > 50:
+    #         raise response_code.ParamERR(errmsg="max_size No more than fifty")
+    #     try:
+    #         video_cursor = mongo.db.video.find({"state": 2}).sort("view_counts",
+    #                                                               -1).limit(
+    #             max_size).skip(
+    #             max_size * (page - 1))
+    #         for video in video_cursor:
+    #             likes = mongo.db.like.find(
+    #                 {"relation_id": video.get("_id"), "type": "video"}).count()
+    #             comments = mongo.db.comment.find(
+    #                 {"video_id": video.get("_id")}).count()
+    #             user_info = mongo.db.user.find_one(
+    #                 {"_id": video.get("user_id")})
+    #             tool = mongo.db.tool.find_one({'type': 'category'})
+    #             category_list = []
+    #             for category in video['category']:
+    #                 category_list.append(tool["data"].get(category))
+    #             res_dict["video_id"] = video["_id"]
+    #             res_dict["image_path"] = video["image_path"]
+    #             res_dict["title"] = video["title"]
+    #             res_dict["category"] = category_list
+    #             res_dict["update_time"] = video["upload_time"]
+    #             res_dict["user_id"] = video["user_id"]
+    #             res_dict["view_counts"] = video["view_counts"]
+    #             res_dict["user_name"] = user_info["name"]
+    #             res_dict["head_shot"] = user_info["headshot"]
+    #             res_dict["comment_counts"] = comments
+    #             res_dict["like_counts"] = likes
+    #             res_list.append(deepcopy(res_dict))
+    #     except Exception as e:
+    #         raise response_code.DatabaseERR(errmsg="{}".format(e))
+    #     return set_resjson(res_array=res_list)
+
     def func_hot_video(self):
         """
         热门视频
@@ -496,7 +544,7 @@ class VideoHandler(object):
             for video in video_cursor:
                 likes = mongo.db.like.find(
                     {"relation_id": video.get("_id"), "type": "video"}).count()
-                comments = mongo.db.comments.find(
+                comments = mongo.db.comment.find(
                     {"video_id": video.get("_id")}).count()
                 user_info = mongo.db.user.find_one(
                     {"_id": video.get("user_id")})
@@ -504,21 +552,59 @@ class VideoHandler(object):
                 category_list = []
                 for category in video['category']:
                     category_list.append(tool["data"].get(category))
-                res_dict["video_id"] = video["_id"]
-                res_dict["image_path"] = video["image_path"]
-                res_dict["title"] = video["title"]
-                res_dict["category"] = category_list
-                res_dict["update_time"] = video["upload_time"]
-                res_dict["user_id"] = video["user_id"]
-                res_dict["view_counts"] = video["view_counts"]
-                res_dict["user_name"] = user_info["name"]
-                res_dict["head_shot"] = user_info["headshot"]
-                res_dict["comment_counts"] = comments
-                res_dict["like_counts"] = likes
+                series_id = video.get("series", None)
+                a = 0
+                if series_id:
+                    for i in res_list:
+                        if series_id == i.get("series_id", None):
+                            a = 1
+                            break
+                    if a == 1:
+                        continue
+
+                    view_counts = 0
+                    like_counts = 0
+                    comment_counts = 0
+                    series_video_cursor = mongo.db.video.find({"series": series_id})
+                    for video in series_video_cursor:
+                        likes = mongo.db.like.find(
+                            {"relation_id": video.get("_id"),
+                             "type": "video"}).count()
+                        comments = mongo.db.comment.find(
+                            {"video_id": video.get("_id")}).count()
+                        view_counts += video["view_counts"]
+                        like_counts += likes
+                        comment_counts += comments
+                    series_info = mongo.db.series.find_one({"_id": series_id})
+                    series_user_info = mongo.db.user.find_one(
+                        {"_id": series_info["user_id"]})
+                    res_dict["series_id"] = series_info["_id"]
+                    res_dict["image_path"] = series_info["image_path"]
+                    res_dict["title"] = series_info["title"]
+                    res_dict["time"] = series_info["time"]
+                    res_dict["user_id"] = series_info["user_id"]
+                    res_dict["user_name"] = series_user_info["name"]
+                    res_dict["headshot"] = series_user_info["headshot"]
+                    res_dict["view_counts"] = view_counts
+                    res_dict["comment_counts"] = comment_counts
+                    res_dict["like_counts"] = like_counts
+                else:
+                    res_dict["video_id"] = video["_id"]
+                    res_dict["image_path"] = video["image_path"]
+                    res_dict["title"] = video["title"]
+                    res_dict["category"] = category_list
+                    res_dict["update_time"] = video["upload_time"]
+                    res_dict["user_id"] = video["user_id"]
+                    res_dict["view_counts"] = video["view_counts"]
+                    res_dict["user_name"] = user_info["name"]
+                    res_dict["head_shot"] = user_info["headshot"]
+                    res_dict["comment_counts"] = comments
+                    res_dict["like_counts"] = likes
                 res_list.append(deepcopy(res_dict))
         except Exception as e:
             raise response_code.DatabaseERR(errmsg="{}".format(e))
         return set_resjson(res_array=res_list)
+
 
     def func_hot_author(self):
         """
@@ -561,7 +647,7 @@ class VideoHandler(object):
                     for category in video['category']:
                         category_list.append(tool["data"].get(category))
                     like_counts = mongo.db.like.find({"relation_id": video["_id"], "type": "video"}).count()
-                    comment_counts = mongo.db.comments.find( {"video_id": video["_id"]}).count()
+                    comment_counts = mongo.db.comment.find( {"video_id": video["_id"]}).count()
                     video_dict["video_id"] = video["_id"]
                     video_dict["image_path"] = video["image_path"]
                     video_dict["title"] = video["title"]

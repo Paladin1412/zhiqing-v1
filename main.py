@@ -134,4 +134,4 @@ def after_request(response):
 
 if __name__ == '__main__':
     # print(app.url_map)
-    app.run(host='0.0.0.0', port=9191, debug=True)
+    app.run(host='0.0.0.0', port=8181, debug=True)

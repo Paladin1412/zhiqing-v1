@@ -7,7 +7,7 @@
 @Email   : 18821723039@163.com
 @Software: PyCharm
 """
-from flask import g
+from copy import deepcopy
 
 from main import mongo
 from utils import response_code
@@ -36,18 +36,30 @@ class DocumentHandler(object):
         查看课件
         """
         video_id = self.extra_data.get('video_id')
+        video_document = {}
+        res_list = []
         try:
-            video_document = mongo.db.document.find_one({"video_id": video_id},
-                                                        {"_id": 0,
-                                                         "file_name": 1,
-                                                         "file_path": 1,
-                                                         "image_path": 1,
-                                                         "price": 1,
-                                                         "time": 1,
-                                                         })
+            video_document_cursor = mongo.db.document.find(
+                {"video_id": video_id},
+                {
+                    "file_name": 1,
+                    "file_path": 1,
+                    "image_path": 1,
+                    "price": 1,
+                    "time": 1,
+                })
+
         except Exception as e:
             raise response_code.DatabaseERR(errmsg="{}".format(e))
+
+        for document in video_document_cursor:
+            video_document["file_id"] = document["_id"]
+            video_document["file_name"] = document["file_name"]
+            video_document["file_path"] = document["file_path"]
+            video_document["price"] = document["price"]
+            video_document["time"] = document["time"]
+            res_list.append(deepcopy(video_document))
+
         if not video_document:
             raise response_code.RoleERR(errmsg="这个视频没有课件")
-
-        return set_resjson(res_array=[video_document])
+        return set_resjson(res_array=res_list)
