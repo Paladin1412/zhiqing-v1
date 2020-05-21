@@ -52,7 +52,7 @@ class SubscriptionHandler(object):
         if mode == "":
             raise response_code.ParamERR(errmsg="type must be provide")
 
-        sub_cursor = mongo.db.subscription.find({"user_id": user["_id"]},
+        sub_cursor = mongo.db.subscription.find({"user_id": user["_id"], "state": 0},
                                                 {"_id": 0,
                                                  "relation_id": 1})
         if sub_cursor.count() == 0:

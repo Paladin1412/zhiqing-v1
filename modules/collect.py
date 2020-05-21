@@ -118,7 +118,7 @@ class CollectHandler(object):
                         mongo.db.collection.insert_one(
                             {"_id": create_uuid(), "user_id": user["_id"],
                              "relation_id": relation_id, "type": collect_type,
-                             "time": collect_time})
+                             "time": collect_time, "state": 0})
                     except Exception as e:
                         raise response_code.DatabaseERR(
                             errmsg="{}".format(e))
@@ -127,8 +127,9 @@ class CollectHandler(object):
             else:
                 if collect_info:
                     try:
-                        mongo.db.collection.delete_one({"user_id": user["_id"],
-                                                        "relation_id": relation_id})
+                        mongo.db.collection.update_one({"user_id": user["_id"],
+                                                        "relation_id": relation_id},
+                                                       {"$set": {"state": -1}})
                     except Exception as e:
                         raise response_code.DatabaseERR(
                             errmsg="{}".format(e))

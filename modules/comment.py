@@ -201,13 +201,13 @@ class CommentHandler(object):
         return set_resjson(res_array=res_data)
 
     # def func_database(self):
-    #     info = {
-    #         "background": "http://api.haetek.com:9191/static/background/background.jpg",
-    #         "introduction": "这是一个学习的视频， 好好看， 好好学"
-    #     }
-    #     user = mongo.db.user.find()
-    #     for i in user:
+    #     # info = {
+    #     #     "background": "http://api.haetek.com:9191/static/background/background.jpg",
+    #     #     "introduction": "这是一个学习的视频， 好好看， 好好学"
+    #     # }
+    #     # user = mongo.db.user.find()
+    #     # for i in user:
     #
-    #         mongo.db.user.update({"_id": i["_id"]}, {"$set": info})
+    #     mongo.db.collection.update({}, {"$set": {"state": 0}}, multi=True)
     #
     #     return set_resjson()

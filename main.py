@@ -88,6 +88,14 @@ def index():
                 from modules.subscription import SubscriptionHandler
                 comment_main = SubscriptionHandler(extra_data, model_action)
                 resp = comment_main.handle_model()
+            elif model_name == "data":
+                from modules.data import DataHandler
+                comment_main = DataHandler(extra_data, model_action)
+                resp = comment_main.handle_model()
+            elif model_name == "video_history":
+                from modules.history import HistoryHandler
+                comment_main = HistoryHandler(extra_data, model_action)
+                resp = comment_main.handle_model()
             else:
                 resp = set_resjson(err=-1, errmsg="model_name is incorrect")
     return resp

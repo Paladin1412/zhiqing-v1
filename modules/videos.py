@@ -89,6 +89,9 @@ class VideoHandler(object):
         局部搜索视频
         :return:
         """
+        user = g.user
+        if not user:
+            raise response_code.UserERR(errmsg='用户未登录')
         query_string = self.extra_data.get('query_string', "")
         video_id = self.extra_data.get('video_id', "")
         if query_string == "" or video_id == "":
@@ -266,11 +269,11 @@ class VideoHandler(object):
         response = upload_video(editor_video_name)
         os.remove(editor_video_name)
         video_path = response.pop("video_url")
-        video__update_info = {'composite_video_message': response,
-                              "composite_video": video_path}
+        video_update_info = {'composite_video_message': response,
+                             "composite_video": video_path}
         try:
             mongo.db.video.update_one({"_id": task_id},
-                                      {"$set": video__update_info})
+                                      {"$set": video_update_info})
         except Exception as e:
             raise response_code.DatabaseERR(errmsg="{}".format(e))
 
@@ -376,13 +379,14 @@ class VideoHandler(object):
             like = mongo.db.like.find_one(
                 {'relation_id': video_id, 'type': 'video', 'user_id': user_id})
             collection = mongo.db.collection.find_one(
-                {'relation_id': video_id, 'type': 'video', 'user_id': user_id})
+                {'relation_id': video_id, 'type': 'video', 'user_id': user_id,
+                 "state": 0})
             subscription = mongo.db.subscription.find_one(
                 {'relation_id': author_id, 'type': 'author',
-                 'user_id': user_id})
+                 'user_id': user_id, "state": 0})
             data_dict['is_like'] = 1 if like else 0
             data_dict['is_collect'] = 1 if collection else 0
-            data_dict['is_subscribe'] = 1 if subscription else 00
+            data_dict['is_subscribe'] = 1 if subscription else 0
         res_data.append(data_dict)
         mongo.db.video.update_one({'_id': video_id},
                                   {'$set': {'view_counts': view_counts + 1}})
@@ -566,7 +570,8 @@ class VideoHandler(object):
                     view_counts = 0
                     like_counts = 0
                     comment_counts = 0
-                    series_video_cursor = mongo.db.video.find({"series": series_id})
+                    series_video_cursor = mongo.db.video.find(
+                        {"series": series_id, "state": 2})
                     for video in series_video_cursor:
                         likes = mongo.db.like.find(
                             {"relation_id": video.get("_id"),
@@ -613,13 +618,13 @@ class VideoHandler(object):
         @return:
         """
         max_size = self.extra_data.get("max_size", 10)
-        # page = self.extra_data.get("page", 1)
+        page = self.extra_data.get("page", 1)
         video_size = self.extra_data.get("video_size", 4)
         res_dict = {}
         res_list = []
         try:
             max_size = int(max_size)
-            # page = int(page)
+            page = int(page)
             video_size = int(video_size)
         except Exception as e:
             raise response_code.ParamERR(errmsg="max_size or page type error")
@@ -628,10 +633,13 @@ class VideoHandler(object):
                 errmsg="max_size No more than fifty or video_size No more than ten")
         try:
             relation_id_cursor = mongo.db.subscription.find({"type": "author"},
-                                       {"_id": 0,
-                                        "relation_id": 1})
-            relation_id_list = [user_id.get("relation_id") for user_id in relation_id_cursor]
-            relation_sort = sorted(Counter(relation_id_list).items(), key= lambda x: x[1], reverse=True)[:2]
+                                                            {"_id": 0,
+                                                             "relation_id": 1}).limit(
+                max_size)
+            relation_id_list = [user_id.get("relation_id") for user_id in
+                                relation_id_cursor]
+            relation_sort = sorted(Counter(relation_id_list).items(),
+                                   key=lambda x: x[1], reverse=True)
             video_dict = {}
             video_list = []
             for relation_id_set in relation_sort:

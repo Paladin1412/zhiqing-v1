@@ -65,6 +65,14 @@ class DataHandler(object):
                     download_counts += document.pop("download_counts")
             like_counts += mongo.db.like.find({"relation_id": video["_id"]}).count()
             collections_counts += mongo.db.collection.find({"relation_id": video["_id"]}).count()
-            comment_counts += 1
+            comment_counts += mongo.db.comment.find({"video_id": video["_id"]}).count()
+        res_dict = {"subscription_counts": subscription_counts,
+                    "view_counts": view_counts,
+                    "share_counts": subscription_counts,
+                    "download_counts": download_counts,
+                    "collections_counts": collections_counts,
+                    "comment_counts": comment_counts}
+
+        return set_resjson(res_array=[res_dict])
 
 
