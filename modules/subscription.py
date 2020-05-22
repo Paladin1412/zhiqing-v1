@@ -15,6 +15,7 @@ from flask import g
 
 from main import mongo
 from utils import response_code
+from utils.mongo_id import create_uuid
 from utils.setResJson import set_resjson
 
 
@@ -37,6 +38,53 @@ class SubscriptionHandler(object):
                                errmsg="{} is incorrect !".format(
                                    self.model_action))
         return resp
+
+    def func_add_subscription(self):
+        """
+        订阅
+        @return:
+        """
+        user = g.user
+        if not user:
+            raise response_code.UserERR(errmsg='用户未登录')
+        sub_type = self.extra_data.get("type", "")
+        relation_id = self.extra_data.get("relation_id", "")
+        value = self.extra_data.get("value", "")
+        if value not in [0, 1]:
+            raise response_code.ParamERR(errmsg="value must be 1 or 0")
+        elif relation_id == "":
+            raise response_code.ParamERR(errmsg="relation_id must be provide")
+        elif sub_type != "author":
+            raise response_code.ParamERR(errmsg="mode must be author")
+        author_info = mongo.db.user.find_one({"_id": relation_id})
+        if not author_info:
+            raise response_code.ParamERR(errmsg="relation_id 不存在")
+        else:
+            sub_info = mongo.db.subscription.find_one(
+                {"relation_id": relation_id, "user_id": user["_id"]})
+            if value == 1:
+                if not sub_info:
+                    mongo.db.subscription.insert_one(
+                        {"_id": create_uuid(), "user_id": user["_id"],
+                         "relation_id": relation_id,
+                         "time": time.time(), "type": sub_type, "state": 0})
+                elif sub_info["state"] == -1:
+                    mongo.db.subscription.update_one({"_id": sub_info["_id"]},
+                                                     {"$set": {"state": 0}})
+                else:
+                    raise response_code.ParamERR(errmsg="此作者已经订阅")
+            else:
+                if sub_info:
+                    if sub_info["state"] == 0:
+                        mongo.db.subscription.update_one(
+                            {"_id": sub_info["_id"]},
+                            {"$set": {"state": -1}})
+                    else:
+                        raise response_code.ParamERR(errmsg="此作者还没有订阅")
+                else:
+                    raise response_code.ParamERR(errmsg="此作者还没有订阅")
+
+        return set_resjson()
 
     def func_latest_subscription(self):
         """

@@ -64,8 +64,8 @@ def index():
                 from modules.comment import CommentHandler
                 comment_main = CommentHandler(extra_data, model_action)
                 resp = comment_main.handle_model()
-            elif model_name == "collect":
-                from modules.collect import CollectHandler
+            elif model_name == "collection":
+                from modules.collection import CollectHandler
                 comment_main = CollectHandler(extra_data, model_action)
                 resp = comment_main.handle_model()
             elif model_name == "like":

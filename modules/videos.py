@@ -635,7 +635,7 @@ class VideoHandler(object):
             relation_id_cursor = mongo.db.subscription.find({"type": "author"},
                                                             {"_id": 0,
                                                              "relation_id": 1}).limit(
-                max_size)
+                max_size).skip(max_size*(page - 1))
             relation_id_list = [user_id.get("relation_id") for user_id in
                                 relation_id_cursor]
             relation_sort = sorted(Counter(relation_id_list).items(),

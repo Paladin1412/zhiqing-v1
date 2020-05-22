@@ -91,7 +91,7 @@ class HistoryHandler(object):
         video_id = self.extra_data.get("video_id", "")
         query_string = self.extra_data.get("query_string", "")
         end_time = self.extra_data.get("end_time", "")
-        if end_time == "" or video_id == "" or query_string:
+        if end_time == "" or video_id == "" or query_string == "":
             raise response_code.ParamERR(
                 errmsg="video_id, end_time, query_string must be provide")
         try:

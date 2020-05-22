@@ -162,9 +162,14 @@ class CommentHandler(object):
         parent_id = self.extra_data.get("parent_id", "")
         max_size = self.extra_data.get("max_size", "")
         page = self.extra_data.get("page", "")
-        try:
-            res_data = []
 
+        try:
+            max_size = int(max_size)
+            page = int(page)
+        except Exception as e:
+            raise response_code.ParamERR(errmsg="max_size, page must be int")
+        res_data = []
+        try:
             likes = mongo.db.like.find(
                 {'relation_id': video_id, 'type': 'comment'},
                 {'_id': 1})

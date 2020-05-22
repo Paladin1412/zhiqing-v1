@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 """
-@File    : collect.py
+@File    : collection.py
 @Time    : 2020/5/11 15:48
 @Author  : Qi
 @Email   : 18821723039@163.com
@@ -37,7 +37,7 @@ class CollectHandler(object):
                                    self.model_action))
         return resp
 
-    def func_video_collect(self):
+    def func_add_collection(self):
         """
         收藏
         :return:
@@ -122,17 +122,25 @@ class CollectHandler(object):
                     except Exception as e:
                         raise response_code.DatabaseERR(
                             errmsg="{}".format(e))
+
+                elif collect_info["state"] == -1:
+                    mongo.db.collection.update_one({"_id": collect_info["_id"]},
+                                                   {"$set": {"state": 0}})
                 else:
                     raise response_code.ParamERR(errmsg="该视频已经收藏")
             else:
                 if collect_info:
-                    try:
-                        mongo.db.collection.update_one({"user_id": user["_id"],
-                                                        "relation_id": relation_id},
-                                                       {"$set": {"state": -1}})
-                    except Exception as e:
-                        raise response_code.DatabaseERR(
-                            errmsg="{}".format(e))
+                    if collect_info["state"] == 0:
+                        try:
+                            mongo.db.collection.update_one(
+                                {"user_id": user["_id"],
+                                 "relation_id": relation_id},
+                                {"$set": {"state": -1}})
+                        except Exception as e:
+                            raise response_code.DatabaseERR(
+                                errmsg="{}".format(e))
+                    else:
+                        raise response_code.ParamERR(errmsg="没有收藏此视频")
                 else:
                     raise response_code.ParamERR(errmsg="没有收藏此视频")
 
