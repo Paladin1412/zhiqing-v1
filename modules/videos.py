@@ -81,6 +81,17 @@ class VideoHandler(object):
 
         ret = run_ai.global_play_video(query_string, mode, video_ids, max_size,
                                        page)
+        user = g.user
+        if user:
+            user_id = user["_id"]
+        else:
+            user_id = "1"
+        try:
+            mongo.db.search_history.insert(
+                {"_id": create_uuid(), "key": query_string, "user_id": user_id,
+                 "time": time.time(), "type": "global"})
+        except Exception as e:
+            raise response_code.ParamERR(errmsg="{}".format(e))
         response = set_resjson(res_array=ret)
         return response
 
@@ -103,6 +114,13 @@ class VideoHandler(object):
         else:
             ret = run_ai.local_play_video(query_string, video_id)
             response = set_resjson(res_array=ret)
+        try:
+            mongo.db.search_history.insert(
+                {"_id": create_uuid(), "key": query_string,
+                 "user_id": user["_id"],
+                 "time": time.time(), "type": "local"})
+        except Exception as e:
+            raise response_code.ParamERR(errmsg="{}".format(e))
 
         return response
 
