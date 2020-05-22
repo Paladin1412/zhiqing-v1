@@ -47,7 +47,9 @@ class UserHandler(object):
         func_name = func_name.lower()
         try:
             handle_function = getattr(UserHandler, func_name)
-            if self.model_action not in ["generate_qrcode", "logout", "is_login"]:
+            if self.model_action not in ["generate_qrcode", "logout",
+                                         "is_login", "get_information",
+                                         "get_data"]:
                 if self.extra_data == '':
                     raise response_code.ParamERR(
                         errmsg="[ extra_data ] must be provided ")
@@ -57,6 +59,31 @@ class UserHandler(object):
                                errmsg="{} is incorrect !".format(
                                    self.model_action))
         return resp
+
+    def func_get_information(self):
+        """
+        获取个人信息
+        @return:
+        """
+        user = g.user
+        res_dict = {}
+        if not user:
+            raise response_code.ParamERR(errmsg="用户未登陆")
+        try:
+            subscription_counts = mongo.db.subscription.find(
+                {"user_id": user["_id"], "state": 0}).count()
+            fans_counts = mongo.db.subscription.find(
+                {"relation_id": user["_id"], "state": 0}).count()
+        except Exception as e:
+            raise response_code.DatabaseERR(errmsg="{}".format(e))
+        res_dict["user_name"] = user["name"]
+        res_dict["introduction"] = user["introduction"]
+        res_dict["headshot"] = user["headshot"]
+        res_dict["background"] = user["background"]
+        res_dict["user_name"] = user["name"]
+        res_dict["subscription_counts"] = subscription_counts
+        res_dict["fans_counts"] = fans_counts
+        return set_resjson(res_array=[res_dict])
 
     def func_generate_code(self):
         """

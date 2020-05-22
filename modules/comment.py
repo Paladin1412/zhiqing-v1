@@ -34,7 +34,7 @@ class CommentHandler(object):
         res = handle_function(self)
         return res
 
-    def func_comment_post(self):
+    def func_post_comment(self):
         """
         发表评论
         """

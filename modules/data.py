@@ -53,7 +53,7 @@ class DataHandler(object):
         collections_counts = 0
         share_counts = 0
         comment_counts = 0
-        subscription_counts = mongo.db.subcription.find({"relation_id": user["_id"]}).count()
+        subscription_counts = mongo.db.subcription.find({"relation_id": user["_id"], "state": 0}).count()
         video_cursor = mongo.db.video.find({"user_id": user["_id"]})
         for video in video_cursor:
             view_counts += video["view_counts"]
