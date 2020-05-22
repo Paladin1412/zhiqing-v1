@@ -317,8 +317,8 @@ class Search:
                     user = self.database.user.find_one({'_id': user_id})
                     video_counts = self.database.video.find(
                         {"user_id": user_id}).count()
-                    subscription_counts = self.database.subscription.find(
-                        {"user_id": user_id}).count()
+                    fans_counts = self.database.subscription.find(
+                        {"relation_id": user_id}).count()
                     dict_search = {'source': 'user'}
                     data = dict_search['data'] = {}
                     data['user_id'] = user_id
@@ -326,7 +326,7 @@ class Search:
                     data['user_name'] = user['name']
                     data['introduction'] = user['introduction']
                     data['video_counts'] = video_counts
-                    data['subscription_counts'] = subscription_counts
+                    data['fans_counts'] = fans_counts
                     dict_search['match_frame'] = {
                         'matched_str': user_dict[user_id]['matched_str'],
                         'score': user_dict[user_id]['score']}

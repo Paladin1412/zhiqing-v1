@@ -53,7 +53,7 @@ class DataHandler(object):
         collections_counts = 0
         share_counts = 0
         comment_counts = 0
-        subscription_counts = mongo.db.subcription.find({"relation_id": user["_id"], "state": 0}).count()
+        fans_counts = mongo.db.subcription.find({"relation_id": user["_id"], "state": 0}).count()
         video_cursor = mongo.db.video.find({"user_id": user["_id"]})
         for video in video_cursor:
             view_counts += video["view_counts"]
@@ -66,9 +66,9 @@ class DataHandler(object):
             like_counts += mongo.db.like.find({"relation_id": video["_id"]}).count()
             collections_counts += mongo.db.collection.find({"relation_id": video["_id"]}).count()
             comment_counts += mongo.db.comment.find({"video_id": video["_id"]}).count()
-        res_dict = {"subscription_counts": subscription_counts,
+        res_dict = {"fans_counts": fans_counts,
                     "view_counts": view_counts,
-                    "share_counts": subscription_counts,
+                    "share_counts": share_counts,
                     "download_counts": download_counts,
                     "collections_counts": collections_counts,
                     "comment_counts": comment_counts}
