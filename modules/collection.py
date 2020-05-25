@@ -131,8 +131,8 @@ class CollectHandler(object):
         series_dict = {}
         res_list = []
         view_counts = 0
-        like_counts = 0
-        comment_counts = 0
+        # like_counts = 0
+        # comment_counts = 0
         collections_cursor = mongo.db.collection.find({"user_id": user["_id"], "state": 0})
         for video_collect in collections_cursor:
             if video_collect["type"] == "video":
@@ -150,22 +150,26 @@ class CollectHandler(object):
                     {"video_id": video["_id"]}).count()
                 res_list.append(deepcopy(video_dict))
             else:
+                video_id = []
                 series_info = mongo.db.series.find_one({"_id": video_collect["relation_id"]})
                 video_cursor = mongo.db.video.find({"series": series_info["_id"], "state": 2})
                 for video in video_cursor:
+                    video_id.append(video["_id"])
                     view_counts += video["view_counts"]
-                    like_counts += mongo.db.like.find(
-                        {"relation_id": video["_id"]}).count()
-                    comment_counts += mongo.db.comment.find(
-                        {"video_id": video["_id"]}).count()
-                    series_dict["type"] = "series"
-                    series_dict["series_id"] = series_info["_id"]
-                    series_dict["title"] = series_info["title"]
-                    series_dict["image_path"] = series_info["image_path"]
-                    series_dict["view_counts"] = view_counts
-                    series_dict["like_counts"] = like_counts
-                    series_dict["comment_counts"] = comment_counts
-                    series_dict["video_counts"] = series_info.get("video_counts", None) if series_info.get("video_counts", None) else mongo.db.video.find({"series": series_info["_id"]}).count()
-                    res_list.append(deepcopy(series_dict))
+                    # like_counts += mongo.db.like.find(
+                    #     {"relation_id": video["_id"]}).count()
+                    # comment_counts += mongo.db.comment.find(
+                    #     {"video_id": video["_id"]}).count()
+                series_dict["type"] = "series"
+                series_dict["series_id"] = series_info["_id"]
+                series_dict["title"] = series_info["title"]
+                series_dict["image_path"] = series_info["image_path"]
+                series_dict["view_counts"] = view_counts
+                series_dict["video_counts"] = series_info.get("video_counts", None) if series_info.get("video_counts", None) else mongo.db.video.find({"series": series_info["_id"]}).count()
+                like_counts = mongo.db.like.find({"relation_id": {"$in": video_id}}).count()
+                comment_counts = mongo.db.comment.find({"state": 0, "video_id": {"$in": video_id}}).count()
+                series_dict["like_counts"] = like_counts
+                series_dict["comment_counts"] = comment_counts
+                res_list.append(deepcopy(series_dict))
 
         return set_resjson(res_array=res_list)

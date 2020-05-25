@@ -586,19 +586,21 @@ class VideoHandler(object):
                         continue
 
                     view_counts = 0
-                    like_counts = 0
-                    comment_counts = 0
+                    # like_counts = 0
+                    # comment_counts = 0
+                    video_id_list = []
                     series_video_cursor = mongo.db.video.find(
                         {"series": series_id, "state": 2})
                     for video in series_video_cursor:
-                        likes = mongo.db.like.find(
-                            {"relation_id": video.get("_id"),
-                             "type": "video"}).count()
-                        comments = mongo.db.comment.find(
-                            {"video_id": video.get("_id")}).count()
+                        video_id_list.append(video["_id"])
+                        # likes = mongo.db.like.find(
+                        #     {"relation_id": video.get("_id"),
+                        #      "type": "video"}).count()
+                        # comments = mongo.db.comment.find(
+                        #     {"video_id": video.get("_id")}).count()
                         view_counts += video["view_counts"]
-                        like_counts += likes
-                        comment_counts += comments
+                        # like_counts += likes
+                        # comment_counts += comments
                     series_info = mongo.db.series.find_one({"_id": series_id})
                     series_user_info = mongo.db.user.find_one(
                         {"_id": series_info["user_id"]})
@@ -610,6 +612,11 @@ class VideoHandler(object):
                     res_dict["user_name"] = series_user_info["name"]
                     res_dict["head_shot"] = series_user_info["headshot"]
                     res_dict["view_counts"] = view_counts
+                    like_counts = mongo.db.like.find(
+                        {"relation_id": {"$in": video_id_list}}).count()
+                    comment_counts = mongo.db.comment.find(
+                        {"state": 0,
+                         "video_id": {"$in": video_id_list}}).count()
                     res_dict["comment_counts"] = comment_counts
                     res_dict["like_counts"] = like_counts
                 else:
@@ -761,7 +768,11 @@ class VideoHandler(object):
                     video_dict["like_counts"] = likes
                     video_dict["video_id"] = comments
                     video_list.append(deepcopy(video_dict))
-                res_dict["video_counts"] = view_counts
+                res_dict["view_counts"] = view_counts
+                res_dict["video_counts"] = series.get("video_counts",
+                                                      None) if series.get(
+                    "video_counts", None) else mongo.db.video.find(
+                    {"series": series["_id"]}).count()
                 res_dict["like_counts"] = like_counts
                 res_dict["comment_counts"] = comment_counts
                 res_dict["video_data"] = video_list
