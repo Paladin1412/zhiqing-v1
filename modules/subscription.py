@@ -145,5 +145,11 @@ class SubscriptionHandler(object):
 
         return resp
 
-
-
+    def func_get_subcription(self):
+        """
+        查看订阅
+        @return:
+        """
+        user = g.user
+        if not user:
+            raise response_code.UserERR(errmsg='用户未登录')

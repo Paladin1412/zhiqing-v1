@@ -2,17 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6c7c281b-f7b3-43bc-8de8-c1cbc42d9bf8" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/1393f60e-c930-4d24-94ae-deca4371b0ca.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/1393f60e-c930-4d24-94ae-deca4371b0ca.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/6a4f288a-1d69-45b2-b101-4c42e61cbf78.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/6a4f288a-1d69-45b2-b101-4c42e61cbf78.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/aimodels/search(2).py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/aimodels/search(2).py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/aimodels/search.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/aimodels/search.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/collection.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/collection.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/data.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/user.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/videos.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/videos.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/mongo_id.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/mongo_id.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/subscription.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/subscription.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -217,7 +208,7 @@
       <workItem from="1589953104709" duration="14191000" />
       <workItem from="1590023098443" duration="18600000" />
       <workItem from="1590109111951" duration="20818000" />
-      <workItem from="1590368412516" duration="19418000" />
+      <workItem from="1590368412516" duration="20236000" />
     </task>
     <task id="LOCAL-00001" summary="首次提交">
       <created>1588469272551</created>
@@ -478,7 +469,14 @@
       <option name="project" value="LOCAL" />
       <updated>1590144511919</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="查看收藏">
+      <created>1590402471423</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1590402471423</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -488,7 +486,6 @@
     <option featureType="com.intellij.fileTypeFactory" implementationName="*.log" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="视频点赞" />
     <MESSAGE value="视频点赞main" />
     <MESSAGE value="评论" />
     <MESSAGE value="细节修改" />
@@ -513,7 +510,8 @@
     <MESSAGE value="获得历史记录" />
     <MESSAGE value="全局搜索和局部搜索添加历史记录" />
     <MESSAGE value="查看作品" />
-    <option name="LAST_COMMIT_MESSAGE" value="查看作品" />
+    <MESSAGE value="查看收藏" />
+    <option name="LAST_COMMIT_MESSAGE" value="查看收藏" />
   </component>
   <component name="WindowStateProjectService">
     <state x="707" y="189" key="#Deployment" timestamp="1589965727763">
@@ -539,10 +537,10 @@
     </state>
     <state x="896" y="459" width="832" height="579" key="#xdebugger.evaluate/0.23.1792.1016@0.23.1792.1016" timestamp="1590398337965" />
     <state x="643" y="463" width="1012" height="579" key="#xdebugger.evaluate/0.23.1792.1019@0.23.1792.1019" timestamp="1588226610795" />
-    <state x="711" y="130" key="CommitChangelistDialog2" timestamp="1590144511712">
+    <state x="711" y="130" key="CommitChangelistDialog2" timestamp="1590402471103">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
-    <state x="711" y="130" key="CommitChangelistDialog2/0.23.1792.1016@0.23.1792.1016" timestamp="1590144511712" />
+    <state x="711" y="130" key="CommitChangelistDialog2/0.23.1792.1016@0.23.1792.1016" timestamp="1590402471103" />
     <state x="473" y="106" key="CommitChangelistDialog2/0.23.1792.1017@0.23.1792.1017" timestamp="1589797766030" />
     <state x="473" y="106" key="CommitChangelistDialog2/0.23.1792.1019@0.23.1792.1019" timestamp="1588469272246" />
     <state width="254" height="195" key="DatabaseViewActions_Filter" timestamp="1589337227001">
@@ -557,38 +555,38 @@
       <screen x="0" y="23" width="1792" height="1019" />
     </state>
     <state x="660" y="243" key="Github.UntrackedFilesDialog/0.23.1792.1019@0.23.1792.1019" timestamp="1588227907829" />
-    <state width="1087" height="331" key="GridCell.Tab.0.bottom" timestamp="1590401818607">
+    <state width="1750" height="331" key="GridCell.Tab.0.bottom" timestamp="1590402606676">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
     <state width="1750" height="238" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1589854002934" />
-    <state width="1087" height="331" key="GridCell.Tab.0.bottom/0.23.1792.1016@0.23.1792.1016" timestamp="1590401818607" />
+    <state width="1750" height="331" key="GridCell.Tab.0.bottom/0.23.1792.1016@0.23.1792.1016" timestamp="1590402606676" />
     <state width="1750" height="238" key="GridCell.Tab.0.bottom/0.23.1792.1017@0.23.1792.1017" timestamp="1589798015983" />
     <state width="1750" height="342" key="GridCell.Tab.0.bottom/0.23.1792.1019@0.23.1792.1019" timestamp="1588243199676" />
     <state width="1215" height="238" key="GridCell.Tab.0.bottom/0.23.1792.1020@0.23.1792.1020" timestamp="1589943264293" />
     <state width="1750" height="331" key="GridCell.Tab.0.bottom/0.23.1792.1026@0.23.1792.1026" timestamp="1589452950497" />
-    <state width="1087" height="331" key="GridCell.Tab.0.center" timestamp="1590401818607">
+    <state width="1750" height="331" key="GridCell.Tab.0.center" timestamp="1590402606675">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
     <state width="1750" height="238" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1589854002933" />
-    <state width="1087" height="331" key="GridCell.Tab.0.center/0.23.1792.1016@0.23.1792.1016" timestamp="1590401818607" />
+    <state width="1750" height="331" key="GridCell.Tab.0.center/0.23.1792.1016@0.23.1792.1016" timestamp="1590402606675" />
     <state width="1750" height="238" key="GridCell.Tab.0.center/0.23.1792.1017@0.23.1792.1017" timestamp="1589798015983" />
     <state width="1750" height="342" key="GridCell.Tab.0.center/0.23.1792.1019@0.23.1792.1019" timestamp="1588243199675" />
     <state width="1215" height="238" key="GridCell.Tab.0.center/0.23.1792.1020@0.23.1792.1020" timestamp="1589943264293" />
     <state width="1750" height="331" key="GridCell.Tab.0.center/0.23.1792.1026@0.23.1792.1026" timestamp="1589452950496" />
-    <state width="1087" height="331" key="GridCell.Tab.0.left" timestamp="1590401818606">
+    <state width="1750" height="331" key="GridCell.Tab.0.left" timestamp="1590402606675">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
     <state width="1750" height="238" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1589854002932" />
-    <state width="1087" height="331" key="GridCell.Tab.0.left/0.23.1792.1016@0.23.1792.1016" timestamp="1590401818606" />
+    <state width="1750" height="331" key="GridCell.Tab.0.left/0.23.1792.1016@0.23.1792.1016" timestamp="1590402606675" />
     <state width="1750" height="238" key="GridCell.Tab.0.left/0.23.1792.1017@0.23.1792.1017" timestamp="1589798015983" />
     <state width="1750" height="342" key="GridCell.Tab.0.left/0.23.1792.1019@0.23.1792.1019" timestamp="1588243199675" />
     <state width="1215" height="238" key="GridCell.Tab.0.left/0.23.1792.1020@0.23.1792.1020" timestamp="1589943264293" />
     <state width="1750" height="331" key="GridCell.Tab.0.left/0.23.1792.1026@0.23.1792.1026" timestamp="1589452950496" />
-    <state width="1087" height="331" key="GridCell.Tab.0.right" timestamp="1590401818607">
+    <state width="1750" height="331" key="GridCell.Tab.0.right" timestamp="1590402606676">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
     <state width="1750" height="238" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1589854002934" />
-    <state width="1087" height="331" key="GridCell.Tab.0.right/0.23.1792.1016@0.23.1792.1016" timestamp="1590401818607" />
+    <state width="1750" height="331" key="GridCell.Tab.0.right/0.23.1792.1016@0.23.1792.1016" timestamp="1590402606675" />
     <state width="1750" height="238" key="GridCell.Tab.0.right/0.23.1792.1017@0.23.1792.1017" timestamp="1589798015983" />
     <state width="1750" height="342" key="GridCell.Tab.0.right/0.23.1792.1019@0.23.1792.1019" timestamp="1588243199675" />
     <state width="1215" height="238" key="GridCell.Tab.0.right/0.23.1792.1020@0.23.1792.1020" timestamp="1589943264293" />
@@ -639,10 +637,10 @@
     </state>
     <state x="740" y="154" key="SettingsEditor/0.23.1792.1016@0.23.1792.1016" timestamp="1590378070526" />
     <state x="397" y="171" key="SettingsEditor/0.23.1792.1019@0.23.1792.1019" timestamp="1588227735541" />
-    <state x="496" y="271" key="Vcs.Push.Dialog.v2" timestamp="1590144513120">
+    <state x="496" y="271" key="Vcs.Push.Dialog.v2" timestamp="1590402473156">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
-    <state x="496" y="271" key="Vcs.Push.Dialog.v2/0.23.1792.1016@0.23.1792.1016" timestamp="1590144513120" />
+    <state x="496" y="271" key="Vcs.Push.Dialog.v2/0.23.1792.1016@0.23.1792.1016" timestamp="1590402473156" />
     <state x="496" y="271" key="Vcs.Push.Dialog.v2/0.23.1792.1017@0.23.1792.1017" timestamp="1589797768499" />
     <state x="716" y="418" key="com.intellij.database.actions.DdlActions$DeleteProvider2$1" timestamp="1590378320548">
       <screen x="0" y="23" width="1792" height="1016" />
