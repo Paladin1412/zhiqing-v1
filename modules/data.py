@@ -7,6 +7,7 @@
 @Email   : 18821723039@163.com
 @Software: PyCharm
 """
+import datetime
 
 from flask import g
 
@@ -53,7 +54,19 @@ class DataHandler(object):
         collections_counts = 0
         share_counts = 0
         comment_counts = 0
-        fans_counts = mongo.db.subcription.find({"relation_id": user["_id"], "state": 0}).count()
+        now = datetime.datetime.now()
+        # 上一周
+        # last_week_end = now - timedelta(days=now.weekday() + 1)
+        # week_end_second = str(last_week_end).split()[0] + " " + "23:59:59"
+        # timestamp = time.mktime(time.strptime(week_end_second, "%Y-%m-%d %H:%M:%S"))
+        week_ago = (now - datetime.timedelta(days=7)).timestamp()
+        # timestamp = time.mktime(
+        #     time.strptime(str(week_ago), "%Y-%m-%d %H:%M:%S"))
+        week_end_sub_count = mongo.db.subscription.find(
+            {"relation_id": user["_id"], "state": 0,
+             "time": {"$lte": week_ago}}).count()
+        fans_counts = mongo.db.subscription.find(
+            {"relation_id": user["_id"], "state": 0}).count()
         video_cursor = mongo.db.video.find({"user_id": user["_id"]})
         for video in video_cursor:
             view_counts += video["view_counts"]
@@ -63,11 +76,15 @@ class DataHandler(object):
             for document in document_cursor:
                 if "download_counts" in document.keys():
                     download_counts += document.pop("download_counts")
-            like_counts += mongo.db.like.find({"relation_id": video["_id"]}).count()
-            collections_counts += mongo.db.collection.find({"relation_id": video["_id"]}).count()
-            comment_counts += mongo.db.comment.find({"video_id": video["_id"]}).count()
+            like_counts += mongo.db.like.find(
+                {"relation_id": video["_id"]}).count()
+            collections_counts += mongo.db.collection.find(
+                {"relation_id": video["_id"]}).count()
+            comment_counts += mongo.db.comment.find(
+                {"video_id": video["_id"]}).count()
         res_dict = {"fans_counts": fans_counts,
                     "view_counts": view_counts,
+                    "fans_change": fans_counts - week_end_sub_count,
                     "share_counts": share_counts,
                     "download_counts": download_counts,
                     "collections_counts": collections_counts,

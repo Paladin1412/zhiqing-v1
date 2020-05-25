@@ -10,6 +10,8 @@
 import datetime
 import random
 
+from main import mongo
+
 
 def create_uuid():
     """
@@ -20,3 +22,11 @@ def create_uuid():
     random_num = '{}'.format(random.randint(0, 999999))  # 生成的随机整数
     unique_num = now_time + random_num
     return unique_num
+
+
+def get_user_id(user_id):
+    ret = mongo.db.user_id.find_and_modify({"_id": user_id},
+                                           {"$inc": {"sequence_value": 1}},
+                                           new=True)
+    new = ret["sequence_value"]
+    return new

@@ -3,6 +3,7 @@
 user_login
 """
 import base64
+import datetime
 import hashlib
 import json
 import random
@@ -77,10 +78,21 @@ class UserHandler(object):
         except Exception as e:
             raise response_code.DatabaseERR(errmsg="{}".format(e))
         res_dict["user_name"] = user["name"]
+        res_dict["user_id"] = user["_id"]
+        res_dict["birthday"] = user.get("birthday", time.strftime("%Y-%m-%d",
+                                                                  time.localtime(
+                                                                      user[
+                                                                          "create_time"])))
+        res_dict["user_id"] = user.get("gender", "男")
         res_dict["introduction"] = user["introduction"]
         res_dict["headshot"] = user["headshot"]
         res_dict["background"] = user["background"]
         res_dict["user_name"] = user["name"]
+        res_dict["binding_webchat"] = 1 if user.get("wechat_unionid",
+                                                    None) else 0
+        res_dict["binding_qq"] = 1 if user.get("qq_unionid", None) else 0
+        res_dict["binding_microblog"] = 1 if user.get("microblog_unionid",
+                                                      None) else 0
         res_dict["subscription_counts"] = subscription_counts
         res_dict["fans_counts"] = fans_counts
         return set_resjson(res_array=[res_dict])
@@ -161,10 +173,12 @@ class UserHandler(object):
             try:
 
                 mongo.db.user.insert_one(
-                    {"name": ranstr(16), "mobile": '{}'.format(mobile),
+                    {"gender": "男", "birthday": str(datetime.date.today()),
+                     "name": ranstr(16), "mobile": '{}'.format(mobile),
                      "_id": _id, "headshot": self.head_shot_path,
                      "create_time": now_time, "login_time": now_time,
-                     "background": self.background_path, "introduction": self.introduction})
+                     "background": self.background_path,
+                     "introduction": self.introduction})
             except Exception as error:
                 current_app.logger.error(error)
                 raise response_code.DatabaseERR(errmsg='{}'.format(error))
@@ -419,12 +433,14 @@ class UserHandler(object):
                     name = redis_conn.get("unionid_name_%s" % unionid)
                     headshot = redis_conn.get("unionid_photo_url_%s" % unionid)
                     mongo.db.user.insert_one(
-                        {"name": name, "mobile": '{}'.format(mobile),
+                        {"gender": "男", "birthday": str(datetime.date.today()),
+                         "name": name, "mobile": '{}'.format(mobile),
                          "_id": _id,
                          '{}_unionid'.format(third_type): unionid,
                          "headshot": headshot,
                          "create_time": now_time, "login_time": now_time,
-                         "background": self.background_path, "introduction": self.introduction})
+                         "background": self.background_path,
+                         "introduction": self.introduction})
                 except Exception as error:
                     current_app.logger.error(error)
                     raise response_code.ThirdERR(errmsg="{}".format(error))
@@ -477,10 +493,12 @@ class UserHandler(object):
             try:
 
                 mongo.db.user.insert_one(
-                    {"name": ranstr(16), "mobile": '{}'.format(phone),
+                    {"gender": "男", "birthday": str(datetime.date.today()),
+                     "name": ranstr(16), "mobile": '{}'.format(phone),
                      "_id": _id, "headershot": self.head_shot_path,
                      "create_time": now_time, "login_time": now_time,
-                     "background": self.background_path, "introduction": self.introduction})
+                     "background": self.background_path,
+                     "introduction": self.introduction})
             except Exception as error:
                 current_app.logger.error(error)
                 raise response_code.DatabaseERR(errmsg='{}'.format(error))

@@ -87,7 +87,7 @@ class VideoHandler(object):
         else:
             user_id = "1"
         try:
-            mongo.db.search_history.insert(
+            mongo.db.search_history.insert_one(
                 {"_id": create_uuid(), "key": query_string, "user_id": user_id,
                  "time": time.time(), "type": "global"})
         except Exception as e:
@@ -115,7 +115,7 @@ class VideoHandler(object):
             ret = run_ai.local_play_video(query_string, video_id)
             response = set_resjson(res_array=ret)
         try:
-            mongo.db.search_history.insert(
+            mongo.db.search_history.insert_one(
                 {"_id": create_uuid(), "key": query_string,
                  "user_id": user["_id"],
                  "time": time.time(), "type": "local"})
@@ -608,7 +608,7 @@ class VideoHandler(object):
                     res_dict["time"] = series_info["time"]
                     res_dict["user_id"] = series_info["user_id"]
                     res_dict["user_name"] = series_user_info["name"]
-                    res_dict["headshot"] = series_user_info["headshot"]
+                    res_dict["head_shot"] = series_user_info["headshot"]
                     res_dict["view_counts"] = view_counts
                     res_dict["comment_counts"] = comment_counts
                     res_dict["like_counts"] = like_counts

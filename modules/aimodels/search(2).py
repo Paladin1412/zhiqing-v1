@@ -52,22 +52,26 @@ class Search:
     def __init__(self):
         self.database = connect_mongodb()
 
-    def get_document(self):
+    def get_document(self, video_ids):
         """
 
         :return:
         """
         res_dict = {}
         map_dict = {}
-        documents = self.database.document.find({}, {'full_str': 1, '_id': 1,
-                                                     'char_id_to_page_id': 1})
+        condition = {}
+        if video_ids:
+            condition = {"video_id": {"$in": video_ids}}
+        documents = self.database.document.find(condition,
+                                                {'full_str': 1, '_id': 1,
+                                                 'char_id_to_page_id': 1})
         for document in documents:
             key = document["_id"]
-            res_dict[key] = document["full_str"]
+            res_dict[key] = document["full_str"].lower()
             map_dict[key] = document["char_id_to_page_id"]
         return res_dict, map_dict
 
-    def document_search(self, query_str):
+    def document_search(self, query_str, video_ids):
         """
 
         :param query_str:
@@ -77,38 +81,40 @@ class Search:
         added_ids = []
         added_pages = []
 
-        input_paragraph, map_dict = self.get_document()
+        input_paragraph, map_dict = self.get_document(video_ids)
         bluE_results = bluE_standard(query_str, input_paragraph, lang='ch',
                                      isSemantic=0, max_size=100)
+
         for res_item in bluE_results:
             matched_id = res_item['key_id']
-            matched_str = res_item['matched_str']
-            matched_pos = res_item['str_position']
-            score = res_item['match_score']
-            matched_page = 0
-            matched_str_enlarge = input_paragraph[matched_id][
-                                  max(int(matched_pos[0]) - 10, 0):min(
-                                      int(matched_pos[1]) + 10
-                                      , len(input_paragraph
-                                            [matched_id]))]
-            curr_map = map_dict[matched_id]
-            for charId, pageId in curr_map:
-                if int(matched_pos[0]) <= int(charId):
-                    matched_page = int(pageId) - 1
-                    break
+            if matched_id:
+                matched_str = res_item['matched_str']
+                matched_pos = res_item['str_position']
+                score = res_item['match_score']
+                matched_page = 0
+                matched_str_enlarge = input_paragraph[matched_id][
+                                      max(int(matched_pos[0]) - 10, 0):min(
+                                          int(matched_pos[1]) + 10
+                                          , len(input_paragraph
+                                                [matched_id]))]
+                curr_map = map_dict[matched_id]
+                for charId, pageId in curr_map:
+                    if int(matched_pos[0]) <= int(charId):
+                        matched_page = int(pageId) - 1
+                        break
 
-            if added_ids.count(matched_id) < 3 and [matched_id,
-                                                    matched_page] not in added_pages:
-                res_list.append({
-                    'matched_id': matched_id,
-                    'matched_pos': matched_pos,
-                    'matched_str': matched_str,
-                    'matched_page': matched_page,
-                    'matched_str_enlarge': matched_str_enlarge,
-                    'score': score
-                })
-                added_ids.append(matched_id)
-                added_pages.append([matched_id, matched_page])
+                if added_ids.count(matched_id) < 3 and [matched_id,
+                                                        matched_page] not in added_pages:
+                    res_list.append({
+                        'matched_id': matched_id,
+                        'matched_pos': matched_pos,
+                        'matched_str': matched_str,
+                        'matched_page': matched_page,
+                        'matched_str_enlarge': matched_str_enlarge,
+                        'score': score
+                    })
+                    added_ids.append(matched_id)
+                    added_pages.append([matched_id, matched_page])
         return res_list
 
     def get_series(self):
@@ -120,7 +126,7 @@ class Search:
         results = self.database.series.find({}, {'title': 1, '_id': 1})
         for series in results:
             key = series["_id"]
-            res_dict[key] = series["title"]
+            res_dict[key] = series["title"].lower()
         return res_dict
 
     def series_search(self, query_str):
@@ -153,7 +159,7 @@ class Search:
         res_dict = {}
         users = self.database.user.find({}, {'name': 1, '_id': 1})
         for user in users:
-            res_dict[user['_id']] = user['name']
+            res_dict[user['_id']] = user['name'].lower()
         return res_dict
 
     def user_search(self, query_str):
@@ -228,6 +234,7 @@ class Search:
         compare = {}
         match_frame = {}
         match_ids = []
+        query_str = query_str.lower()
         tool = self.database.tool.find_one({'type': 'category'})
         if not video_ids:
             videos = self.database.video.find({"state": 2}, {"_id": 1})
@@ -238,9 +245,7 @@ class Search:
         user_num = 0
         document_num = 0
         if search_range in ['video', 'all']:
-            # print('Video Size: ',video_ids)
             res_dict = self.video_search(query_str, video_ids, isBluE=isBluE)
-            # print('res_dict: ',res_dict)
             for video_id in res_dict:
                 if video_id:
                     result = self.database.video.find_one({"_id": video_id},
@@ -306,7 +311,7 @@ class Search:
                         result_data.append(dict_search)
                     else:
                         temp_data.append(dict_search)
-                        compare[str(video_num - 4)] = match_frame[video_id][
+                        compare[len(temp_data) - 1] = match_frame[video_id][
                             'score']
 
         if search_range in ['user', 'all']:
@@ -334,8 +339,8 @@ class Search:
                         result_data.append(dict_search)
                     else:
                         temp_data.append(dict_search)
-                        compare[str(video_num + user_num - 4)] = \
-                        user_dict[user_id]['score']
+                        compare[len(temp_data) - 1] = user_dict[user_id][
+                            'score']
 
         if search_range in ['series', 'all']:
             series_dict = self.series_search(query_str)
@@ -358,8 +363,10 @@ class Search:
                     like_counts = self.database.like.find(
                         {"relation_id": {'$in': video_ids},
                          "type": "video"}).count()
-                    comment_counts = self.database.command().find(
+                    comment_counts = self.database.comment.find(
                         {"video_id": {'$in': video_ids}}).count()
+                    video_counts = self.database.video.find(
+                        {"series": series_id, "state": 2}).count()
                     dict_search = {'source': 'series'}
                     data = dict_search['data'] = {}
                     data['series_id'] = series_id
@@ -371,6 +378,7 @@ class Search:
                     data['description'] = series['description']
                     data['image_path'] = series['image_path']
                     data['upload_time'] = series['time']
+                    data['video_counts'] = video_counts
                     data['view_counts'] = view_counts
                     data['like_counts'] = like_counts
                     data['comment_counts'] = comment_counts
@@ -382,10 +390,11 @@ class Search:
                         result_data.append(dict_search)
                     else:
                         temp_data.append(dict_search)
-                        compare[str(series_num + video_num + user_num - 4)] = \
-                            series_dict[series_id]['score']
+                        compare[len(temp_data) - 1] = series_dict[series_id][
+                            'score']
+
         if search_range in ['document', 'all']:
-            document_list = self.document_search(query_str)
+            document_list = self.document_search(query_str, video_ids)
             if document_list:
                 for document_dict in document_list:
                     document_num += 1
@@ -409,14 +418,11 @@ class Search:
                         result_data.append(dict_search)
                     else:
                         temp_data.append(dict_search)
-                        compare[str(
-                            document_num + series_num + video_num + user_num - 4)] = \
-                            document_dict['score']
+                        compare[len(temp_data) - 1] = document_dict['score']
 
         compare_list = sorted(compare.items(), key=lambda x: x[1], reverse=True)
         for num in compare_list:
-            # result_data.append(temp_data[num])
-            result_data.append(temp_data[int(num[0])])
+            result_data.append(temp_data[num[0]])
         return result_data[max_size * (page - 1):max_size * page]
 
     def video_search(self, query_str, video_ids, isBluE=False):
@@ -457,7 +463,6 @@ class Search:
                         'score': item['match_score']
                     }
             title_dict = res_dict.copy()
-            print('title_dict:', title_dict)
             for key in list(title_dict.keys()):
                 if "title" in key:
                     # new_key = key.split('_')[1]
@@ -482,7 +487,7 @@ class Search:
             results = self.database.video.find({"state": 2},
                                                {"full_cn_str": 1, "_id": 1})
         for result in results:
-            res_dict[result["_id"]] = result["full_cn_str"]
+            res_dict[result["_id"]] = result["full_cn_str"].lower()
         return res_dict
 
     def get_video(self, video_ids):
@@ -502,9 +507,9 @@ class Search:
                                                 "title": 1})
         for result in results:
             key = result["_id"]
-            res_dict[key] = result["full_cn_str"]
+            res_dict[key] = result["full_cn_str"].lower()
             if "title" in result and result["title"]:
-                res_dict["title_" + key] = result["title"]
+                res_dict["title_" + key] = result["title"].lower()
         return res_dict
 
     def local_video_search(self, query_str, video_id, isSemantic=True):
@@ -616,8 +621,12 @@ def main():
 
     ###### Sample Two (Global Search) ######
 
-    video_ids = []
-    query_str = "我们"
+    video_ids = ["9bedd89faf371092e1aaaacf5fd3b704",
+                 "162fb70b08169805aab916f75711b015"]
+    # video_ids = []
+    query_str = '你好'
+    # query_str = ''
+
     ss = time.time()
     s = Search()
     type = 'all'
