@@ -195,10 +195,10 @@ class CommentHandler(object):
                     like_counts = mongo.db.like.find(
                         {"relation_id": comment['_id'], "type": "comment"}).count()
                     comment['like_counts'] = like_counts
-                    if not parent_id:
+                    if parent_id == "0":
                         comment_counts = mongo.db.comment.find(
                             {"parent_id": comment['_id'],
-                             "type": "comment"}).count()
+                             }).count()
                         comment['comment_counts'] = comment_counts
                     res_data.append(comment)
         except Exception as e:

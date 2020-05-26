@@ -23,6 +23,7 @@ class SubscriptionHandler(object):
     """
     订阅
     """
+
     def __init__(self, extra_data, model_action):
         self.extra_data = extra_data
         self.model_action = model_action
@@ -100,9 +101,10 @@ class SubscriptionHandler(object):
         if mode == "":
             raise response_code.ParamERR(errmsg="type must be provide")
 
-        sub_cursor = mongo.db.subscription.find({"user_id": user["_id"], "state": 0},
-                                                {"_id": 0,
-                                                 "relation_id": 1})
+        sub_cursor = mongo.db.subscription.find(
+            {"user_id": user["_id"], "state": 0},
+            {"_id": 0,
+             "relation_id": 1})
         if sub_cursor.count() == 0:
             raise response_code.RoleERR(errmsg="你还没有订阅")
         tool = mongo.db.tool.find_one({'type': 'category'})
@@ -129,7 +131,7 @@ class SubscriptionHandler(object):
 
                 video_list.append(deepcopy(video_dict))
         res_list = sorted(video_list, key=itemgetter("update_time"),
-                              reverse=True)
+                          reverse=True)
 
         if mode == "web":
             resp = set_resjson(res_array=res_list[:4])
@@ -145,7 +147,7 @@ class SubscriptionHandler(object):
 
         return resp
 
-    def func_get_subcription(self):
+    def func_get_subscription(self):
         """
         查看订阅
         @return:
@@ -153,3 +155,66 @@ class SubscriptionHandler(object):
         user = g.user
         if not user:
             raise response_code.UserERR(errmsg='用户未登录')
+        res_dict = {}
+        works = []
+        res_list = []
+        video_dict = {}
+        series_dict = {}
+
+        sub_cursor = mongo.db.subscription.find(
+            {"user_id": user["_id"], "state": 0})
+        for sub_author in sub_cursor:
+            author_info = mongo.db.user.find_one(
+                {"_id": sub_author["relation_id"]})
+            res_dict["author_id"] = author_info["_id"]
+            res_dict["author_name"] = author_info["name"]
+            res_dict["introduction"] = author_info["introduction"]
+            res_dict["headshot"] = author_info["headshot"]
+            res_dict["video_counts"] = mongo.db.video.find(
+                {"user_id": author_info["_id"], "state": 2}).count()
+            res_dict["fans_counts"] = mongo.db.subscription.find(
+                {"relation_id": author_info["_id"], "state": 0}).count()
+            video_cursor = mongo.db.video.find(
+                {"user_id": author_info["_id"], "state": 2,
+                 "series": {"$exists": False}})
+            for video in video_cursor:
+                video_dict["type"] = "video"
+                video_dict["video_id"] = video["_id"]
+                video_dict["title"] = video["title"]
+                video_dict["update_time"] = video["upload_time"]
+                video_dict["image_path"] = video["image_path"]
+                video_dict["video_time"] = video["video_time"]
+                video_dict["view_counts"] = video["view_counts"]
+                video_dict["like_counts"] = mongo.db.like.find(
+                    {"relation_id": video["_id"], "type": "video"}).count()
+                video_dict["comment_counts"] = mongo.db.comment.find(
+                    {"video_id": video["_id"], "state": 0}).count()
+                works.append(deepcopy(video_dict))
+            series_cursor = mongo.db.series.find(
+                {"user_id": author_info["_id"]})
+            for series in series_cursor:
+                view_counts = 0
+                video_id_list = []
+                series_dict["type"] = "series"
+                series_dict["series_id"] = series["_id"]
+                series_dict["title"] = series["title"]
+                series_dict["update_time"] = series["time"]
+                series_dict["image_path"] = series["image_path"]
+                series_video_cursor = mongo.db.video.find(
+                    {"series": series["_id"], "state": 2})
+                series_dict["video_counts"] = series.get("video_counts",
+                                                         None) if series.get(
+                    "video_counts", None) else series_video_cursor.count()
+                for video in series_video_cursor:
+                    view_counts += video["view_counts"]
+                    video_id_list.append(video["_id"])
+                like_counts = mongo.db.like.find(
+                    {"relation_id": {"$in": video_id_list}}).count()
+                comment_counts = mongo.db.comment.find(
+                    {"state": 0, "video_id": {"$in": video_id_list}}).count()
+                series_dict["like_counts"] = like_counts
+                series_dict["comment_counts"] = comment_counts
+                works.append(deepcopy(series_dict))
+            res_dict["works"] = works
+            res_list.append(deepcopy(res_dict))
+        return set_resjson(res_array=res_list)
