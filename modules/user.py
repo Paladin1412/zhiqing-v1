@@ -517,6 +517,25 @@ class UserHandler(object):
         return response
 
 
+def change_information():
+    """
+    编辑个人信息
+    @return:
+    """
+    user = g.user
+    if not user:
+        raise response_code.UserERR(errmsg='用户未登录')
+    gender = request.form.get('gender', "")
+    user_name = request.form.get('user_name')
+    birthday = request.form.get('birthday')
+    introduction = request.form.get('introduction')
+    background = request.files['background']
+    headshot = request.files['headshot']
+
+
+
+
+
 def get_phone(curl, json_body):
     """
     获取RSA加密手机号码

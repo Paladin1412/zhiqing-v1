@@ -147,6 +147,7 @@ class SubscriptionHandler(object):
 
         return resp
 
+    @staticmethod
     def func_get_subscription(self):
         """
         查看订阅

@@ -779,6 +779,49 @@ class VideoHandler(object):
                 res_list.append(deepcopy(res_dict))
         return set_resjson(res_array=res_list)
 
+    def func_delete_video(self):
+        """
+        删除视频
+        @return:
+        """
+        user = g.user
+        if not user:
+            raise response_code.UserERR(errmsg='用户未登录')
+        res_list= []
+        video_id_list = self.extra_data.get("video_id", "")
+        if video_id_list == "":
+            raise response_code.ParamERR(errmsg="[ video_id ] is must provided")
+        for video_id in video_id_list:
+            video_info = mongo.db.video.find_one(
+                {"_id": video_id, "user_id": user["_id"]})
+            document_info = mongo.db.document.find_one({"video_id": video_id})
+            if not video_info:
+                res = {video_id: "此视频不存在 "}
+                res_list.append(res)
+                continue
+            if "series" in video_info.keys():
+                series_info = mongo.db.series.find_one(
+                    {"_id": video_info["series"]})
+                series_video_count = series_info.get("video_counts",
+                                                     None) if series_info.get(
+                    "video_counts", None) else mongo.db.video.find(
+                    {"series": series_info["_id"]}).count() - 1
+                if series_video_count <= 0:
+                    mongo.db.series.delete_one(series_info)
+                else:
+                    mongo.db.series.update(series_info, {
+                        "$set": {"video_counts": series_video_count}})
+            if document_info:
+                mongo.db.rubish.insert_many([video_info, document_info])
+                mongo.db.video.delete_one(video_info)
+                mongo.db.document.delete_one(document_info)
+            else:
+                mongo.db.rubish.insert_one(video_info)
+                mongo.db.video.delete_one(video_info)
+            if os.path.exists(video_info["image_path"]):
+                os.remove(video_info["image_path"])
+        return set_resjson(res_array=res_list)
+
 
 def func_check():
     """
