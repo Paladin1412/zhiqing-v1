@@ -26,6 +26,7 @@ from modules.aimodels import run_ai
 from modules.aimodels.run_ai import generate_subtitle as generate_subtitle1, \
     edit_video
 from utils import response_code
+from utils.common import allowed_image_file
 from utils.mongo_id import create_uuid
 from utils.setResJson import set_resjson
 from utils.video_upload.uploadVideo import upload_video
@@ -812,11 +813,11 @@ class VideoHandler(object):
                     mongo.db.series.update(series_info, {
                         "$set": {"video_counts": series_video_count}})
             if document_info:
-                mongo.db.rubish.insert_many([video_info, document_info])
+                mongo.db.rubbish.insert_many([video_info, document_info])
                 mongo.db.video.delete_one(video_info)
                 mongo.db.document.delete_one(document_info)
             else:
-                mongo.db.rubish.insert_one(video_info)
+                mongo.db.rubbish.insert_one(video_info)
                 mongo.db.video.delete_one(video_info)
             if os.path.exists(video_info["image_path"]):
                 os.remove(video_info["image_path"])
@@ -871,9 +872,10 @@ def func_check():
     except Exception as e:
         pass
     if image_name:
+        if not allowed_image_file(image_file):
+            raise response_code.ParamERR(errmsg="The image type is incorrect")
 
-        image_path = 'static/image/{}.{}'.format(task_id,
-                                                 image_name.rsplit('.', 1)[1])
+        image_path = 'static/image/{}'.format(allowed_video_file(image_file))
         image_file.save(image_path)
         update_video_info = {"description": description, "category": category,
                              "image_path": image_path,
@@ -1135,11 +1137,6 @@ def converted_video_picture(video_name):
 
 def allowed_video_file(file_type):
     return file_type in config.ALLOWED_VIDEO_EXTENSIONS
-
-
-def allowed_image_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[
-        1] in config.ALLOWED_IMAGE_EXTENSIONS
 
 
 def video_to_md5(_path):

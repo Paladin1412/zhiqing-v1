@@ -60,6 +60,7 @@ class CommentHandler(object):
             raise response_code.DatabaseERR(errmsg="{}".format(e))
         if not video_info:
             raise response_code.ParamERR(errmsg="video_id is incorrect")
+        _id = create_uuid()
         if parent_id != 0:
             try:
                 comment_info = mongo.db.comment.find_one(
@@ -70,7 +71,7 @@ class CommentHandler(object):
                 raise response_code.ParamERR(errmsg="parent_id is incorrect")
             try:
                 mongo.db.comment.insert(
-                    {"_id": create_uuid(), "parent_id": "{}".format(parent_id),
+                    {"_id": _id, "parent_id": "{}".format(parent_id),
                      "content": content, "time": collect_time,
                      "video_id": video_id,
                      "to_user_id": comment_info["user_id"],
@@ -83,7 +84,7 @@ class CommentHandler(object):
         else:
             try:
                 mongo.db.comment.insert(
-                    {"_id": create_uuid(), "parent_id": "{}".format(parent_id),
+                    {"_id": _id, "parent_id": "{}".format(parent_id),
                      "content": content, "time": collect_time,
                      "video_id": video_id,
                      "user_id": user["_id"], "user_name": user["name"],
@@ -92,7 +93,7 @@ class CommentHandler(object):
             except Exception as e:
                 raise response_code.DatabaseERR(errmsg="{}".format(e))
 
-        return set_resjson()
+        return set_resjson(res_array=[{"comment_id": _id}])
 
     # def func_get_comment(self):
     #     '''

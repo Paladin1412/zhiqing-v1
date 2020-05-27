@@ -28,7 +28,7 @@ from utils.auth import encode_auth_token
 # from utils.dysms1.send_sms import send_sms
 from utils.mongo_id import create_uuid
 from utils.redisConnector import redis_conn
-from utils.regular import mobile_re
+from utils.regular import mobile_re, name_re, url_re
 from utils.setResJson import set_resjson
 
 
@@ -516,24 +516,79 @@ class UserHandler(object):
         response.headers["Authorization"] = encode_auth_token(_id)
         return response
 
+    def func_change_information(self):
+        """
+        编辑个人信息
+        @return:
+        """
+        user = g.user
+        if not user:
+            raise response_code.UserERR(errmsg='用户未登录')
+        gender = self.extra_data.get('gender')
+        user_name = self.extra_data.get('user_name')
+        birthday = self.extra_data.get('birthday')
+        introduction = self.extra_data.get('introduction')
+        background = self.extra_data.get('background')
+        headshot = self.extra_data.get('headshot')
+        if not all(
+                [gender, user_name, birthday, introduction, background,
+                 headshot]):
+            raise response_code.ParamERR(errmsg="Parameter is not complete")
+        elif not name_re.match('{}'.format(user_name)):
+            raise response_code.ParamERR(errmsg="Incorrect user name format")
+        elif not url_re.match(background) or not url_re.match(headshot):
+            raise response_code.ParamERR(errmsg="The image url is incorrect")
+        elif gender not in ["男", "女", "保密"]:
+            response_code.ParamERR(errmsg="gender must be 男 or 女 or 保密")
+        is_birthday = verify_date_str_lawyer(birthday)
+        if not is_birthday:
+            raise response_code.ParamERR(errmsg="birthday Incorrect format")
+        user_update_info = {"gender": gender, "name": user_name,
+                            "birthday": birthday, "introduction": introduction,
+                            "background": background,
+                            "headshot": headshot}
+        mongo.db.user.update_one({"_id": user["_id"]},
+                                 {"$set": user_update_info})
+        return set_resjson()
 
-def change_information():
-    """
-    编辑个人信息
-    @return:
-    """
-    user = g.user
-    if not user:
-        raise response_code.UserERR(errmsg='用户未登录')
-    gender = request.form.get('gender', "")
-    user_name = request.form.get('user_name')
-    birthday = request.form.get('birthday')
-    introduction = request.form.get('introduction')
-    background = request.files['background']
-    headshot = request.files['headshot']
 
-
-
+# def change_information():
+#     """
+#     编辑个人信息
+#     @return:
+#     """
+#     user = g.user
+#     if not user:
+#         raise response_code.UserERR(errmsg='用户未登录')
+#     gender = request.form.get('gender', "")
+#     user_name = request.form.get('user_name', "")
+#     birthday = request.form.get('birthday', "")
+#     introduction = request.form.get('introduction', "")
+#     background = request.files['background']
+#     headshot = request.files['headshot']
+#     if not all(
+#             [gender, user_name, birthday, introduction, background, headshot]):
+#         raise response_code.ParamERR(errmsg="Parameter is not complete")
+#     elif not name_re.match('{}'.format(user_name)):
+#         raise response_code.ParamERR(errmsg="Incorrect user name format")
+#     elif not allowed_image_file(background) or not allowed_image_file(headshot):
+#         raise response_code.ParamERR(errmsg="The image type is incorrect")
+#     elif gender not in ["男", "女", "保密"]:
+#         response_code.ParamERR(errmsg="gender must be 男 or 女 or 保密")
+#     is_birthday = verify_date_str_lawyer(birthday)
+#     if not is_birthday:
+#         raise response_code.ParamERR(errmsg="birthday Incorrect format")
+#     background_path = 'static/background/{}'.format(
+#         allowed_image_file(background))
+#     headshot_path = 'static/headershot/{}'.format(allowed_image_file(headshot))
+#     background.save(background_path)
+#     headshot.save(headshot_path)
+#     user_update_info = {"gender": gender, "name": user_name,
+#                         "birthday": birthday, "introduction": introduction,
+#                         "background": 'http://api.haetek.com:9191/' + background_path,
+#                         "headshot": 'http://api.haetek.com:9191/' + headshot_path, }
+#     mongo.db.user.update_one({"_id": user["_id"]}, {"$set": user_update_info})
+#     return set_resjson()
 
 
 def get_phone(curl, json_body):
@@ -955,5 +1010,17 @@ def ranstr(num):
     for i in range(num):
         salt += random.choice(
             'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789')
-
     return salt
+
+
+def verify_date_str_lawyer(datetime_str):
+    """
+    验证日期格式
+    @param datetime_str:
+    @return:
+    """
+    try:
+        datetime.datetime.strptime(datetime_str, '%Y-%m-%d')
+        return True
+    except ValueError:
+        return False

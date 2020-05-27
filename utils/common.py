@@ -35,4 +35,16 @@
 #         return func(*args, **kwargs)
 #
 #     return wrapper
+import uuid
+
+from config.settings import config
+
+
+def allowed_image_file(file):
+    file_type = file.content_type.split("/")[-1]
+    if file_type in config.ALLOWED_IMAGE_EXTENSIONS:
+        new_name = uuid.uuid4().hex + '.' + file_type
+        return new_name
+    else:
+        return False
 

@@ -2,8 +2,8 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="1b7e3a81-48b6-4459-ae46-10b1e676b381" name="知擎">
-        <fileTransfer rootFolder="/apps/docker_containers/nginx/uwsgi/test" accessType="SFTP" host="codes.haetek.com" port="22" sshConfigId="f99febca-b35d-4942-b3a0-55ff44b5188a" sshConfig="notes@codes.haetek.com:22 password">
+      <webServer id="5f939908-4ed2-4b8a-9935-7368aff547dc" name="知擎">
+        <fileTransfer rootFolder="/apps/docker_containers/nginx/uwsgi/test/" accessType="SFTP" host="codes.haetek.com" port="22" sshConfigId="f99febca-b35d-4942-b3a0-55ff44b5188a" sshConfig="notes@codes.haetek.com:22 password">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>

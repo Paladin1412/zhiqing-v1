@@ -18,7 +18,8 @@ class Config(object):
     # MONGO_URI = 'mongodb://localhost:27017/ppvideo'
     MONGO_URI = 'mongodb://ppvideo:ppvid10123@web01cn.haetek.com:37018/ppvideo'
     ALLOWED_VIDEO_EXTENSIONS = {'mp4', 'MP4'}
-    ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'JPG', 'PNG', 'gif', 'GIF'}
+    ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'JPG', 'PNG', 'gif', 'GIF',
+                                "jpeg", "JPEG"}
     MAX_CONTENT_LENGTH = 200 * 1024 * 1024  # 100MB
 
     # REDIS_HOST = "127.0.0.1"
