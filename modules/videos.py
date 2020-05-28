@@ -823,18 +823,40 @@ class VideoHandler(object):
                 os.remove(video_info["image_path"])
         return set_resjson(res_array=res_list)
 
-    def func_change_information(self):
+    def func_movie_video(self):
         """
-        编辑视频信息
+        移动视频
         @return:
         """
-        video_id = self.extra_data.get("video_id")
-        image = self.extra_data.get("image")
-        title = self.extra_data.get("title")
-        description = self.extra_data.get("description")
-        category = self.extra_data.get("category")
-        video_id = self.extra_data.get("video_id")
-        document = self.extra_data.get("video_id")
+        user = g.user
+        if not user:
+            raise response_code.UserERR(errmsg='用户未登录')
+        res_list = []
+        video_id_list = self.extra_data.get("video_id")
+        series_id = self.extra_data.get("series_id")
+        if not all([video_id_list, series_id]):
+            raise response_code.ParamERR(errmsg="Parameter is not complete!")
+        elif type(video_id_list) != list:
+            raise response_code.ParamERR(errmsg="video_id type is a list")
+        series_info = mongo.db.series.find_one(
+            {"_id": series_id, "user_id": user["_id"]})
+        if not series_info:
+            raise response_code.ParamERR(errmsg="series_id is incorrect")
+        video_list = []
+        for video_id in set(video_id_list):
+            video_info = mongo.db.video.find_one(
+                {"user_id": user["_id"], "_id": video_id})
+            if video_info:
+                video_list.append(video_id)
+            else:
+                resp = {video_id: "This ID is incorrect"}
+                res_list.append(deepcopy(resp))
+            mongo.db.video.update({"_id": {"$in": video_list}},
+                                  {"$set": {"series": series_id}})
+            mongo.db.series.update_one({"_id": series_id}, {"$set": {
+                "video_counts": mongo.db.video.find(
+                    {"series": series_id, "state": 2}).count()}})
+        return set_resjson(res_array=res_list)
 
 
 def func_check():
