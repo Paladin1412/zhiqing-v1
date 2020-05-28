@@ -177,7 +177,7 @@ class CollectHandler(object):
                 like_counts = mongo.db.like.find(
                     {"relation_id": {"$in": video_id}}).count()
                 comment_counts = mongo.db.comment.find(
-                    {"state": 0, "video_id": {"$in": video_id}}).count()
+                    {"state": 2, "video_id": {"$in": video_id}}).count()
                 series_dict["like_counts"] = like_counts
                 series_dict["comment_counts"] = comment_counts
                 res_list.append(deepcopy(series_dict))

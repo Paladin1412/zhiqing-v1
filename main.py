@@ -43,9 +43,9 @@ def index():
     elif model_action == "check":
         from modules.videos import func_check
         resp = func_check()
-    # elif model_action == "change_information":
-    #     from modules.user import change_information
-    #     resp = change_information()
+    elif model_action == "upload_file":
+        from modules.data import upload_file
+        resp = upload_file()
     else:
         post_data = request.get_json()
         model_name = post_data.get('model_name', "")

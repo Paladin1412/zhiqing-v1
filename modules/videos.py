@@ -616,7 +616,7 @@ class VideoHandler(object):
                     like_counts = mongo.db.like.find(
                         {"relation_id": {"$in": video_id_list}}).count()
                     comment_counts = mongo.db.comment.find(
-                        {"state": 0,
+                        {"state": 2,
                          "video_id": {"$in": video_id_list}}).count()
                     res_dict["comment_counts"] = comment_counts
                     res_dict["like_counts"] = like_counts
