@@ -61,6 +61,7 @@ class UserHandler(object):
                                    self.model_action))
         return resp
 
+    @staticmethod
     def func_get_information(self):
         """
         获取个人信息
@@ -196,6 +197,7 @@ class UserHandler(object):
         response.headers["Authorization"] = encode_auth_token(_id)
         return response
 
+    @staticmethod
     def func_generate_qrcode(self):
         """
         生成二维码
@@ -275,6 +277,7 @@ class UserHandler(object):
             resp = set_resjson(err=0, errmsg="This mobile can be registered!")
         return resp
 
+    @staticmethod
     def func_logout(self):
         """
         logout

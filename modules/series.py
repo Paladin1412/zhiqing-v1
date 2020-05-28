@@ -89,10 +89,14 @@ class SeriesHandler(object):
             else:
                 is_collect = 0
         document_counts = 0
+        like_counts = mongo.db.like.find({"relation_id": series_id}).count()
         collection_counts = mongo.db.collection.find(
             {"relation_id": series_id, "type": "series"}).count()
         author_info = mongo.db.user.find_one({"_id": series_info["user_id"]})
         res_dict["title"] = series_info["title"]
+        res_dict["image"] = series_info["image_path"]
+        res_dict["fans_counts"] = mongo.db.subscription.find(
+            {"relation_id": user["_id"], "state": 0}).count()
         res_dict["description"] = series_info["description"]
         res_dict["author_id"] = series_info["user_id"]
         res_dict["is_collect"] = is_collect
@@ -109,15 +113,17 @@ class SeriesHandler(object):
         video_id_list = []
         for video in video_cursor:
             video_id_list.append(video["_id"])
+            video_like_counts = mongo.db.like.find(
+                {"relation_id": video["_id"],
+                 "type": "video"}).count()
+            like_counts += video_like_counts
             video_dict["video_id"] = video["_id"]
             video_dict["video_title"] = video["title"]
             video_dict["description"] = video["description"]
             video_dict["video_time"] = video["video_time"]
             video_dict["image_path"] = video["image_path"]
             video_dict["view_counts"] = video["view_counts"]
-            video_dict["like_counts"] = mongo.db.like.find(
-                {"relation_id": video["_id"],
-                 "type": "video"}).count()
+            video_dict["like_counts"] = video_like_counts
             video_dict["comment_counts"] = mongo.db.comment.find(
                 {"state": 2, "video_id": video["_id"]}).count()
             video_list.append(deepcopy(video_dict))
@@ -140,6 +146,7 @@ class SeriesHandler(object):
         res_dict["collection_counts"] = collection_counts
         res_dict["video_data"] = video_list
         res_dict["document_data"] = document_list
+        res_dict["like_counts"] = like_counts
 
         res_list.append(res_dict)
         return set_resjson(res_array=res_list)

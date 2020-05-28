@@ -120,6 +120,7 @@ class CollectHandler(object):
 
         return set_resjson()
 
+    @staticmethod
     def func_get_collection(self):
         """
         查看收藏

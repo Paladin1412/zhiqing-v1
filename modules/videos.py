@@ -823,6 +823,19 @@ class VideoHandler(object):
                 os.remove(video_info["image_path"])
         return set_resjson(res_array=res_list)
 
+    def func_change_information(self):
+        """
+        编辑视频信息
+        @return:
+        """
+        video_id = self.extra_data.get("video_id")
+        image = self.extra_data.get("image")
+        title = self.extra_data.get("title")
+        description = self.extra_data.get("description")
+        category = self.extra_data.get("category")
+        video_id = self.extra_data.get("video_id")
+        document = self.extra_data.get("video_id")
+
 
 def func_check():
     """
