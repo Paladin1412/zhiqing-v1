@@ -9,10 +9,11 @@
 """
 import datetime
 
-from flask import g
+from flask import g, request
 
 from main import mongo
 from utils import response_code
+from utils.common import allowed_image_file
 from utils.setResJson import set_resjson
 
 
@@ -92,40 +93,37 @@ class DataHandler(object):
 
         return set_resjson(res_array=[res_dict])
 
-# def change_information():
-#     """
-#     编辑个人信息
-#     @return:
-#     """
-#     user = g.user
-#     if not user:
-#         raise response_code.UserERR(errmsg='用户未登录')
-#     gender = request.form.get('gender', "")
-#     user_name = request.form.get('user_name', "")
-#     birthday = request.form.get('birthday', "")
-#     introduction = request.form.get('introduction', "")
-#     background = request.files['background']
-#     headshot = request.files['headshot']
-#     if not all(
-#             [gender, user_name, birthday, introduction, background, headshot]):
-#         raise response_code.ParamERR(errmsg="Parameter is not complete")
-#     elif not name_re.match('{}'.format(user_name)):
-#         raise response_code.ParamERR(errmsg="Incorrect user name format")
-#     elif not allowed_image_file(background) or not allowed_image_file(headshot):
-#         raise response_code.ParamERR(errmsg="The image type is incorrect")
-#     elif gender not in ["男", "女", "保密"]:
-#         response_code.ParamERR(errmsg="gender must be 男 or 女 or 保密")
-#     is_birthday = verify_date_str_lawyer(birthday)
-#     if not is_birthday:
-#         raise response_code.ParamERR(errmsg="birthday Incorrect format")
-#     background_path = 'static/background/{}'.format(
-#         allowed_image_file(background))
-#     headshot_path = 'static/headershot/{}'.format(allowed_image_file(headshot))
-#     background.save(background_path)
-#     headshot.save(headshot_path)
-#     user_update_info = {"gender": gender, "name": user_name,
-#                         "birthday": birthday, "introduction": introduction,
-#                         "background": 'http://api.haetek.com:9191/' + background_path,
-#                         "headshot": 'http://api.haetek.com:9191/' + headshot_path, }
-#     mongo.db.user.update_one({"_id": user["_id"]}, {"$set": user_update_info})
-#     return set_resjson()
+
+def upload_file():
+    """
+    上传图片
+    @return:
+    """
+    user = g.user
+    if not user:
+        raise response_code.UserERR(errmsg='用户未登录')
+    image_type = request.form.get('type', "")
+    try:
+        file = request.files['file']
+    except Exception as e:
+        raise response_code.ParamERR(errmsg="{}".format(e))
+    if not all([image_type, file]):
+        raise response_code.ParamERR(errmsg="Parameter is not complete")
+    elif not allowed_image_file(file):
+        raise response_code.ParamERR(errmsg="The image type is incorrect")
+    if image_type == "background":
+        file_path = 'static/background/{}'.format(allowed_image_file(file))
+        res_url = "http://api.haetek.com:8181/" + file_path
+    elif image_type == "headshot":
+        file_path = 'static/headershot/{}'.format(allowed_image_file(file))
+        res_url = "http://api.haetek.com:8181/" + file_path
+    elif image_type in ["video_image", "series_image"] :
+        file_path = 'static/image/{}'.format(allowed_image_file(file))
+        res_url = file_path
+    elif image_type == "document":
+        file_path = 'static/document/{}'.format(allowed_image_file(file))
+        res_url = file_path
+    else:
+        raise response_code.ParamERR(errmsg="type is incorrect")
+    file.save(file_path)
+    return set_resjson(res_array=[res_url])
