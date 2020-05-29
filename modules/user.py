@@ -554,6 +554,53 @@ class UserHandler(object):
                                  {"$set": user_update_info})
         return set_resjson()
 
+    def func_verify_mobile(self):
+        """
+        修改手机号码时验证手机号
+        @return:
+        """
+        user = g.user
+        if not user:
+            raise response_code.UserERR(errmsg='用户未登录')
+        mobile = self.extra_data.get("mobile", "")
+        code = self.extra_data.get('code', "")
+        if '{}'.format(mobile) != user["mobile"]:
+            raise response_code.ParamERR(errmsg="不是原手机号码")
+        # 手机验证码验证
+        sms_verify(mobile, code)
+        token = str(uuid1())
+        redis_conn.set("verify_mobile_%s" % mobile, token,
+                       constants.VERIFY_MOBILE_REDIS_EXPIRES)
+        res_dict = {"token": token}
+        return set_resjson(res_array=[res_dict])
+
+    def func_change_mobile(self):
+        """
+        修改手机号码时更改手机号
+        @return:
+        """
+        user = g.user
+        if not user:
+            raise response_code.UserERR(errmsg='用户未登录')
+        mobile = self.extra_data.get("new_mobile", "")
+        code = self.extra_data.get('code', "")
+        token = self.extra_data.get('token', "")
+        if mobile == "" or code == "" or token == "":
+            raise response_code.ParamERR(errmsg="Parameter is not complete")
+        elif not mobile_re.match('{}'.format(mobile)):
+            raise response_code.ParamERR(errmsg="手机号码不正确")
+        elif mobile == user['mobile']:
+            raise response_code.ParamERR(errmsg="The phone number hasn't changed")
+        # 手机验证码验证
+        sms_verify(mobile, code)
+        real_token = redis_conn.get("verify_mobile_%s" % mobile)
+        if token != real_token:
+            raise response_code.ParamERR(errmsg="token is incorrect ")
+        else:
+            mongo.db.user.update_one(user, {"$set": {"mobile": mobile}})
+
+        return set_resjson()
+
 
 def get_phone(curl, json_body):
     """
