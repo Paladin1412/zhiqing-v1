@@ -411,6 +411,7 @@ class VideoHandler(object):
                                   {'$set': {'view_counts': view_counts + 1}})
         return set_resjson(res_array=res_data)
 
+    @staticmethod
     def func_video_list(self):
         """
         获取视频列表
@@ -422,10 +423,7 @@ class VideoHandler(object):
                                                 "image_path": 1})
         except Exception as e:
             raise response_code.DatabaseERR(errmsg="{}".format(e))
-        res_list = []
-        for video in video_cursor:
-            video["upload_date"] = video.pop("upload_time")
-            res_list.append(deepcopy(video))
+        res_list = [video for video in video_cursor]
         return set_resjson(res_array=res_list)
 
     def func_get_related_video(self):
@@ -611,6 +609,7 @@ class VideoHandler(object):
                     series_user_info = mongo.db.user.find_one(
                         {"_id": series_info["user_id"]})
                     res_dict["series_id"] = series_info["_id"]
+                    res_dict["type"] = 'series'
                     res_dict["image_path"] = series_info["image_path"]
                     res_dict["title"] = series_info["title"]
                     res_dict["time"] = series_info["time"]
@@ -627,6 +626,7 @@ class VideoHandler(object):
                     res_dict["like_counts"] = like_counts
                 else:
                     res_dict["video_id"] = video["_id"]
+                    res_dict["type"] = "video"
                     res_dict["image_path"] = video["image_path"]
                     res_dict["title"] = video["title"]
                     res_dict["category"] = category_list
@@ -698,7 +698,7 @@ class VideoHandler(object):
                     video_dict["video_id"] = video["_id"]
                     video_dict["image_path"] = video["image_path"]
                     video_dict["title"] = video["title"]
-                    video_dict["update_time"] = video["upload_time"]
+                    video_dict["upload_time"] = video["upload_time"]
                     video_dict["view_counts"] = video["view_counts"]
                     video_dict["category"] = category_list
                     video_dict["comment_counts"] = comment_counts
@@ -735,7 +735,7 @@ class VideoHandler(object):
                     {"video_id": video.get("_id")}).count()
                 res_dict["video_id"] = video["_id"]
                 res_dict["title"] = video["title"]
-                res_dict["update_time"] = video["upload_time"]
+                res_dict["upload_time"] = video["upload_time"]
                 res_dict["state"] = video["state"]
                 res_dict["image_path"] = video["image_path"]
                 res_dict["video_time"] = video["video_time"]

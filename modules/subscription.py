@@ -177,7 +177,7 @@ class SubscriptionHandler(object):
                 {"relation_id": author_info["_id"], "state": 0}).count()
             video_cursor = mongo.db.video.find(
                 {"user_id": author_info["_id"], "state": 2,
-                 "series": {"$exists": False}})
+                 "series": {"$exists": False}}).sort("upload_time", -1)
             for video in video_cursor:
                 video_dict["type"] = "video"
                 video_dict["video_id"] = video["_id"]
@@ -192,7 +192,7 @@ class SubscriptionHandler(object):
                     {"video_id": video["_id"], "state": 0}).count()
                 works.append(deepcopy(video_dict))
             series_cursor = mongo.db.series.find(
-                {"user_id": author_info["_id"]})
+                {"user_id": author_info["_id"]}).sort("time", -1)
             for series in series_cursor:
                 view_counts = 0
                 video_id_list = []
@@ -202,7 +202,7 @@ class SubscriptionHandler(object):
                 series_dict["update_time"] = series["time"]
                 series_dict["image_path"] = series["image_path"]
                 series_video_cursor = mongo.db.video.find(
-                    {"series": series["_id"], "state": 2})
+                    {"series": series["_id"], "state": 2}).sort([("number", 1), ("upload_time", -1)])
                 series_dict["video_counts"] = series.get("video_counts",
                                                          None) if series.get(
                     "video_counts", None) else series_video_cursor.count()
@@ -218,4 +218,5 @@ class SubscriptionHandler(object):
                 works.append(deepcopy(series_dict))
             res_dict["works"] = works
             res_list.append(deepcopy(res_dict))
-        return set_resjson(res_array=res_list)
+            res_sort_list = sorted(res_list, key=itemgetter("fans_counts"))
+        return set_resjson(res_array=res_sort_list)

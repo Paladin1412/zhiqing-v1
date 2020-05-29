@@ -123,6 +123,7 @@ class HistoryHandler(object):
 
         return set_resjson()
 
+    @staticmethod
     def func_get_history(self):
         """
         获取历史记录
@@ -144,6 +145,7 @@ class HistoryHandler(object):
                 res_dict["record"] = history["record"]
                 res_dict["image_path"] = video["image_path"]
                 res_dict["video_time"] = video["video_time"]
+                res_dict["time"] = history["time"]
                 res_list.append(deepcopy(res_dict))
         except Exception as e:
             raise response_code.ParamERR(errmsg="{}".format(e))

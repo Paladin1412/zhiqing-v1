@@ -144,7 +144,7 @@ class CollectHandler(object):
                 video_dict["type"] = "video"
                 video_dict["video_id"] = video["_id"]
                 video_dict["title"] = video["title"]
-                video_dict["update_time"] = video["upload_time"]
+                video_dict["upload_time"] = video["upload_time"]
                 video_dict["image_path"] = video["image_path"]
                 video_dict["video_time"] = video["video_time"]
                 video_dict["view_counts"] = video["view_counts"]
@@ -169,6 +169,7 @@ class CollectHandler(object):
                 series_dict["type"] = "series"
                 series_dict["series_id"] = series_info["_id"]
                 series_dict["title"] = series_info["title"]
+                series_dict["update_time"] = series_info["time"]
                 series_dict["image_path"] = series_info["image_path"]
                 series_dict["view_counts"] = view_counts
                 series_dict["video_counts"] = series_info.get("video_counts",

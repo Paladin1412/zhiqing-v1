@@ -93,7 +93,7 @@ class IndexHandler(object):
             view_counts += video["view_counts"]
             video_dict["video_id"] = video["_id"]
             video_dict["title"] = video["title"]
-            video_dict["update_time"] = video["upload_time"]
+            video_dict["upload_time"] = video["upload_time"]
             video_dict["image_path"] = video["image_path"]
             video_dict["video_time"] = video["video_time"]
             video_dict["state"] = video["state"]
@@ -119,7 +119,7 @@ class IndexHandler(object):
                 collection_dict["type"] = "video"
                 collection_dict["video_id"] = video["_id"]
                 collection_dict["title"] = video["title"]
-                collection_dict["update_time"] = video["upload_time"]
+                collection_dict["upload_time"] = video["upload_time"]
                 collection_dict["image_path"] = video["image_path"]
                 collection_dict["video_time"] = video["video_time"]
                 collection_dict["view_counts"] = video["view_counts"]

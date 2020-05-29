@@ -377,7 +377,7 @@ class Search:
                     data['category'] = category
                     data['description'] = series['description']
                     data['image_path'] = series['image_path']
-                    data['upload_time'] = series['time']
+                    data['update_time'] = series['time']
                     data['video_counts'] = video_counts
                     data['view_counts'] = view_counts
                     data['like_counts'] = like_counts
@@ -624,7 +624,7 @@ def main():
     video_ids = ["9bedd89faf371092e1aaaacf5fd3b704",
                  "162fb70b08169805aab916f75711b015"]
     # video_ids = []
-    query_str = '你好'
+    query_str = '重力'
     # query_str = ''
 
     ss = time.time()
