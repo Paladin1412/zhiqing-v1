@@ -134,7 +134,7 @@ class SubscriptionHandler(object):
                           reverse=True)
 
         if mode == "web":
-            resp = set_resjson(res_array=res_list[:4])
+            resp = set_resjson(res_array=res_list[:8])
         else:
             app_list = []
             latest_user_id = res_list[0].get("user_id")

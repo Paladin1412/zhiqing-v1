@@ -41,6 +41,7 @@ class SeriesHandler(object):
                                    self.model_action))
         return resp
 
+    @staticmethod
     def func_get_series(self):
         """
         获得系列信息
@@ -109,7 +110,7 @@ class SeriesHandler(object):
         # TODO 视频分享没做
         res_dict["share_counts"] = 0
         video_cursor = mongo.db.video.find(
-            {"series": series_id, "state": 2}).sort("upload_time", -1)
+            {"series": series_id, "state": 2}).sort([("number", 1), ("upload_time", -1)])
         video_id_list = []
         for video in video_cursor:
             video_id_list.append(video["_id"])

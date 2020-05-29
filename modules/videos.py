@@ -462,9 +462,14 @@ class VideoHandler(object):
             series_id = video_info.get("series", "")
             if not series_id:
                 raise response_code.ParamERR(errmsg="There's no video")
+
+            # related_cursor = mongo.db.video.find(
+            #     {"series": series_id, "state": 2}).sort(
+            #     "view_counts", -1).limit(max_size).skip(max_size * (page - 1))
             related_cursor = mongo.db.video.find(
                 {"series": series_id, "state": 2}).sort(
-                "view_counts", -1).limit(max_size).skip(max_size * (page - 1))
+                [("number", 1), ("upload_time", -1)]).limit(max_size).skip(
+                max_size * (page - 1))
             series_info = mongo.db.series.find_one({"_id": series_id})
             for video in related_cursor:
                 if video["_id"] == video_id:
@@ -752,7 +757,7 @@ class VideoHandler(object):
                 res_dict["update_time"] = series["time"]
                 res_dict["image_path"] = series["image_path"]
                 res_dict["description"] = series["description"]
-                video_cursor = mongo.db.video.find({"series": series["_id"]})
+                video_cursor = mongo.db.video.find({"series": series["_id"]}).sort([("number", 1), ("upload_time", -1)])
                 for video in video_cursor:
                     view_counts += video["view_counts"]
                     likes = mongo.db.like.find(
@@ -836,7 +841,7 @@ class VideoHandler(object):
         series_id = self.extra_data.get("series_id")
         if not all([video_id_list, series_id]):
             raise response_code.ParamERR(errmsg="Parameter is not complete!")
-        elif type(video_id_list) != list:
+        elif type(video_id_list) != list or len(video_id_list) <= 0:
             raise response_code.ParamERR(errmsg="video_id type is a list")
         series_info = mongo.db.series.find_one(
             {"_id": series_id, "user_id": user["_id"]})
@@ -856,6 +861,33 @@ class VideoHandler(object):
             mongo.db.series.update_one({"_id": series_id}, {"$set": {
                 "video_counts": mongo.db.video.find(
                     {"series": series_id, "state": 2}).count()}})
+        return set_resjson(res_array=res_list)
+
+    def func_sort_video(self):
+        """
+        系列视频排序：
+        @return:
+        """
+        user = g.user
+        if not user:
+            raise response_code.UserERR(errmsg='用户未登录')
+        video_id_list = self.extra_data.get("video_id", "")
+        res_list = []
+        if type(video_id_list) != list or len(video_id_list) <= 0:
+            raise response_code.ParamERR(errmsg="video_id type is a list")
+        id_to_heavy = []
+        verify_video = []
+        [id_to_heavy.append(i) for i in video_id_list if i not in id_to_heavy]
+        for video_id in id_to_heavy:
+            video_info = mongo.db.video.find_one(
+                {"user_id": user["_id"], "_id": video_id}, {"_id": 1})
+            if not video_info:
+                resp = {video_id: "This ID is incorrect"}
+                res_list.append(deepcopy(resp))
+            else:
+                verify_video.append(deepcopy(video_id))
+        for num, video in enumerate(verify_video, 1):
+            mongo.db.video.update_one({"_id": video}, {"$set": {"number": num}})
         return set_resjson(res_array=res_list)
 
 
