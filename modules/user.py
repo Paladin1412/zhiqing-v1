@@ -617,7 +617,7 @@ class UserHandler(object):
         elif third_type.lower() == "wechat":
             mongo.db.user.update_one(user, {"$unset": {"microblog_unionid": ""}})
         elif third_type.lower() == "qq":
-            mongo.db.user.update_one(user, {"$unset": {"wechat_unionid": ""}})
+            mongo.db.user.update_one(user, {"$unset": {"qq_unionid": ""}})
         raise set_resjson()
 
 
