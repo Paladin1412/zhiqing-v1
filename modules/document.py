@@ -9,8 +9,11 @@
 """
 from copy import deepcopy
 
+from flask import request, g
+
 from main import mongo
 from utils import response_code
+from utils.common import allowed_document_file
 from utils.setResJson import set_resjson
 
 
@@ -89,3 +92,28 @@ class DocumentHandler(object):
                 raise response_code.DatabaseERR(errmsg="{}".format(e))
 
         return set_resjson(res_array=res_list)
+
+
+def upload_document():
+    """
+    上传课件
+    @return:
+    """
+    user = g.user
+    if not user:
+        raise response_code.UserERR(errmsg='用户未登录')
+    document_type = request.form.get('type', "")
+    try:
+        file = request.files['file']
+    except Exception as e:
+        raise response_code.ParamERR(errmsg="{}".format(e))
+    if not all([document_type, file]):
+        raise response_code.ParamERR(errmsg="Parameter is not complete")
+    elif not allowed_document_file(file):
+        raise response_code.ParamERR(errmsg="The document type is incorrect")
+    filename = file.filename.rsplit(".")[0]
+    file_path = 'static/document/{}'.format(allowed_document_file(file))
+    file.save(file_path)
+
+    return set_resjson(
+        res_array={"file_path": file_path, "file_name": filename})

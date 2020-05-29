@@ -46,6 +46,9 @@ def index():
     elif model_action == "upload_file":
         from modules.data import upload_file
         resp = upload_file()
+    elif model_action == "upload_document":
+        from modules.document import upload_document
+        resp = upload_document()
     else:
         post_data = request.get_json()
         model_name = post_data.get('model_name', "")

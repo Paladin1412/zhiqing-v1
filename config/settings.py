@@ -20,6 +20,7 @@ class Config(object):
     ALLOWED_VIDEO_EXTENSIONS = {'mp4', 'MP4'}
     ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'JPG', 'PNG', 'gif', 'GIF',
                                 "jpeg", "JPEG"}
+    ALLOWED_DOCUMENT_EXTENSIONS = {'pdf', 'py', "PDF", "PY"}
     MAX_CONTENT_LENGTH = 200 * 1024 * 1024  # 100MB
 
     # REDIS_HOST = "127.0.0.1"

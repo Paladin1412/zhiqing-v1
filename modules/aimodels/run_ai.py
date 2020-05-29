@@ -8,7 +8,7 @@
 @Software : PyCharm
 """
 from modules.aimodels.search import Search
-from modules.aimodels.subtitle import Subtitle
+from modules.aimodels.subtitle import Subtitle, Document
 from utils import response_code
 
 
@@ -80,3 +80,13 @@ def edit_video(res_list, video_id, style, lang):
         subtitle.update_video(res_list, video_id, style, lang)
     except Exception as e:
         raise response_code.ParamERR(errmsg='{}'.format(e))
+
+
+def edit_document(file_id, file_name, file_path, image_path, price, video_id):
+    """
+    生成课件内容
+    @return:
+    """
+    document = Document()
+    result = document.save_str_to_database(file_id, file_name, file_path, image_path, price, video_id)
+    return result
