@@ -601,6 +601,25 @@ class UserHandler(object):
 
         return set_resjson()
 
+    def func_remove_binding(self):
+        """
+        解除第三方绑定
+        @return:
+        """
+        user = g.user
+        if not user:
+            raise response_code.UserERR(errmsg='用户未登录')
+        third_type = self.extra_data.get("type", "")
+        if third_type not in ["microblog", "wechat", "qq"]:
+            raise response_code.ParamERR(errmsg="type is incorrect")
+        elif third_type.lower() == "microblog":
+            mongo.db.user.update_one(user, {"$unset": {"wechat_unionid": ""}})
+        elif third_type.lower() == "wechat":
+            mongo.db.user.update_one(user, {"$unset": {"microblog_unionid": ""}})
+        elif third_type.lower() == "qq":
+            mongo.db.user.update_one(user, {"$unset": {"wechat_unionid": ""}})
+        raise set_resjson()
+
 
 def get_phone(curl, json_body):
     """
