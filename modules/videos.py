@@ -26,7 +26,6 @@ from modules.aimodels import run_ai
 from modules.aimodels.run_ai import generate_subtitle as generate_subtitle1, \
     edit_video
 from utils import response_code
-from utils.common import allowed_image_file
 from utils.mongo_id import create_uuid
 from utils.setResJson import set_resjson
 from utils.video_upload.uploadVideo import upload_video
@@ -649,6 +648,7 @@ class VideoHandler(object):
         热门作者
         @return:
         """
+        user = g.user
         max_size = self.extra_data.get("max_size", 10)
         page = self.extra_data.get("page", 1)
         video_size = self.extra_data.get("video_size", 4)
@@ -679,7 +679,13 @@ class VideoHandler(object):
                     {"_id": relation_id_set[0]},
                     {"name": 1, "headshot": 1, "introduction": 1,
                      "background": 1})
+                subscribe = None
+                if user:
+                    subscribe = mongo.db.subscription.find_one(
+                        {"user_id": user["_id"],
+                         "relation_id": author_info["_id"]})
                 res_dict["user_id"] = author_info["_id"]
+                res_dict["is_subscribe"] = 1 if subscribe else 0
                 res_dict["user_name"] = author_info["name"]
                 res_dict["headshot"] = author_info["headshot"]
                 res_dict["background"] = author_info["background"]
@@ -971,100 +977,98 @@ class VideoHandler(object):
             res_list.append(deepcopy(series_dict))
         return set_resjson(res_array=res_list)
 
+    def func_check(self):
+        """
+        视频审核
+        """
+        user = g.user
+        if not user:
+            raise response_code.UserERR(errmsg='用户未登录')
+        task_id = self.extra_data.get('task_id')
+        title = self.extra_data.get('title')
+        description_title = self.extra_data.get('description_title')
+        description = self.extra_data.get('description')
+        series_image_path = self.extra_data.get('series_image_path', None)
+        image_path = self.extra_data.get('image_path', None)
+        category = self.extra_data.get('category')
+        series_title = self.extra_data.get('series_title')
+        document = self.extra_data.get('document')
 
-def func_check():
-    """
-    视频审核
-    """
-    user = g.user
-    if not user:
-        raise response_code.UserERR(errmsg='用户未登录')
-    task_id = request.form.get('task_id')
-    title = request.form.get('title')
-    description_title = request.form.get('description_title', "")
-    description = request.form.get('description')
-    category = request.form.get('category')
-
-    series_title = request.form.get('series_title')
-    image_name = None
-
-    try:
-        category = literal_eval(category)
-    except Exception as e:
-        raise response_code.ParamERR(
-            errmsg="Incorrect subtitling format: {}".format(e))
-
-    if not all([task_id, description, category]):
-        raise response_code.ParamERR(
-            errmsg="[task_id, description, category] must be provided ！")
-    try:
-        video_info = mongo.db.video.find_one(
-            {"_id": task_id, "user_id": user["_id"]})
-        category_cursor = mongo.db.tool.find({}, {"_id": 0, "data": 1})
-        category_list = [category for category in category_cursor][0].get(
-            "data")
-    except Exception as e:
-        raise response_code.DatabaseERR(errmsg="{}".format(e))
-
-    for i in category:
-        if i not in category_list:
-            raise response_code.ParamERR(errmsg="{} 标签不存在".format(i))
-    if not video_info:
-        raise response_code.ParamERR(errmsg='task_id 不存在')
-
-    # if video_info["state"] == 1:
-    #     raise response_code.ReqERR(errmsg="正在审核请耐心等待")
-    try:
-        image_file = request.files["image"]
-        image_name = image_file.filename
-    except Exception as e:
-        pass
-    if image_name:
-        if not allowed_image_file(image_file):
-            raise response_code.ParamERR(errmsg="The image type is incorrect")
-
-        image_path = 'static/image/{}'.format(allowed_video_file(image_file))
-        image_file.save(image_path)
-        update_video_info = {"description": description, "category": category,
-                             "image_path": image_path,
-                             "state": 2}
-    else:
-        update_video_info = {"description": description, "category": category,
-                             "state": 2}
-
-    if title:
-        update_video_info["title"] = title
-
-    try:
-        mongo.db.video.update_one({"_id": task_id}, {"$set": update_video_info})
-    except Exception as e:
-        raise response_code.DatabaseERR(errmsg='{}'.format(e))
-
-    if series_title:
+        if not all([task_id, description, category]):
+            raise response_code.ParamERR(
+                errmsg="[task_id, description, category] must be provided ！")
+        elif type(category) != list:
+            raise response_code.ParamERR(errmsg="category type is list")
         try:
-            series_info = mongo.db.series.find_one(
-                {"user_id": user["_id"], "title": series_title})
-            if series_info:
-                mongo.db.video.update_one({"_id": task_id},
-                                          {"$set": {
-                                              "series": series_info["_id"]}})
-
-            else:
-                image_path_info = mongo.db.video.find_one({"_id": task_id})
-                _id = create_uuid()
-                mongo.db.series.insert_one({"_id": _id, "title": series_title,
-                                            "description": description_title,
-                                            "image_path": image_path_info[
-                                                "image_path"],
-                                            "category": category,
-                                            "user_id": user["_id"],
-                                            "time": time.time()})
-                mongo.db.video.update_one({"_id": task_id},
-                                          {"$set": {"series": _id}})
+            video_info = mongo.db.video.find_one(
+                {"_id": task_id, "user_id": user["_id"]})
+            category_cursor = mongo.db.tool.find({}, {"_id": 0, "data": 1})
+            category_list = [category for category in category_cursor][0].get(
+                "data")
         except Exception as e:
             raise response_code.DatabaseERR(errmsg="{}".format(e))
+        for tag in category:
+            if tag not in category_list:
+                raise response_code.ParamERR(errmsg="{} 标签不存在".format(tag))
+        if not video_info:
+            raise response_code.ParamERR(errmsg='task_id 不存在')
+        # elif video_info["state"] == 1:
+        #     raise response_code.ReqERR(errmsg="正在审核请耐心等待")
 
-    return set_resjson()
+        update_video_info = {"description": description, "category": category,
+                             "image_path": image_path if image_path else
+                             video_info["image_path"],
+                             "state": 1,
+                             "title": title if title else video_info["title"]}
+
+        if series_title:
+            try:
+                series_info = mongo.db.series.find_one(
+                    {"user_id": user["_id"], "title": series_title})
+                if series_info:
+                    mongo.db.series.update_one(
+                        {series_info, {"$set": {
+                            "title": series_title if series_title else
+                            series_info['title'],
+                            "description": description_title if description else
+                            series_info["description"],
+                            "image_path": series_image_path if series_image_path else
+                            video_info["image_path"], "category": category,
+                            "user_id": user["_id"], "time": time.time()}}})
+
+                else:
+                    _id = create_uuid()
+                    mongo.db.series.insert_one(
+                        {"_id": _id, "title": series_title,
+                         "description": description_title,
+                         "image_path": series_image_path if series_image_path else
+                         video_info["image_path"], "category": category,
+                         "user_id": user["_id"], "time": time.time()})
+                update_video_info["series"] = series_info["_id"]
+            except Exception as e:
+                raise response_code.DatabaseERR(errmsg="{}".format(e))
+        try:
+            mongo.db.video.update_one(video_info, {"$set": update_video_info})
+        except Exception as e:
+            raise response_code.DatabaseERR(errmsg='{}'.format(e))
+        res_list = []
+        if document:
+            if type(document) != list:
+                raise response_code.ParamERR(errmsg="category type is list")
+            elif len(document) >= 1:
+                for dmt in document:
+                    file_name = dmt.get("file_name")
+                    file_path = dmt.get("file_path")
+                    if not all([file_name, file_path]):
+                        res_list.append(deepcopy({dmt: "参数不全"}))
+                    else:
+                        mongo.db.audit.insert_one(
+                            {"_id": create_uuid(), "title": file_name,
+                             "price": 0, "video_id": task_id,
+                             "time": str(time.time()), "data_type": "document",
+                             "type": file_path.replace('"', "").rsplit(".")[-1],
+                             "file_path": file_path})
+        return set_resjson()
 
 
 def upload():
