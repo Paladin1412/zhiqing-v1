@@ -866,9 +866,13 @@ class VideoHandler(object):
                 res_list.append(deepcopy(resp))
             mongo.db.video.update({"_id": {"$in": video_list}},
                                   {"$set": {"series": series_id}})
+            series_video = mongo.db.video.find(
+                {"series": series_id, "state": 2})
+            latest_time = \
+            [i for i in series_video.sort("upload_time", -1).skip(0).limit(1)][
+                0].get("upload_time")
             mongo.db.series.update_one({"_id": series_id}, {"$set": {
-                "video_counts": mongo.db.video.find(
-                    {"series": series_id, "state": 2}).count()}})
+                "video_counts": series_video.count(), "time": latest_time}})
         return set_resjson(res_array=res_list)
 
     def func_sort_video(self):
@@ -1012,8 +1016,8 @@ class VideoHandler(object):
                 raise response_code.ParamERR(errmsg="{} 标签不存在".format(tag))
         if not video_info:
             raise response_code.ParamERR(errmsg='task_id 不存在')
-        # elif video_info["state"] == 1:
-        #     raise response_code.ReqERR(errmsg="正在审核请耐心等待")
+        elif video_info["state"] == 1:
+            raise response_code.ReqERR(errmsg="正在审核请耐心等待")
 
         update_video_info = {"description": description, "category": category,
                              "image_path": image_path if image_path else

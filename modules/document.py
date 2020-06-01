@@ -52,6 +52,7 @@ class DocumentHandler(object):
             video_document["file_id"] = document["_id"]
             video_document["file_name"] = document["file_name"]
             video_document["file_path"] = document["file_path"]
+            video_document["image_path"] = document["image_path"]
             video_document["price"] = document["price"]
             video_document["time"] = document["time"]
             res_list.append(deepcopy(video_document))
