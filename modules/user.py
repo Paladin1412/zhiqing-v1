@@ -9,6 +9,7 @@ import json
 import random
 import time
 import urllib.parse
+from copy import deepcopy
 from threading import Thread
 from urllib.request import urlopen
 from uuid import uuid1
@@ -619,6 +620,85 @@ class UserHandler(object):
         elif third_type.lower() == "qq":
             mongo.db.user.update_one(user, {"$unset": {"qq_unionid": ""}})
         raise set_resjson()
+
+    def func_get_author_information(self):
+        """
+        作者首页
+        @return:
+        """
+        author_id = self.extra_data.get("author_id", "")
+        if author_id == "":
+            raise response_code.ParamERR(errmsg="author_id can be not empty")
+        author_info = mongo.db.user.find_one({"_id": author_id})
+        if not author_info:
+            raise response_code.ParamERR(errmsg="author_id is incorrect")
+        res_dict = {}
+        res_list = []
+        video_dict = {}
+        data = []
+        res_dict["user_id"] = author_info["_id"]
+        res_dict["user_name"] = author_info["name"]
+        res_dict["background"] = author_info["background"]
+        res_dict["headshot"] = author_info["headshot"]
+        res_dict["introduction"] = author_info["introduction"]
+        res_dict["description_counts"] = mongo.db.subscription.find(
+            {"user_id": author_info["_id"], "state": 0}).count()
+        res_dict["fans_counts"] = mongo.db.subscription.find(
+            {"relation_id": author_info["_id"], "state": 0}).count()
+        res_dict["background"] = author_info["background"]
+        like_counts = 0
+        comment_counts = 0
+        view_counts = 0
+        for video in mongo.db.video.find(
+                {"user_id": author_info["_id"], "series": {"$exists": False}}).sort("upload_time", -1):
+            view_counts += video["view_counts"]
+            video_like_counts = mongo.db.like.find(
+                {"relation_id": video["_id"]}).count()
+            like_counts += video_like_counts
+            video_comment_counts = mongo.db.comment.find(
+                {"video_id": video["_id"], "state": 2}).count()
+            comment_counts += video_comment_counts
+            video_dict["type"] = "video"
+            video_dict["image_path"] = video["image_path"]
+            video_dict["video_id"] = video["_id"]
+            video_dict["title"] = video["title"]
+            video_dict["video_time"] = video["video_time"]
+            video_dict["upload_time"] = video["upload_time"]
+            video_dict["view_counts"] = video["view_counts"]
+            video_dict["like_counts"] = video_like_counts
+            video_dict["comment_counts"] = video_comment_counts
+            data.append(deepcopy(video_dict))
+        series_cursor = mongo.db.series.find({"user_id": author_info["_id"]}).sort("time", -1)
+        series_dict = {}
+        series_view_counts = 0
+        ser_video_id = []
+        for series in series_cursor:
+            series_dict["type"] = "series"
+            series_dict["image_path"] = series["image_path"]
+            series_dict["series_id"] = series["_id"]
+            series_dict["update_time"] = series["time"]
+            series_dict["video_counts"] = series.get("video_counts",
+                                                      None) if series.get(
+                    "video_counts", None) else mongo.db.video.find(
+                    {"series": series["_id"]}).count()
+            series_dict["update_time"] = series["time"]
+            for ser_video in mongo.db.video.find({"series": series["_id"]}):
+                ser_video_id.append(ser_video["_id"])
+                series_view_counts += ser_video["view_counts"]
+            series_like_counts = mongo.db.like.find(
+                {"relation_id": {"$in": ser_video_id}}).count()
+            series_comment_counts = mongo.db.comment.find(
+                {"state": 2,
+                 "video_id": {"$in": ser_video_id}}).count()
+            series_dict["comment_counts"] = series_comment_counts
+            series_dict["like_counts"] = series_like_counts
+            data.append(deepcopy(series_dict))
+
+        res_dict["like_counts"] = author_info["introduction"]
+        res_dict["view_counts"] = author_info["introduction"]
+        res_dict["data"] = data
+        res_list.append(res_dict)
+        return set_resjson(res_array=res_list)
 
 
 def get_phone(curl, json_body):

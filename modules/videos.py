@@ -555,6 +555,7 @@ class VideoHandler(object):
         page = self.extra_data.get("page", 1)
         res_dict = {}
         res_list = []
+        series_dict = {}
         try:
             max_size = int(max_size)
             page = int(page)
@@ -608,22 +609,23 @@ class VideoHandler(object):
                     series_info = mongo.db.series.find_one({"_id": series_id})
                     series_user_info = mongo.db.user.find_one(
                         {"_id": series_info["user_id"]})
-                    res_dict["series_id"] = series_info["_id"]
-                    res_dict["type"] = 'series'
-                    res_dict["image_path"] = series_info["image_path"]
-                    res_dict["title"] = series_info["title"]
-                    res_dict["time"] = series_info["time"]
-                    res_dict["user_id"] = series_info["user_id"]
-                    res_dict["user_name"] = series_user_info["name"]
-                    res_dict["head_shot"] = series_user_info["headshot"]
-                    res_dict["view_counts"] = view_counts
+                    series_dict["series_id"] = series_info["_id"]
+                    series_dict["type"] = 'series'
+                    series_dict["image_path"] = series_info["image_path"]
+                    series_dict["title"] = series_info["title"]
+                    series_dict["time"] = series_info["time"]
+                    series_dict["user_id"] = series_info["user_id"]
+                    series_dict["user_name"] = series_user_info["name"]
+                    series_dict["head_shot"] = series_user_info["headshot"]
+                    series_dict["view_counts"] = view_counts
                     like_counts = mongo.db.like.find(
                         {"relation_id": {"$in": video_id_list}}).count()
                     comment_counts = mongo.db.comment.find(
                         {"state": 2,
                          "video_id": {"$in": video_id_list}}).count()
-                    res_dict["comment_counts"] = comment_counts
-                    res_dict["like_counts"] = like_counts
+                    series_dict["comment_counts"] = comment_counts
+                    series_dict["like_counts"] = like_counts
+                    res_list.append(deepcopy(series_dict))
                 else:
                     res_dict["video_id"] = video["_id"]
                     res_dict["type"] = "video"
@@ -637,7 +639,7 @@ class VideoHandler(object):
                     res_dict["head_shot"] = user_info["headshot"]
                     res_dict["comment_counts"] = comments
                     res_dict["like_counts"] = likes
-                res_list.append(deepcopy(res_dict))
+                    res_list.append(deepcopy(res_dict))
         except Exception as e:
             raise response_code.DatabaseERR(errmsg="{}".format(e))
         return set_resjson(res_array=res_list)
@@ -889,6 +891,21 @@ class VideoHandler(object):
         for num, video in enumerate(verify_video, 1):
             mongo.db.video.update_one({"_id": video}, {"$set": {"number": num}})
         return set_resjson(res_array=res_list)
+
+    def func_category_information(self):
+        """
+        频道信息
+        @return:
+        """
+        category = self.extra_data.get("category", "")
+        if category == "":
+            raise response_code.ParamERR(errmsg="The classification information cannot be empty")
+        tool = mongo.db.tool.find_one({"type": "category"}, {"data": 1, "_id": 0})
+        if category not in tool.keys():
+            raise response_code.ParamERR(errmsg="Tag information error")
+        # video = mongo.db.video.find({"category": {"$in": }})
+
+
 
 
 def func_check():
