@@ -534,8 +534,7 @@ class UserHandler(object):
         introduction = self.extra_data.get('introduction')
         background = self.extra_data.get('background')
         headshot = self.extra_data.get('headshot')
-        if not all(
-                [gender, user_name, birthday, introduction, background,
+        if not all([gender, user_name, birthday, introduction, background,
                  headshot]):
             raise response_code.ParamERR(errmsg="Parameter is not complete")
         elif not name_re.match('{}'.format(user_name)):
@@ -549,10 +548,9 @@ class UserHandler(object):
             raise response_code.ParamERR(errmsg="birthday Incorrect format")
         user_update_info = {"gender": gender, "name": user_name,
                             "birthday": birthday, "introduction": introduction,
-                            "background": background,
-                            "headshot": headshot}
-        mongo.db.user.update_one({"_id": user["_id"]},
-                                 {"$set": user_update_info})
+                            "background": background, "data_type": "user",
+                            "headshot": headshot, "_id": user["_id"]}
+        mongo.db.audit.insert_one(user_update_info)
         return set_resjson()
 
     def func_verify_mobile(self):
