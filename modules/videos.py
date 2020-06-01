@@ -898,14 +898,78 @@ class VideoHandler(object):
         @return:
         """
         category = self.extra_data.get("category", "")
+        res_list = []
+        video_dict = {}
+        series_dict = {}
         if category == "":
-            raise response_code.ParamERR(errmsg="The classification information cannot be empty")
-        tool = mongo.db.tool.find_one({"type": "category"}, {"data": 1, "_id": 0})
-        if category not in tool.keys():
+            raise response_code.ParamERR(
+                errmsg="The classification information cannot be empty")
+        tool = mongo.db.tool.find_one({"type": "category"},
+                                      {"data": 1, "_id": 0})
+        if category not in tool["data"].keys():
             raise response_code.ParamERR(errmsg="Tag information error")
-        # video = mongo.db.video.find({"category": {"$in": }})
-
-
+        series_distinct_list = mongo.db.video.distinct(
+            "series", {"state": 2, "category": {"$in": [category]}})
+        video_cursor = mongo.db.video.find(
+            {"series": {"$exists": False}, "state": 2,
+             "category": {"$in": [category]}})
+        for video in video_cursor:
+            tool = mongo.db.tool.find_one({'type': 'category'})
+            category_list = []
+            for category in video['category']:
+                category_list.append(tool["data"].get(category))
+            user_info = mongo.db.user.find_one({"_id": video["user_id"]})
+            video_dict["type"] = "video"
+            video_dict["video_id"] = video["_id"]
+            video_dict["image_path"] = video["image_path"]
+            video_dict["title"] = video["title"]
+            video_dict["category"] = category_list
+            video_dict["view_counts"] = video["view_counts"]
+            video_dict["upload_time"] = video["upload_time"]
+            video_dict["video_time"] = video["video_time"]
+            video_dict["user_id"] = user_info["_id"]
+            video_dict["user_name"] = user_info["name"]
+            video_dict["headshot"] = user_info["headshot"]
+            video_dict["view_counts"] = video["view_counts"]
+            video_dict["like_counts"] = mongo.db.like.find(
+                {"relation_id": video["_id"]}).count()
+            video_dict["comment_counts"] = mongo.db.comment.find(
+                {"state": 2, "video_id": video["_id"]}).count()
+            res_list.append(deepcopy(video_dict))
+        for series_id in series_distinct_list:
+            series_info = mongo.db.series.find_one({"_id": series_id})
+            tool = mongo.db.tool.find_one({'type': 'category'})
+            series_category_list = []
+            for category in series_info['category']:
+                series_category_list.append(tool["data"].get(category))
+            series_dict["type"] = "series"
+            series_dict["series_id"] = series_info["_id"]
+            series_dict["image_path"] = series_info["image_path"]
+            series_dict["title"] = series_info["title"]
+            series_dict["category"] = series_category_list
+            series_dict["update_time"] = series_info["time"]
+            series_user_info = mongo.db.user.find_one(
+                {"_id": series_info["user_id"]})
+            series_dict["user_id"] = series_user_info["_id"]
+            series_dict["user_name"] = series_user_info["name"]
+            series_dict["headshot"] = series_user_info["headshot"]
+            view_counts = 0
+            video_cursor_series = mongo.db.video.find(
+                {"state": 2, "series": series_info["_id"]})
+            video_id_list = []
+            for video in video_cursor_series:
+                view_counts += video["view_counts"]
+                video_id_list.append(video["_id"])
+            like_counts = mongo.db.like.find(
+                {"relation_id": {"$in": video_id_list}}).count()
+            comment_counts = mongo.db.comment.find(
+                {"state": 2,
+                 "video_id": {"$in": video_id_list}}).count()
+            series_dict["view_counts"] = view_counts
+            series_dict["like_counts"] = like_counts
+            series_dict["comment_counts"] = comment_counts
+            res_list.append(deepcopy(series_dict))
+        return set_resjson(res_array=res_list)
 
 
 def func_check():
