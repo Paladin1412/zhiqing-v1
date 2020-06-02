@@ -106,6 +106,10 @@ def index():
                 from modules.home import IndexHandler
                 comment_main = IndexHandler(extra_data, model_action)
                 resp = comment_main.handle_model()
+            elif model_name == "message":
+                from modules.message import MessageHandler
+                comment_main = MessageHandler(extra_data, model_action)
+                resp = comment_main.handle_model()
             else:
                 resp = set_resjson(err=-1, errmsg="model_name is incorrect")
     return resp

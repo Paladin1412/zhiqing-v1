@@ -364,6 +364,10 @@ class VideoHandler(object):
         video_user_info = mongo.db.user.find_one({"_id": video["user_id"]},
                                                  {"name": 1, "_id": 1,
                                                   "headshot": 1})
+        video_counts = mongo.db.video.find(
+            {"user_id": video_user_info["_id"], "state": 2}).count()
+        fans_counts = mongo.db.subscription.find(
+            {"relation_id": video_user_info["_id"], "state": 0}).count()
         like_counts = mongo.db.like.find(
             {"relation_id": video_id, "type": "video"}).count()
         collection_counts = mongo.db.collection.find(
@@ -381,14 +385,13 @@ class VideoHandler(object):
                      'title': video['title'], 'user_id': video_user_info["_id"],
                      'user_name': video_user_info['name'],
                      'headshot': video_user_info['headshot'],
-                     # 'category': tool['data'][video['category']],
-                     'category': category_list,
+                     'category': category_list, 'fans_counts': fans_counts,
                      'description': video['description'],
                      'image_path': video['image_path'],
                      'view_counts': video["view_counts"],
                      'like_counts': like_counts,
                      'collection_counts': collection_counts,
-                     "is_like": 0,
+                     "is_like": 0, "video_counts": video_counts,
                      "is_collect": 0,
                      "is_subscribe": 0}
 
@@ -474,6 +477,7 @@ class VideoHandler(object):
                 video_dict["video_id"] = video["_id"]
                 video_dict["video_title"] = video["title"]
                 video_dict["video_time"] = video["video_time"]
+                video_dict["upload_time"] = video["upload_time"]
                 video_dict["image_path"] = video["image_path"]
                 video_dict["view_counts"] = video["view_counts"]
 
@@ -492,6 +496,7 @@ class VideoHandler(object):
                 video_dict["video_id"] = video["_id"]
                 video_dict["video_title"] = video["title"]
                 video_dict["video_time"] = video["video_time"]
+                video_dict["upload_time"] = video["upload_time"]
                 video_dict["image_path"] = video["image_path"]
                 video_dict["view_counts"] = video["view_counts"]
                 res_list.append(deepcopy(video_dict))
@@ -1073,6 +1078,24 @@ class VideoHandler(object):
                              "type": file_path.replace('"', "").rsplit(".")[-1],
                              "file_path": file_path})
         return set_resjson()
+
+    def func_verify_title(self):
+        """
+        视频标题验重
+        @return:
+        """
+        user = g.user
+        if not user:
+            raise response_code.UserERR(errmsg='用户未登录')
+        title = self.extra_data.get('title', "")
+        if title == "":
+            raise response_code.ParamERR(errmsg="视频标题不能为空")
+        title = mongo.db.video.find_one(
+            {"user_id": user["_id"], "title": title})
+        if title:
+            return set_resjson(err=-1, errmsg="This title already exists!")
+        else:
+            return set_resjson(err=0)
 
 
 def upload():

@@ -92,7 +92,7 @@ class LikeHandler(object):
                         mongo.db.like.insert_one(
                             {"_id": create_uuid(), "user_id": user["_id"],
                              "relation_id": relation_id, "type": like_type,
-                             "time": like_time})
+                             "time": like_time, "read_state": 0})
                     except Exception as e:
                         raise response_code.DatabaseERR(
                             errmsg="{}".format(e))

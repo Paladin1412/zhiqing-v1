@@ -67,7 +67,7 @@ class SubscriptionHandler(object):
                 if not sub_info:
                     mongo.db.subscription.insert_one(
                         {"_id": create_uuid(), "user_id": user["_id"],
-                         "relation_id": relation_id,
+                         "relation_id": relation_id, "read_state": 0,
                          "time": time.time(), "type": sub_type, "state": 0})
                 elif sub_info["state"] == -1:
                     mongo.db.subscription.update_one({"_id": sub_info["_id"]},
@@ -218,5 +218,5 @@ class SubscriptionHandler(object):
                 works.append(deepcopy(series_dict))
             res_dict["works"] = works
             res_list.append(deepcopy(res_dict))
-            res_sort_list = sorted(res_list, key=itemgetter("fans_counts"))
+        res_sort_list = sorted(res_list, key=itemgetter("fans_counts"))
         return set_resjson(res_array=res_sort_list)
