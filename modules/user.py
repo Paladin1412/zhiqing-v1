@@ -159,7 +159,6 @@ class UserHandler(object):
         code = self.extra_data.get('code', "")
         if not mobile_re.match('{}'.format(mobile)):
             raise response_code.ParamERR(errmsg="手机号码不正确")
-
         # 手机验证码验证
         sms_verify(mobile, code)
 
@@ -262,7 +261,10 @@ class UserHandler(object):
         return set_resjson()
 
     def func_check_mobile(self):
-
+        """
+        查看手机号码重复
+        @return:
+        """
         mobile = self.extra_data.get('mobile', '')
         if not mobile_re.match('{}'.format(mobile)):
             raise response_code.ParamERR(errmsg="手机号码不正确")

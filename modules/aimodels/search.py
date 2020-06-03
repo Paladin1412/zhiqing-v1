@@ -4,9 +4,10 @@
 
 import json
 import os
-import time
 import pprint
+import time
 from configparser import ConfigParser
+
 import requests
 from pymongo import MongoClient
 
@@ -235,7 +236,7 @@ class Search:
         match_frame = {}
         match_ids = []
         query_str = query_str.lower()
-        tool = self.database.tool.find_one({'type': 'category'})
+        tool = self.database.tool.find_one({'type': 'category'}).get("data")
         if not video_ids:
             videos = self.database.video.find({"state": 2}, {"_id": 1})
             for video in videos:
@@ -280,7 +281,9 @@ class Search:
                 for result in results:
                     category = []
                     for category_number in result['category']:
-                        category.append(tool['data'][category_number])
+                        for category_tool in tool:
+                            if category_number[0] == category_tool["id"]:
+                                category.append(category_tool["name"])
                     video_num += 1
                     user_id = result['user_id']
                     video_id = result['_id']
@@ -350,7 +353,10 @@ class Search:
                     series = self.database.series.find_one({'_id': series_id})
                     category = []
                     for category_number in series['category']:
-                        category.append(tool['data'][category_number])
+                        for category_number in result['category']:
+                            for category_tool in tool:
+                                if category_number[0] == category_tool["id"]:
+                                    category.append(category_tool["name"])
                     view_counts = 0
                     video_ids = []
                     results = self.database.video.find({'series_id': series_id})
@@ -403,10 +409,12 @@ class Search:
                     document_id = document_dict['matched_id']
                     document = self.database.document.find_one(
                         {'_id': document_id},
-                        {'file_name': 1, 'type': 1, 'download_counts': 1})
+                        {'file_name': 1, 'type': 1, 'download_counts': 1,
+                         'time': 1})
                     data['document_id'] = document_id
                     data['file_name'] = document['file_name']
                     data['file_type'] = document['type']
+                    data['time'] = document['time']
                     data['download_counts'] = document['download_counts']
                     dict_search['match_frame'] = {
                         'matched_str': document_dict['matched_str'],

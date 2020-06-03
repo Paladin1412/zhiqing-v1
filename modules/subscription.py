@@ -107,7 +107,7 @@ class SubscriptionHandler(object):
              "relation_id": 1})
         if sub_cursor.count() == 0:
             raise response_code.RoleERR(errmsg="你还没有订阅")
-        tool = mongo.db.tool.find_one({'type': 'category'})
+        tool = mongo.db.tool.find_one({'type': 'category'}).get("data")
         for user_id in sub_cursor:
             video_cursor = mongo.db.video.find(
                 {"user_id": user_id.get("relation_id"), "state": 2},
@@ -118,7 +118,9 @@ class SubscriptionHandler(object):
             for video in video_cursor:
                 category_list = []
                 for category in video['category']:
-                    category_list.append(tool["data"].get(category))
+                    for data_category in tool:
+                        if category == data_category["id"]:
+                            category_list.append(data_category["name"])
                 video_dict["video_id"] = video["_id"]
                 video_dict["image_path"] = video["image_path"]
                 video_dict["title"] = video["title"]
@@ -157,7 +159,6 @@ class SubscriptionHandler(object):
         if not user:
             raise response_code.UserERR(errmsg='用户未登录')
         res_dict = {}
-        works = []
         res_list = []
         video_dict = {}
         series_dict = {}
@@ -178,6 +179,7 @@ class SubscriptionHandler(object):
             video_cursor = mongo.db.video.find(
                 {"user_id": author_info["_id"], "state": 2,
                  "series": {"$exists": False}}).sort("upload_time", -1)
+            works = []
             for video in video_cursor:
                 video_dict["type"] = "video"
                 video_dict["video_id"] = video["_id"]

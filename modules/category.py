@@ -33,12 +33,13 @@ class CategoryHandler(object):
                                    self.model_action))
         return resp
 
+    @staticmethod
     def func_get_category(self):
         """
         查看标签信息
         """
         try:
-            category_cursor = mongo.db.tool.find({},{"data":1, "_id": 0})
+            category_info = mongo.db.tool.find_one({"type": "category"}).get("data")
         except Exception as e:
             raise response_code.DatabaseERR(errmsg="{}".format(e))
-        return set_resjson(res_array=[[category for category in category_cursor][0].get("data")])
+        return set_resjson(res_array=category_info)

@@ -10,6 +10,7 @@
 import hashlib
 import math
 import os
+import random
 import re
 import time
 from ast import literal_eval
@@ -24,7 +25,7 @@ from config.settings import config
 from main import mongo
 from modules.aimodels import run_ai
 from modules.aimodels.run_ai import generate_subtitle as generate_subtitle1, \
-    edit_video
+    edit_video, edit_document
 from utils import response_code
 from utils.mongo_id import create_uuid
 from utils.setResJson import set_resjson
@@ -359,7 +360,7 @@ class VideoHandler(object):
         video_id = self.extra_data.get('video_id', '')
         if video_id == '':
             raise response_code.ParamERR(errmsg="[video_id] must be provided")
-        tool = mongo.db.tool.find_one({'type': 'category'})
+        tool = mongo.db.tool.find_one({'type': 'category'}).get("data")
         video = mongo.db.video.find_one({'_id': video_id})
         video_user_info = mongo.db.user.find_one({"_id": video["user_id"]},
                                                  {"name": 1, "_id": 1,
@@ -377,7 +378,9 @@ class VideoHandler(object):
             'view_counts']
         category_list = []
         for category in video['category']:
-            category_list.append(tool["data"].get(category))
+            for data_category in tool:
+                if category == data_category["id"]:
+                    category_list.append(data_category["name"])
         data_dict = {'video_id': video_id, 'video_path': video['video_path'],
                      'audio_path': video['audio_path'],
                      'lang': video['lang'], 'ass_path': video['ass_path'],
@@ -572,7 +575,7 @@ class VideoHandler(object):
                                                                   -1).limit(
                 max_size).skip(
                 max_size * (page - 1))
-            tool = mongo.db.tool.find_one({'type': 'category'})
+            tool = mongo.db.tool.find_one({'type': 'category'}).get("data")
             for video in video_cursor:
                 likes = mongo.db.like.find(
                     {"relation_id": video.get("_id"), "type": "video"}).count()
@@ -583,7 +586,9 @@ class VideoHandler(object):
 
                 category_list = []
                 for category in video['category']:
-                    category_list.append(tool["data"].get(category))
+                    for data_category in tool:
+                        if category == data_category["id"]:
+                            category_list.append(data_category["name"])
                 series_id = video.get("series", None)
                 a = 0
                 if series_id:
@@ -677,8 +682,6 @@ class VideoHandler(object):
                                 relation_id_cursor]
             relation_sort = sorted(Counter(relation_id_list).items(),
                                    key=lambda x: x[1], reverse=True)
-            video_dict = {}
-            video_list = []
             for relation_id_set in relation_sort:
                 author_info = mongo.db.user.find_one(
                     {"_id": relation_id_set[0]},
@@ -699,11 +702,15 @@ class VideoHandler(object):
                 video_cursor = mongo.db.video.find(
                     {"user_id": relation_id_set[0], "state": 2}).sort(
                     "view_counts", -1).limit(video_size)
+                video_list = []
                 for video in video_cursor:
-                    tool = mongo.db.tool.find_one({'type': 'category'})
+                    video_dict = {}
+                    tool = mongo.db.tool.find_one({'type': 'category'}).get("data")
                     category_list = []
                     for category in video['category']:
-                        category_list.append(tool["data"].get(category))
+                        for data_category in tool:
+                            if category == data_category["id"]:
+                                category_list.append(data_category["name"])
                     like_counts = mongo.db.like.find(
                         {"relation_id": video["_id"], "type": "video"}).count()
                     comment_counts = mongo.db.comment.find(
@@ -716,9 +723,8 @@ class VideoHandler(object):
                     video_dict["category"] = category_list
                     video_dict["comment_counts"] = comment_counts
                     video_dict["like_counts"] = like_counts
-                    video_list.append(deepcopy(video_dict))
+                    video_list.append(video_dict)
                 res_dict["video_data"] = video_list
-
                 res_list.append(deepcopy(res_dict))
         except Exception as e:
             raise response_code.DatabaseERR(errmsg="{}".format(e))
@@ -760,8 +766,6 @@ class VideoHandler(object):
             view_counts = 0
             like_counts = 0
             comment_counts = 0
-            video_dict = {}
-            video_list = []
             series_cursor = mongo.db.series.find(
                 {"user_id": user["_id"]})
             for series in series_cursor:
@@ -770,8 +774,12 @@ class VideoHandler(object):
                 res_dict["update_time"] = series["time"]
                 res_dict["image_path"] = series["image_path"]
                 res_dict["description"] = series["description"]
-                video_cursor = mongo.db.video.find({"series": series["_id"]}).sort([("number", 1), ("upload_time", -1)])
+                video_cursor = mongo.db.video.find(
+                    {"series": series["_id"]}).sort(
+                    [("number", 1), ("upload_time", -1)])
+                video_list = []
                 for video in video_cursor:
+                    video_dict = {}
                     view_counts += video["view_counts"]
                     likes = mongo.db.like.find(
                         {"relation_id": video["_id"]}).count()
@@ -785,7 +793,7 @@ class VideoHandler(object):
                     video_dict["image_path"] = video["image_path"]
                     video_dict["view_counts"] = video["view_counts"]
                     video_dict["like_counts"] = likes
-                    video_dict["video_id"] = comments
+                    video_dict["comment_counts"] = comments
                     video_list.append(deepcopy(video_dict))
                 res_dict["view_counts"] = view_counts
                 res_dict["video_counts"] = series.get("video_counts",
@@ -919,9 +927,8 @@ class VideoHandler(object):
         if category == "":
             raise response_code.ParamERR(
                 errmsg="The classification information cannot be empty")
-        tool = mongo.db.tool.find_one({"type": "category"},
-                                      {"data": 1, "_id": 0})
-        if category not in tool["data"].keys():
+        tool = mongo.db.tool.find_one({"type": "category"}).get("data")
+        if category not in [i["id"] for i in tool]:
             raise response_code.ParamERR(errmsg="Tag information error")
         series_distinct_list = mongo.db.video.distinct(
             "series", {"state": 2, "category": {"$in": [category]}})
@@ -929,10 +936,11 @@ class VideoHandler(object):
             {"series": {"$exists": False}, "state": 2,
              "category": {"$in": [category]}})
         for video in video_cursor:
-            tool = mongo.db.tool.find_one({'type': 'category'})
             category_list = []
             for category in video['category']:
-                category_list.append(tool["data"].get(category))
+                for data_category in tool:
+                    if category == data_category["id"]:
+                        category_list.append(data_category["name"])
             user_info = mongo.db.user.find_one({"_id": video["user_id"]})
             video_dict["type"] = "video"
             video_dict["video_id"] = video["_id"]
@@ -953,10 +961,11 @@ class VideoHandler(object):
             res_list.append(deepcopy(video_dict))
         for series_id in series_distinct_list:
             series_info = mongo.db.series.find_one({"_id": series_id})
-            tool = mongo.db.tool.find_one({'type': 'category'})
             series_category_list = []
             for category in series_info['category']:
-                series_category_list.append(tool["data"].get(category))
+                for data_category in tool:
+                    if category == data_category["id"]:
+                        series_category_list.append(data_category["name"])
             series_dict["type"] = "series"
             series_dict["series_id"] = series_info["_id"]
             series_dict["image_path"] = series_info["image_path"]
@@ -1006,14 +1015,15 @@ class VideoHandler(object):
         if not all([task_id, description, category]):
             raise response_code.ParamERR(
                 errmsg="[task_id, description, category] must be provided ！")
-        elif type(category) != list:
-            raise response_code.ParamERR(errmsg="category type is list")
+        elif type(category) != list or len(category) < 1 or len(category) > 4:
+            raise response_code.ParamERR(
+                errmsg="category type is list, Greater than 0 is less than 4")
+        must_fields = ["subtitling", "char_id_to_time", "full_cn_str"]
         try:
             video_info = mongo.db.video.find_one(
                 {"_id": task_id, "user_id": user["_id"]})
-            category_cursor = mongo.db.tool.find({}, {"_id": 0, "data": 1})
-            category_list = [category for category in category_cursor][0].get(
-                "data")
+            category_data = mongo.db.tool.find_one({"type": "category"}).get("data")
+            category_list = [category["id"] for category in category_data]
         except Exception as e:
             raise response_code.DatabaseERR(errmsg="{}".format(e))
         for tag in category:
@@ -1023,11 +1033,14 @@ class VideoHandler(object):
             raise response_code.ParamERR(errmsg='task_id 不存在')
         elif video_info["state"] == 1:
             raise response_code.ReqERR(errmsg="正在审核请耐心等待")
+        elif not (set(video_info.keys()) > set(must_fields)):
+            raise response_code.ParamERR(errmsg="请先生成字幕")
 
         update_video_info = {"description": description, "category": category,
                              "image_path": image_path if image_path else
                              video_info["image_path"],
-                             "state": 1,
+                             "state": 2 if 11 in user.get("authority",
+                                                          []) else 1,
                              "title": title if title else video_info["title"]}
 
         if series_title:
@@ -1044,16 +1057,16 @@ class VideoHandler(object):
                             "image_path": series_image_path if series_image_path else
                             video_info["image_path"], "category": category,
                             "user_id": user["_id"], "time": time.time()}}})
-
+                    update_video_info["series"] = series_info["_id"]
                 else:
                     _id = create_uuid()
-                    mongo.db.series.insert_one(
-                        {"_id": _id, "title": series_title,
+                    mongo.db.audit.insert_one(
+                        {"_id": _id, "title": series_title, "type": "series",
                          "description": description_title,
                          "image_path": series_image_path if series_image_path else
                          video_info["image_path"], "category": category,
                          "user_id": user["_id"], "time": time.time()})
-                update_video_info["series"] = series_info["_id"]
+                    update_video_info["series"] = _id
             except Exception as e:
                 raise response_code.DatabaseERR(errmsg="{}".format(e))
         try:
@@ -1071,12 +1084,18 @@ class VideoHandler(object):
                     if not all([file_name, file_path]):
                         res_list.append(deepcopy({dmt: "参数不全"}))
                     else:
-                        mongo.db.audit.insert_one(
-                            {"_id": create_uuid(), "title": file_name,
-                             "price": 0, "video_id": task_id,
-                             "time": str(time.time()), "data_type": "document",
-                             "type": file_path.replace('"', "").rsplit(".")[-1],
-                             "file_path": file_path})
+                        if 12 in user.get("authority", []):
+                            flag = edit_document(create_uuid(), file_name,
+                                                 file_path,
+                                                 image_path, 0, task_id)
+                        else:
+                            mongo.db.audit.insert_one(
+                                {"_id": create_uuid(), "file_name": file_name,
+                                 "price": 0, "video_id": task_id,
+                                 "time": str(time.time()),
+                                 "data_type": "document",
+                                 "type": file_path.replace('"', "").rsplit(".")[
+                                     -1], "file_path": file_path})
         return set_resjson()
 
     def func_verify_title(self):
@@ -1118,7 +1137,10 @@ def upload():
         if not os.path.isfile('static/upload/{}{}'.format(task_id, chunk)):
             upload_file = request.files['file']
             title = upload_file.filename
-            if not title:
+            data_title = mongo.db.video.find_one({"title": title})
+            if data_title:
+                title = '{}{}'.format(title, random.randint(0, 999))
+            elif not title:
                 raise response_code.ParamERR(errmsg='file not can be empty')
             upload_file.save('static/upload/{}{}'.format(task_id, chunk))
             folder_file_list = os.listdir('static/upload')
