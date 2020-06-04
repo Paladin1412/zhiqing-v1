@@ -97,7 +97,7 @@ class SeriesHandler(object):
         res_dict["title"] = series_info["title"]
         res_dict["image"] = series_info["image_path"]
         res_dict["fans_counts"] = mongo.db.subscription.find(
-            {"relation_id": user["_id"], "state": 0}).count()
+            {"relation_id": author_info["_id"], "state": 0}).count()
         res_dict["description"] = series_info["description"]
         res_dict["author_id"] = series_info["user_id"]
         res_dict["is_collect"] = is_collect
