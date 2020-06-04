@@ -85,7 +85,7 @@ class UserHandler(object):
                                                                   time.localtime(
                                                                       user[
                                                                           "create_time"])))
-        res_dict["user_id"] = user.get("gender", "男")
+        res_dict["gender"] = user.get("gender", "男")
         res_dict["introduction"] = user["introduction"]
         res_dict["headshot"] = user["headshot"]
         res_dict["background"] = user["background"]
@@ -113,7 +113,8 @@ class UserHandler(object):
         if send_flag:
             raise response_code.ReqERR(errmsg="请求次数过于频繁")
 
-        sms_code = "%04d" % random.randint(0, 9999)
+        # sms_code = "%04d" % random.randint(0, 9999)
+        sms_code = "6666"
 
         # encrypted message
         hash1 = hashlib.sha256()

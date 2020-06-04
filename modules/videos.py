@@ -1076,7 +1076,7 @@ class VideoHandler(object):
         res_list = []
         if document:
             if type(document) != list:
-                raise response_code.ParamERR(errmsg="category type is list")
+                raise response_code.ParamERR(errmsg="document type is list")
             elif len(document) >= 1:
                 for dmt in document:
                     file_name = dmt.get("file_name")
@@ -1115,6 +1115,47 @@ class VideoHandler(object):
             return set_resjson(err=-1, errmsg="This title already exists!")
         else:
             return set_resjson(err=0)
+
+    def func_update_subtitle_again(self):
+        """
+        二次编辑字幕
+        @return:
+        """
+        user = g.user
+        if not user:
+            raise response_code.UserERR(errmsg='用户未登录')
+        res_dict = {}
+        video_id = self.extra_data.get("video_id", "")
+        if video_id == "":
+            raise response_code.ParamERR(errmsg="video_id must be provide")
+        video_info = mongo.db.video.find_one(
+            {"_id": video_id, "user_id": user["_id"]})
+        if not video_info:
+            raise response_code.ParamERR(errmsg="video_id is incorrect")
+        category_list = []
+        for category in video_info.get("category", []):
+            for tag in mongo.db.tool.find_one({"type": "category"}).get("data"):
+                if category == tag["id"]:
+                    category_list.append(tag["name"])
+        res_dict["video_id"] = video_id
+        res_dict["video_path"] = video_info["video_path"]
+        res_dict["image_path"] = video_info["image_path"]
+        res_dict["title"] = video_info["title"]
+        res_dict["category"] = category_list
+        res_dict["description"] = video_info.get("description", "")
+        res_dict["subtitle"] = video_info["subtitling"]
+        res_dict["style"] = video_info["ass_path"]
+        res_dict["series_id"] = video_info.get("series", "")
+        document_dict = {}
+        document_list = []
+        for document in mongo.db.document.find({"video_id": video_id},
+                                               {"file_name": 1,
+                                                "file_path": 1}):
+            document_dict["file_name"] = document["file_name"]
+            document_dict["file_path"] = document["file_path"]
+            document_list.append(deepcopy(document_dict))
+        res_dict["document"] = document_list
+        return set_resjson(res_array=[res_dict])
 
 
 def upload():
