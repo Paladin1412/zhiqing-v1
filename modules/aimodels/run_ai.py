@@ -82,11 +82,13 @@ def edit_video(res_list, video_id, style, lang):
         raise response_code.ParamERR(errmsg='{}'.format(e))
 
 
-def edit_document(file_id, file_name, file_path, image_path, price, video_id):
+def edit_document(file_id, file_name, file_path, image_path, price, video_id,
+                  user_id):
     """
     生成课件内容
     @return:
     """
     document = Document()
-    result = document.save_str_to_database(file_id, file_name, file_path, image_path, price, video_id)
+    result = document.save_str_to_database(file_id, file_name, file_path,
+                                           image_path, price, video_id, user_id)
     return result

@@ -20,13 +20,14 @@ from utils.log import setup_log
 from utils.response_code import ApiException
 from utils.setResJson import set_resjson
 
-setup_log()
+
 app = Flask(__name__, instance_relative_config=True)
 app.config.from_object(config)
 CORS(app, resources=r'/*')
 mongo = PyMongo(app)
 mail = Mail(app)
 scheduler = APScheduler(app)
+setup_log()
 
 
 @app.route("/api/v1/gateway", methods=['POST'])

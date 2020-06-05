@@ -95,7 +95,8 @@ class SeriesHandler(object):
             {"relation_id": series_id, "type": "series"}).count()
         author_info = mongo.db.user.find_one({"_id": series_info["user_id"]})
         res_dict["title"] = series_info["title"]
-        res_dict["image"] = series_info["image_path"]
+        res_dict["image_path"] = series_info["image_path"]
+        res_dict["update_time"] = series_info["time"]
         res_dict["fans_counts"] = mongo.db.subscription.find(
             {"relation_id": author_info["_id"], "state": 0}).count()
         res_dict["description"] = series_info["description"]
@@ -122,6 +123,7 @@ class SeriesHandler(object):
             video_dict["video_title"] = video["title"]
             video_dict["description"] = video["description"]
             video_dict["video_time"] = video["video_time"]
+            video_dict["upload_time"] = video["upload_time"]
             video_dict["image_path"] = video["image_path"]
             video_dict["view_counts"] = video["view_counts"]
             video_dict["like_counts"] = video_like_counts

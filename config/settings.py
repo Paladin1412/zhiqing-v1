@@ -55,11 +55,23 @@ class Config(object):
     QQ_PHONE_APP_ID = "101842891"
     QQ_PHONE_APP_Key = "5be5b3fc13d7615ec62207370f8bb499"
 
+    # 微信移动端登录
+    WECHAT_PHONE_APP_ID = 'wx4db72515c0c146f2'
+    WECHAT_PHONE_REDIRECT_URI = 'http://www.txjava.cn/loginServlet'
+    WECHAT_PHONE_STATE = '3d6be0a4035d839573b04816624a415e#wechat_redirect'
+    WECHAT_PHONE_APP_SECRET = '1ef8755f92bebae8ad7bab432ba29cbf'
+
     # 微信登录
-    WECHAT_APP_ID = 'wx7287a60bb700fd21'
-    WECHAT_REDIRECT_URI = 'http://www.txjava.cn/loginServlet'
+    WECHAT_APP_ID = 'wx2508843f0772d99d'
+    WECHAT_REDIRECT_URI = 'http://kengine.haetek.com'
     WECHAT_STATE = '3d6be0a4035d839573b04816624a415e#wechat_redirect'
-    WECHAT_APP_SECRET = '1ef8755f92bebae8ad7bab432ba29cbf'
+    WECHAT_APP_SECRET = 'fcaa3ac7cc97bda77faf6cd322bfd277'
+
+    # 微博 登录信息
+    MICROBLOG_CLIENT_ID = '2354036603'
+    MICROBLOG_REDIRECT_URI = 'http://kengine.haetek.com/users/login'
+    MICROBLOG_STATE = ''
+    MICROBLOG_CLIENT_SECRET = '812ec9be97cc3e5be23e5e6c6af956d6'
     # 邮件发送
     MAIL_SERVER = 'smtp.qq.com'
     MAIL_PORT = 587
