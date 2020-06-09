@@ -29,4 +29,4 @@ def get_user_id(user_id):
                                            {"$inc": {"sequence_value": 1}},
                                            new=True)
     new = ret["sequence_value"]
-    return new
+    return str(new)

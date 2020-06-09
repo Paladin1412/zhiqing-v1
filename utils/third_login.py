@@ -13,13 +13,14 @@ import urllib
 import urllib.parse
 from urllib.request import urlopen
 
+import requests
+from Crypto.Cipher import PKCS1_v1_5
+from Crypto.PublicKey import RSA
 from flask import current_app
 
 from config.settings import config
 from utils import response_code
-import requests
-from Crypto.Cipher import PKCS1_v1_5
-from Crypto.PublicKey import RSA
+
 
 class WeChat(object):
     """
@@ -63,11 +64,11 @@ class WeChat(object):
             raise response_code.ThirdERR(errmsg=resp_dict.get('errmsg', ''))
         else:
             access_token = resp_dict.get('access_token', '')
-            # refresh_token = resp_dict.get('refresh_token', '')
+            refresh_token = resp_dict.get('refresh_token', '')
             openid = resp_dict.get('openid', '')
             unionid = resp_dict.get('unionid', '')
 
-        return access_token, openid, unionid
+        return access_token, openid, unionid, refresh_token
 
     @staticmethod
     def get_user_info(access_token, openid):
@@ -81,8 +82,9 @@ class WeChat(object):
             nickname = resp_dict.get('nickname', '')
             headimgurl = resp_dict.get('headimgurl', '')
             unionid = resp_dict.get('unionid', '')
+            gender = resp_dict.get('gender', "男")
 
-        return nickname, headimgurl, unionid
+        return nickname, headimgurl, unionid, gender
 
 
 class OAuthQQ(object):
@@ -214,6 +216,78 @@ class OAuthQQ(object):
         except Exception as e:
             raise response_code.ThirdERR(errmsg="{}".format(e))
         return unionid, openid
+
+
+class WeiBo(object):
+    """
+    微博
+    """
+
+    def __init__(self, appid=None, state=None, redirect_uri=None,
+                 secret_key=None):
+        self.appid = appid or config.MICROBLOG_CLIENT_ID
+        self.redirect_uri = redirect_uri or config.MICROBLOG_REDIRECT_URI
+        self.state = state or config.MICROBLOG_STATE
+        self.secret_key = secret_key or config.MICROBLOG_CLIENT_SECRET
+
+    def get_weibo_login_url(self):
+        """
+        获取微博登录的的网址
+        :return: url 网址
+        """
+        url = 'https://api.weibo.com/oauth2/authorize?'
+        params = {
+            "client_id": self.appid,
+            "response_type": "code",
+            "redirect_uri": self.redirect_uri,
+            # 'scope': 'get_user_info'
+        }
+        url += urllib.parse.urlencode(params)
+
+        return url
+
+    def get_access_token(self, code):
+        """向weibo服务器获取access token"""
+
+        url = "https://api.weibo.com/oauth2/access_token?"
+        params = {
+            "client_id": self.appid,
+            "client_secret": self.secret_key,
+            "grant_type": "authorization_code",
+            "redirect_uri": self.redirect_uri,
+            "code": code
+        }
+        url += urllib.parse.urlencode(params)
+        try:
+            resp = requests.post(url).content.decode()
+            resp_dict = json.loads(resp)
+        except Exception as e:
+            current_app.logger.error('获取access_token异常: %s' % e)
+            raise response_code.ThirdERR(errmsg="{}".format(e))
+        else:
+            if not resp_dict or resp_dict.get("error"):
+                raise response_code.ParamERR(errmsg='code 失效 {}'.format(
+                    resp_dict.get("error_description")))
+            access_token = resp_dict.get('access_token')
+        return access_token
+
+    @staticmethod
+    def get_user_info(access_token):
+
+        url = 'https://api.weibo.com/2/users/show.json?'
+        params = {
+            "access_token": access_token,
+            "screen_name": "screen_name"}
+
+        url += urllib.parse.urlencode(params)
+        print(url)
+        try:
+            resp = urlopen(url)
+            resp_byte = resp.read()
+            resp_json = json.loads(resp_byte.decode())
+        except Exception as e:
+            raise response_code.ParamERR(errmsg="{}".format(e))
+        return resp_json
 
 
 def send_request_to_third(url):

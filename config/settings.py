@@ -22,17 +22,11 @@ class Config(object):
                                 "jpeg", "JPEG"}
     ALLOWED_DOCUMENT_EXTENSIONS = {'pdf', 'py', "PDF", "PY"}
     MAX_CONTENT_LENGTH = 200 * 1024 * 1024  # 100MB
-
-    # REDIS_HOST = "127.0.0.1"
-    # REDIS_PORT = 6379
-
     REDIS_HOST = "web02cn.haetek.com"
     REDIS_PORT = 7001
     REDIS_PASSWORD = "!password123"
-
     JWT_SECRET = 'TPmi4aLWRbyVq8zu9v82dWYW17/z+UvRnYTt4P6fAXA'
     JWT_EXPIRY_HOURS = 336
-
     # 一键登陆
     JI_GUANG_APP_KEY = '0deb5b6a0767422785826e08'
     JI_GUANG_MASTER_KEY = 'dc134b94c67fb48cfd80ed29'
@@ -41,7 +35,6 @@ class Config(object):
     # 上传视频配置
     UPLOAD_ACCESS_ID = 'LTAI4Fs68e8VFj5n5H9nPb9B'
     UPLOAD_ACCESS_ID_SECRET = 'E2C9cejeo4R8FcldFtzmpx5OMf8nVE'
-
     # 发送短信配置
     SMS_ACCESS_KEY_ID = 'LTAI4FwGgRWdjuPnwTsX482J'
     SMS_ACCESS_KEY_SECRET = 'k5pUQrg93Kg3XVmhpwC61riAs6wsXf'
@@ -50,23 +43,19 @@ class Config(object):
     QQ_REDIRECT_URI = 'http://kengine.haetek.com/users/login'
     QQ_STATE = ''
     QQ_CLIENT_SECRET = 'b0cb59d333b1ce6030e8e9619f54c379'
-
     # QQ 移动端登陆
     QQ_PHONE_APP_ID = "101842891"
     QQ_PHONE_APP_Key = "5be5b3fc13d7615ec62207370f8bb499"
-
     # 微信移动端登录
     WECHAT_PHONE_APP_ID = 'wx4db72515c0c146f2'
     WECHAT_PHONE_REDIRECT_URI = 'http://www.txjava.cn/loginServlet'
     WECHAT_PHONE_STATE = '3d6be0a4035d839573b04816624a415e#wechat_redirect'
     WECHAT_PHONE_APP_SECRET = '1ef8755f92bebae8ad7bab432ba29cbf'
-
     # 微信登录
     WECHAT_APP_ID = 'wx2508843f0772d99d'
     WECHAT_REDIRECT_URI = 'http://kengine.haetek.com'
     WECHAT_STATE = '3d6be0a4035d839573b04816624a415e#wechat_redirect'
     WECHAT_APP_SECRET = 'fcaa3ac7cc97bda77faf6cd322bfd277'
-
     # 微博 登录信息
     MICROBLOG_CLIENT_ID = '2354036603'
     MICROBLOG_REDIRECT_URI = 'http://kengine.haetek.com/users/login'
@@ -80,6 +69,9 @@ class Config(object):
     MAIL_PASSWORD = 'gtzhqmgrdjkqbbgi'
     MAIL_DEFAULT_SENDER = 'JamesBy <786960910@qq.com>'
     LOG_LEVEL = logging.INFO
+    # 阿里云支付配置
+    ALIPAY = "2016102400749416"
+    ALIPAY_DEBUG = True
 
 
 class ProdConfig(Config):

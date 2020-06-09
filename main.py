@@ -19,6 +19,7 @@ from utils import response_code
 from utils.log import setup_log
 from utils.response_code import ApiException
 from utils.setResJson import set_resjson
+import logging
 
 
 app = Flask(__name__, instance_relative_config=True)

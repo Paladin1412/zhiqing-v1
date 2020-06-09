@@ -56,3 +56,9 @@ def allowed_document_file(file):
         return new_name
     else:
         return False
+
+
+def fenye(datas, pagenum, pagesize):
+    if datas and isinstance(pagenum, int) and isinstance(pagesize, int):
+        return datas[
+               ((pagenum - 1) * pagesize):((pagenum - 1) * pagesize) + pagesize]

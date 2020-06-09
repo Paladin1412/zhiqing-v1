@@ -2,22 +2,16 @@
 """
 user_login
 """
-import base64
 import datetime
 import hashlib
 import json
 import random
 import time
-import urllib.parse
 from copy import deepcopy
 from threading import Thread
-from urllib.request import urlopen
 from uuid import uuid1
 
 import jwt
-import requests
-from Crypto.Cipher import PKCS1_v1_5
-from Crypto.PublicKey import RSA
 from flask import request, g, current_app, make_response
 from flask_mail import Message
 from itsdangerous import TimedJSONWebSignatureSerializer as TJSSerializer
@@ -27,11 +21,11 @@ from main import mongo, mail
 from utils import response_code, constants
 from utils.auth import encode_auth_token
 # from utils.dysms1.send_sms import send_sms
-from utils.mongo_id import create_uuid
+from utils.mongo_id import create_uuid, get_user_id
 from utils.redisConnector import redis_conn
 from utils.regular import mobile_re, name_re, url_re
 from utils.setResJson import set_resjson
-from utils.third_login import WeChat, OAuthQQ, get_phone, get_num
+from utils.third_login import WeChat, OAuthQQ, get_phone, get_num, WeiBo
 
 
 class UserHandler(object):
@@ -172,7 +166,7 @@ class UserHandler(object):
             raise response_code.DatabaseERR(errmsg='{}'.format(error))
         now_time = time.time()
         if not user_info:
-            _id = create_uuid()
+            _id = get_user_id("id")
             try:
 
                 mongo.db.user.insert_one(
@@ -309,12 +303,17 @@ class UserHandler(object):
         next1 = self.extra_data.get('next', "")
         display = self.extra_data.get('display', "")
         log_url = None
-        if mode == "qq":
+        if mode not in ["microblog", "qq", "wechat"]:
+            raise response_code.ParamERR(errmsg="type is incorrect")
+        elif mode == "qq":
             oauth_qq = OAuthQQ(state=next1, display=display)
             log_url = oauth_qq.get_qq_login_url()
         elif mode == "wechat":
             wechat = WeChat(state=next1)
             log_url = wechat.get_wechat_url()
+        elif mode == "microblog":
+            weibo = WeiBo(state=next1)
+            log_url = weibo.get_weibo_login_url()
 
         return set_resjson(res_array=[{"url": log_url}])
 
@@ -362,7 +361,8 @@ class UserHandler(object):
             wechatlogin = WeChat(appid=config.WECHAT_APP_ID,
                                  secret_key=config.WECHAT_APP_SECRET)
 
-            nickname, headimgurl, unionid = wechatlogin.get_user_info(access_token, openid)
+            nickname, headimgurl, unionid, gender = wechatlogin.get_user_info(
+                access_token, openid)
             try:
                 user_info = mongo.db.user.find_one({"wechat_unionid": unionid})
             except Exception as e:
@@ -395,10 +395,14 @@ class UserHandler(object):
         code = self.extra_data.get('code', '')
         if code == '':
             raise response_code.ParamERR(errmsg='code can be not empty')
-        if mode == "qq":
+        elif mode not in ["microblog", "qq", "wechat"]:
+            raise response_code.ParamERR(errmsg="type is incorrect")
+        elif mode == "qq":
             resp = qq_login(code)
         elif mode == 'wechat':
             resp = wehcat_login(code)
+        elif mode == 'microblog':
+            resp = weibo_login(code)
         return resp
 
     def func_third_bind_mobile(self):
@@ -409,6 +413,7 @@ class UserHandler(object):
         access_token = self.extra_data.get('access_token', "")
         mobile = self.extra_data.get('mobile', "")
         code = self.extra_data.get('code', "")
+        refresh_token = None
         if access_token == "" or mobile == "" or code == "":
             raise response_code.ParamERR(
                 '[access_token, mobile, code] can not be empty!')
@@ -436,15 +441,18 @@ class UserHandler(object):
                 except Exception as e:
                     raise response_code.DatabaseERR(errmsg="{}".format(e))
             else:
-                _id = create_uuid()
+                _id = get_user_id("id")
                 try:
                     name = redis_conn.get("unionid_name_%s" % unionid)
                     headshot = redis_conn.get("unionid_photo_url_%s" % unionid)
+                    gender = redis_conn.get("unionid_gender_%s" % unionid)
+                    refresh_token = redis_conn.get(
+                        "unionid_refresh_token_%s" % unionid)
                     mongo.db.user.insert_one(
-                        {"gender": "男", "birthday": str(datetime.date.today()),
+                        {"gender": gender,
+                         "birthday": str(datetime.date.today()),
                          "name": name, "mobile": '{}'.format(mobile),
-                         "_id": _id,
-                         '{}_unionid'.format(third_type): unionid,
+                         "_id": _id, '{}_unionid'.format(third_type): unionid,
                          "headshot": headshot,
                          "create_time": now_time, "login_time": now_time,
                          "background": self.background_path,
@@ -455,9 +463,11 @@ class UserHandler(object):
 
                 user_info = {'name': name, 'headshot': headshot}
             response = make_response(set_resjson(res_array=[user_info]))
-            response.headers["Authorization"] = encode_auth_token(_id)
+            response.headers["Authorization"] = encode_auth_token(_id,
+                                                                  refresh_token)
             return response
 
+    @staticmethod
     def func_is_login(self):
         """
         判断登陆
@@ -497,7 +507,7 @@ class UserHandler(object):
                                            {"headshot": 1, "name": 1})
         now_time = time.time()
         if not user_info:
-            _id = create_uuid()
+            _id = get_user_id("id")
             try:
 
                 mongo.db.user.insert_one(
@@ -706,36 +716,6 @@ class UserHandler(object):
         return set_resjson(res_array=res_list)
 
 
-# def get_phone(curl, json_body):
-#     """
-#     获取RSA加密手机号码
-#     """
-#     Authorization = str(
-#         base64.b64encode(
-#             (config.JI_GUANG_APP_KEY + ':' + config.JI_GUANG_MASTER_KEY).encode(
-#                 'utf-8')), 'utf-8')
-#     headers = {
-#         "Content-Type": "application/json",
-#         "Authorization": "Basic {}".format(Authorization)
-#     }
-#     req = requests.post(url=curl, data=json_body, headers=headers)
-#     req_dict = req.json()
-#     phone = req_dict['phone']
-#     return phone
-#
-#
-# def get_num(phone, prikey):
-#     """
-#     RSA解密，获取手机号
-#     """
-#     PREFIX = '-----BEGIN RSA PRIVATE KEY-----'
-#     SUFFIX = '-----END RSA PRIVATE KEY-----'
-#     key = "{}\n{}\n{}".format(PREFIX, prikey, SUFFIX)
-#     cipher = PKCS1_v1_5.new(RSA.import_key(key))
-#     result = cipher.decrypt(base64.b64decode(phone.encode()), None).decode()
-#     return result
-
-
 def send_async_email(msg):
     """
     异步发送邮件
@@ -786,25 +766,31 @@ def sms_verify(mobile, sms_code):
 
 def wehcat_login(code):
     """
-    微信登录
+    微信登陆
     :param code:
     :return:
     """
 
     wechatlogin = WeChat(state='')
-    access_token, openid, unionid = wechatlogin.get_access_token(code)
+    access_token, openid, unionid, refresh_token = wechatlogin.get_access_token(
+        code)
     try:
         user_info = mongo.db.user.find_one({"wechat_unionid": unionid})
     except Exception as e:
         raise response_code.DatabaseERR(errmsg="{}".format(e))
     if not user_info:
         # 第一次登录
-        nickname, headimgurl, _ = wechatlogin.get_user_info(access_token,
-                                                            openid)
+        nickname, headimgurl, _, gender = wechatlogin.get_user_info(
+            access_token,  openid)
         try:
             pl = redis_conn.pipeline()
             pl.set("unionid_name_%s" % unionid, nickname,
                    constants.SMS_CODE_REDIS_EXPIRES)
+            pl.set("unionid_gender_%s" % unionid, gender,
+                   constants.SMS_CODE_REDIS_EXPIRES)
+            pl.set("unionid_refresh_token_%s" % unionid, refresh_token,
+                   constants.SMS_CODE_REDIS_EXPIRES)
+
             pl.set("unionid_photo_url_%s" % unionid, headimgurl,
                    constants.SMS_CODE_REDIS_EXPIRES)
             pl.execute()
@@ -814,204 +800,9 @@ def wehcat_login(code):
 
         return set_resjson(res_array=[{"access_token": access_token}])
     else:
-        response = not_first_login(user_info)
+        response = not_first_login(user_info, refresh_token)
 
     return response
-
-
-# class WeChat(object):
-#     """
-#     微信认证辅助工具类
-#     """
-#
-#     def __init__(self, appid=None, state=None, redirect_uri=None,
-#                  secret_key=None):
-#         self.appid = appid or config.WECHAT_APP_ID
-#         self.redirect_uri = redirect_uri or config.WECHAT_REDIRECT_URI
-#         self.state = state or config.WECHAT_STATE
-#         self.secret_key = secret_key or config.WECHAT_APP_SECRET
-#
-#     def get_wechat_url(self):
-#         """获取微信登录的连接地址"""
-#
-#         url = 'https://open.weixin.qq.com/connect/qrconnect?'
-#
-#         params = {
-#             "appid": self.appid,
-#             "redirect_uri": self.redirect_uri,
-#             "response_type": "code",
-#             "scope": "snsapi_login",
-#             "state": self.state
-#         }
-#         url += urllib.parse.urlencode(params)
-#         return url
-#
-#     def get_access_token(self, code):
-#         """ 获取 access_token """
-#         url = "https://api.weixin.qq.com/sns/oauth2/access_token?"
-#         params = {
-#             "appid": self.appid,
-#             "secret": self.secret_key,
-#             "code": code,
-#             "grant_type": "authorization_code"
-#         }
-#         url += urllib.parse.urlencode(params)
-#         resp_dict = send_request_to_third(url)
-#         if 'errmsg' in resp_dict:
-#             raise response_code.ThirdERR(errmsg=resp_dict.get('errmsg', ''))
-#         else:
-#             access_token = resp_dict.get('access_token', '')
-#             # refresh_token = resp_dict.get('refresh_token', '')
-#             openid = resp_dict.get('openid', '')
-#             unionid = resp_dict.get('unionid', '')
-#
-#         return access_token, openid, unionid
-#
-#     @staticmethod
-#     def get_user_info(access_token, openid):
-#         """ 获取用户信息 """
-#         url = 'https://api.weixin.qq.com/sns/userinfo?access_token={}&openid={}'.format(
-#             access_token, openid)
-#         resp_dict = send_request_to_third(url)
-#         if 'errmsg' in resp_dict:
-#             raise response_code.ThirdERR(errmsg=resp_dict.get('errmsg', ''))
-#         else:
-#             nickname = resp_dict.get('nickname', '')
-#             headimgurl = resp_dict.get('headimgurl', '')
-#             unionid = resp_dict.get('unionid', '')
-#
-#         return nickname, headimgurl, unionid
-#
-#
-# class OAuthQQ(object):
-#     """
-#      QQ认证辅助工具类
-#     """
-#
-#     def __init__(self, client_id=None, redirect_uri=None, state=None,
-#                  client_secret=None,
-#                  display=None):
-#         # 申请QQ登录成功后,分配给应用的appid
-#         self.client_id = client_id or config.QQ_CLIENT_ID
-#         # 成功授权后的回调地址，必须是注册appid时填写的主域名下的地址，建议设置为网站
-#         self.redirect_uri = redirect_uri or config.QQ_REDIRECT_URI
-#         # client端的状态值 在这里是前端next带的地址
-#         self.state = state or config.QQ_STATE
-#         # 申请QQ登录成功后，分配给网站的appkey
-#         self.client_secret = client_secret or config.QQ_CLIENT_SECRET
-#         # 申请qq网址是pc端还是手机端, 默认为pc端, 手机端则传递display=mobile
-#         self.display = display
-#
-#     def get_qq_login_url(self):
-#         """
-#         获取qq登录的的网址
-#         :return: url 网址
-#         """
-#         url = 'https://graph.qq.com/oauth2.0/authorize?'
-#
-#         params = {
-#             "response_type": "code",
-#             'scope': 'get_user_info',
-#             "client_id": self.client_id,
-#             "redirect_uri": self.redirect_uri,
-#             "state": self.state,
-#             "display": self.display,
-#         }
-#
-#         url += urllib.parse.urlencode(params)
-#
-#         return url
-#
-#     def get_access_token(self, code):
-#         """向QQ服务器获取access token"""
-#
-#         url = "https://graph.qq.com/oauth2.0/token?"
-#         params = {
-#             "grant_type": "authorization_code",
-#             "code": code,
-#             "client_id": self.client_id,
-#             "redirect_uri": self.redirect_uri,
-#             "client_secret": self.client_secret
-#         }
-#
-#         url += urllib.parse.urlencode(params)
-#
-#         # 向QQ服务器发送请求 access_token
-#         # access_token=FE04************************CCE2&expires_in=7776000&refresh_token=88E4************************BE14
-#
-#         try:
-#             resp = urlopen(url)
-#             resp_byte = resp.read()  # 为 byte 类型
-#             resp_str = resp_byte.decode()  # 转化为 str 类型
-#             resp_dict = urllib.parse.parse_qs(resp_str)
-#         except Exception as e:
-#             current_app.logger.error('获取access_token异常: %s' % e)
-#             raise response_code.ThirdERR(errmsg="{}".format(e))
-#
-#         else:
-#             if not resp_dict:
-#                 raise response_code.ParamERR(errmsg='code 失效')
-#             # access_token取出是一个列表
-#             access_token_list = resp_dict.get('access_token')
-#             access_token = access_token_list[0]
-#
-#         return access_token
-#
-#     @staticmethod
-#     def get_openid(access_token):
-#
-#         url = 'https://graph.qq.com/oauth2.0/me?access_token=' + access_token
-#
-#         # 向QQ服务器发送请求 openid
-#
-#         try:
-#             resp = urlopen(url)
-#             resp_byte = resp.read()
-#             resp_str = resp_byte.decode()
-#
-#             # openid = callback( {"client_id":"YOUR_APPID","openid":"YOUR_OPENID"} );
-#             # 字符串切割
-#
-#             resp_date = resp_str[10:-4]
-#             resp_dict = json.loads(resp_date)
-#
-#         except Exception as e:
-#             raise response_code.ThirdERR(errmsg="{}".format(e))
-#         else:
-#             openid = resp_dict.get('openid')
-#         return openid
-#
-#     def get_user_info(self, access_token, openid):
-#
-#         url = 'https://graph.qq.com/user/get_user_info?'
-#         params = {
-#             "access_token": access_token,
-#             "oauth_consumer_key": self.client_id,
-#             "openid": openid
-#         }
-#
-#         url += urllib.parse.urlencode(params)
-#         try:
-#             resp = urlopen(url)
-#             resp_byte = resp.read()
-#             resp_json = json.loads(resp_byte.decode())
-#         except Exception as e:
-#             raise response_code.ParamERR(errmsg="{}".format(e))
-#         return resp_json
-#
-#     @staticmethod
-#     def get_unionid(access_token):
-#         url = 'https://graph.qq.com/oauth2.0/me?access_token={}&unionid=1'.format(
-#             access_token)
-#         try:
-#             resp = urlopen(url)
-#             resp_byte = resp.read()
-#             resp_json = json.loads(resp_byte.decode()[10:-4])
-#             unionid = resp_json.get('unionid')
-#             openid = resp_json.get('openid')
-#         except Exception as e:
-#             raise response_code.ThirdERR(errmsg="{}".format(e))
-#         return unionid, openid
 
 
 def qq_login(code):
@@ -1050,6 +841,18 @@ def qq_login(code):
     return response
 
 
+def weibo_login(code):
+    """
+    微博登陆
+    @param code:
+    @return:
+    """
+    weibo = WeiBo()
+    access_token = weibo.get_access_token(code)
+    user_info = weibo.get_user_info(access_token)
+    return user_info
+
+
 def generate_save_user_token(unionid, third_type):
     """
     生成自己服务器的access_token
@@ -1080,7 +883,7 @@ def check_save_user_token(access_token):
         return data['unionid'], data['type']
 
 
-def not_first_login(user_info):
+def not_first_login(user_info, refresh_token=None):
     """ 已经登陆过 """
     _id = user_info['_id']
     login_time = time.time()
@@ -1093,20 +896,8 @@ def not_first_login(user_info):
         set_resjson(res_array=[
             {"name": user_info['name'],
              'headshot': user_info.get('headshot', "")}]))
-    response.headers["Authorization"] = encode_auth_token(_id)
+    response.headers["Authorization"] = encode_auth_token(_id, refresh_token)
     return response
-
-
-# def send_request_to_third(url):
-#     try:
-#         resp = urlopen(url)
-#         resp_byte = resp.read()  # 为 byte 类型
-#         resp_str = resp_byte.decode()  # 转化为 str 类型
-#         resp_dict = json.loads(resp_str)
-#     except Exception as e:
-#         current_app.logger.error('获取access_token异常: %s' % e)
-#         raise response_code.ThirdERR(errmsg="{}".format(e))
-#     return resp_dict
 
 
 def ranstr(num):

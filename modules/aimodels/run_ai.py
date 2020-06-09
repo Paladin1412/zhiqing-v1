@@ -7,9 +7,12 @@
 @Email    : 18821723039@163.com
 @Software : PyCharm
 """
+from flask import current_app
+
 from modules.aimodels.search import Search
 from modules.aimodels.subtitle import Subtitle, Document
 from utils import response_code
+import traceback
 
 
 def global_play_video(query_str, mode, video_ids, max_size, page):
@@ -20,6 +23,7 @@ def global_play_video(query_str, mode, video_ids, max_size, page):
     try:
         result = s.global_search(query_str, video_ids, mode, max_size, page)
     except Exception as e:
+        traceback.print_exc()
         raise response_code.RoleERR(errmsg='{}'.format(e))
     return result
 
@@ -50,10 +54,10 @@ def generate_subtitle(task_id, lang):
             subtitle = Subtitle(task_id)
             subtitle.generate_configs(video_id=task_id, lang=lang)
     except Exception as e:
-        print(e)
+        current_app.log.info(e)
         try:
             mongo.db.video.update_one({'_id': task_id},
-                                      {'$unset': {'subtitling': ''}})
+                                      {'$unset': {'subtitling': []}})
         except Exception as e:
             raise response_code.DatabaseERR(errmsg='{}'.format(e))
 

@@ -4,11 +4,11 @@ from datetime import datetime, timedelta
 
 import jwt
 from flask import request, current_app, g
-from config.settings import config
+
 from main import mongo
 
 
-def encode_auth_token(_id):
+def encode_auth_token(_id, refresh_token=None):
     """
     Generate authentication Token
     :param _id:
@@ -22,6 +22,7 @@ def encode_auth_token(_id):
             'iss': 'heidunkeji',
             'data': {
                 '_id': _id,
+                "refresh_token": refresh_token
             }
         }
 
@@ -69,6 +70,7 @@ def authenticate():
                                  algorithm=['HS256'])
             if payload:
                 _id = payload["data"].get("_id")
+                # refresh_token = payload["data"].get("refresh_token")
                 user = mongo.db.user.find_one({"_id": _id})
     except Exception as e:
         # current_app.logger.error(e)
