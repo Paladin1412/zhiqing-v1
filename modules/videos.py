@@ -499,7 +499,11 @@ class VideoHandler(object):
                 [("number", 1), ("upload_time", -1)]).limit(max_size).skip(
                 max_size * (page - 1))
             series_info = mongo.db.series.find_one({"_id": series_id})
+            video_id_list = []
+            view_counts = 0
             for video in related_cursor:
+                video_id_list.append(video["_id"])
+                view_counts += video["view_counts"]
                 if video["_id"] == video_id:
                     continue
                 video_dict["video_id"] = video["_id"]
@@ -510,11 +514,14 @@ class VideoHandler(object):
                 video_dict["view_counts"] = video["view_counts"]
 
                 video_list.append(deepcopy(video_dict))
-
+            like_counts = mongo.db.like.find(
+                {"relation_id": {"$in": video_id_list}}).count()
             series_dict["series_id"] = series_info["_id"]
             series_dict["series_title"] = series_info["title"]
             series_dict["video_counts"] = len(video_list)
+            series_dict["like_counts"] = like_counts
             series_dict["video_data"] = video_list
+            series_dict["view_counts"] = view_counts
             res_list.append(series_dict)
         else:
             video_cursor = mongo.db.video.find({"state": 2}).sort("view_counts",
@@ -523,12 +530,15 @@ class VideoHandler(object):
             for video in video_cursor:
                 if video["_id"] == video_id:
                     continue
+
                 video_dict["video_id"] = video["_id"]
                 video_dict["video_title"] = video["title"]
                 video_dict["video_time"] = video["video_time"]
                 video_dict["upload_time"] = video["upload_time"]
                 video_dict["image_path"] = video["image_path"]
                 video_dict["view_counts"] = video["view_counts"]
+                video_dict["like_counts"] = mongo.db.like.find(
+                {"relation_id": video["_id"]}).count()
                 res_list.append(deepcopy(video_dict))
         return set_resjson(res_array=res_list)
 
@@ -678,7 +688,8 @@ class VideoHandler(object):
                 video_list = []
                 for video in video_cursor:
                     video_dict = {}
-                    tool = mongo.db.tool.find_one({'type': 'category'}).get("data")
+                    tool = mongo.db.tool.find_one({'type': 'category'}).get(
+                        "data")
                     category_list = []
                     for category in video['category']:
                         for data_category in tool:
@@ -811,7 +822,7 @@ class VideoHandler(object):
         user = g.user
         if not user:
             raise response_code.UserERR(errmsg='用户未登录')
-        res_list= []
+        res_list = []
         video_id_list = self.extra_data.get("video_id", "")
         if video_id_list == "":
             raise response_code.ParamERR(errmsg="[ video_id ] is must provided")
@@ -886,8 +897,9 @@ class VideoHandler(object):
             series_video = mongo.db.video.find(
                 {"series": series_id, "state": 2})
             latest_time = \
-            [i for i in series_video.sort("upload_time", -1).skip(0).limit(1)][
-                0].get("upload_time")
+                [i for i in
+                 series_video.sort("upload_time", -1).skip(0).limit(1)][
+                    0].get("upload_time")
             mongo.db.series.update_one({"_id": series_id}, {"$set": {
                 "video_counts": series_video.count(), "time": latest_time}})
         return set_resjson(res_array=res_list)
@@ -1290,7 +1302,7 @@ def upload_success_update(file_type, task_id, subtitling_list, style, lang,
 
         filename = 'static/videos/{}.{}'.format(md5_token, file_type)
         os.rename(current_name, filename)
-        video_size = os.path.getsize(filename)/(1024*1024)
+        video_size = os.path.getsize(filename) / (1024 * 1024)
         video_time = get_video_time(filename)
         converted_video_picture(md5_token)
         response = upload_video(filename)
@@ -1355,6 +1367,7 @@ def upload_success(file_type, task_id, user_id, title):
         filename = 'static/videos/{}.{}'.format(md5_token, file_type)
         os.rename(current_name, filename)
         video_time = get_video_time(filename)
+        video_size = os.path.getsize(filename) / (1024 * 1024)
         converted_video_picture(md5_token)
         response = upload_video(filename)
         os.remove(filename)
@@ -1367,6 +1380,7 @@ def upload_success(file_type, task_id, user_id, title):
                       "upload_time": upload_date, "user_id": user_id,
                       "state": 0, "video_time": video_time, "view_counts": 0,
                       "char_id_to_time": "", "full_cn_str": "",
+                      "video_size": video_size,
                       "audio_path": "", "ass_path": "", "vtt_path": ""}
         try:
             mongo.db.video.insert_one(video_info)
@@ -1374,10 +1388,10 @@ def upload_success(file_type, task_id, user_id, title):
             current_app.log.info(e)
             raise response_code.DatabaseERR(errmsg="{}".format(e))
 
-        back_info = {'video_id': md5_token,
-                     'video_path': video_path,
-                     'image_path': 'static/image/{}.jpg'.format(md5_token)
-                     }
+        back_info = {'video_id': md5_token, 'video_path': video_path,
+                     'image_path': 'static/image/{}.jpg'.format(md5_token),
+                     "video_size": video_size, "video_time": video_time,
+                     "title": title}
         resp = set_resjson(errmsg='Video uploaded successfully!',
                            res_array=[back_info])
 

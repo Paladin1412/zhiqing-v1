@@ -8,8 +8,9 @@
 @Software: PyCharm
 """
 import time
+from copy import deepcopy
 
-from flask import g
+from flask import g, current_app
 
 from main import mongo
 from utils import response_code
@@ -110,3 +111,33 @@ class LikeHandler(object):
                     raise response_code.ParamERR(errmsg="你没有点赞过此视频，无法取消")
 
         return set_resjson()
+
+    @staticmethod
+    def func_get_like(self):
+        """
+        查看点赞
+        @return:
+        """
+        user = g.user
+        if not user:
+            raise response_code.UserERR(errmsg='用户未登录')
+        res_list = []
+        try:
+            for like in mongo.db.like.find(
+                    {"user_id": user["_id"], "type": "video"}).sort("time", -1):
+                video_info = mongo.db.video.find_one(
+                    {"_id": like["relation_id"]},
+                    {"title": 1, "upload_time": 1,
+                     "video_time": 1,
+                     "image_path": 1})
+                if not video_info:
+                    continue
+                video_id = video_info.pop("_id")
+                video_info["video_id"] = video_id
+                video_info["like_counts"] = mongo.db.like.find(
+                    {"relation_id": video_id}).count()
+                res_list.append(deepcopy(video_info))
+        except Exception as e:
+            current_app.log.error(e)
+            raise response_code.ParamERR(errmsg="{}".format(e))
+        return set_resjson(res_array=res_list)

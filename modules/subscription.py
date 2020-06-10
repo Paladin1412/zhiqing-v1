@@ -8,6 +8,7 @@
 @Software: PyCharm
 """
 import time
+import traceback
 from copy import deepcopy
 from operator import itemgetter
 
@@ -226,3 +227,77 @@ class SubscriptionHandler(object):
             res_list.append(deepcopy(res_dict))
         res_sort_list = sorted(res_list, key=itemgetter("fans_counts"))
         return set_resjson(res_array=res_sort_list)
+
+    @staticmethod
+    def func_get_fans(self):
+        """
+        查看粉丝信息
+        @param self:
+        @return:
+        """
+        user = g.user
+        if not user:
+            raise response_code.UserERR(errmsg='用户未登录')
+        try:
+            fans_cursor = mongo.db.subscription.find(
+                {"relation_id": user["_id"], "type": "author"}).sort("time", -1)
+            res_list = []
+            for fans in fans_cursor:
+                works = []
+                fans_info = mongo.db.user.find_one({"_id": fans["relation_id"]},
+                                                   {"name": 1,
+                                                    "introduction": 1,
+                                                    "headshot": 1,
+                                                    "background": 1})
+                if not fans_info:
+                    continue
+                video_cursor = mongo.db.video.find(
+                    {"user_id": fans_info["_id"]},
+                    {"title": 1, "upload_time": 1, "image_path": 1,
+                     "video_time": 1, "view_counts": 1, "background": 1})
+                fans_id = fans_info.pop("_id")
+                fans_info["author_id"] = fans_id
+                fans_info["fans_counts"] = mongo.db.subscription.find(
+                    {"relation_id": fans_id}).count()
+                fans_info["author_name"] = fans_info.pop("name")
+                fans_info["video_counts"] = video_cursor.count()
+                for video in video_cursor:
+                    single_video_id = video.pop("_id")
+                    video["type"] = "video"
+                    video["video_id"] = single_video_id
+                    video["like_counts"] = mongo.db.like.find(
+                        {"relation_id": single_video_id,
+                         "read_state": 0}).count()
+                    video["comment_counts"] = mongo.db.commention.find(
+                        {"video_id": single_video_id, "state": 2}).count()
+                    works.append(deepcopy(video))
+                for series in mongo.db.series.find({"user_id": fans_id},
+                                                   {"_id": 1, "title": 1,
+                                                    "time": 1,
+                                                    "image_path": 1}):
+                    series_id = series.pop("_id")
+                    series["series_id"] = series_id
+                    series["type"] = "series"
+                    series["update_time"] = series.pop("time")
+                    view_counts = 0
+                    series_video_id_List = []
+                    for video in mongo.db.video.find(
+                            {"series": series_id, "state": 2},
+                            {"view_counts": 1}):
+                        view_counts += video["view_counts"]
+                        series_video_id_List.append(video["_id"])
+                    like_counts = mongo.db.like.find(
+                        {"relation_id": {"$in": series_video_id_List}}).count()
+                    comment_counts = mongo.db.comment.find(
+                        {"state": 2,
+                         "video_id": {"$in": series_video_id_List}}).count()
+                    series["view_counts"] = view_counts
+                    series["like_counts"] = like_counts
+                    series["comment_counts"] = comment_counts
+                    works.append(deepcopy(series))
+                fans_info["works"] = works
+                res_list.append(deepcopy(fans_info))
+        except Exception as e:
+            traceback.print_exc()
+            raise response_code.ParamERR(errmsg="{}".format(e))
+        return set_resjson(res_array=res_list)
