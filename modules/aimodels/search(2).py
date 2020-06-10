@@ -4,9 +4,10 @@
 
 import json
 import os
-import time
 import pprint
+import time
 from configparser import ConfigParser
+
 import requests
 from pymongo import MongoClient
 
@@ -24,6 +25,53 @@ from pymongo import MongoClient
 
 #     data_string = time.strftime('%H:%M:%S', time.gmtime(float_data))
 #     return data_string
+
+
+def jump_search(query_str, raw_source_str):
+    res_list = []
+    source_str = raw_source_str + '.' * (len(query_str) + 1)
+
+    hasResult = True
+    curr_source_str = source_str[:]
+    abs_curr_index = 0
+
+    while hasResult:
+        try:
+            curr_index = curr_source_str.index(query_str)
+            abs_curr_index += curr_index + len(query_str)
+            res_list.append([abs_curr_index - len(query_str), query_str])
+            curr_source_str = curr_source_str[curr_index + len(query_str):]
+
+        except:
+            hasResult = False
+
+    return res_list
+
+
+def inHeur_search(raw_query_str, raw_source_str, inHeur_chars='的了呢呐呃嗯呀哦噢哈吗哇么',
+                  split_chars=',.?!:;，。！？：；'):
+    res_list = []
+    source_str = raw_source_str[:]
+    query_str = raw_query_str[:]
+
+    for inHeur_char in inHeur_chars: query_str = query_str.replace(inHeur_char,
+                                                                   '')
+
+    if len(query_str) < len(raw_query_str) * 0.6: return []
+
+    for cand_char in split_chars: source_str = source_str.replace(cand_char,
+                                                                  '#')
+
+    source_list = source_str.split('#')
+    for source_item in source_list:
+        inHeur_source_item = source_item[:]
+        for inHeur_char in inHeur_chars: inHeur_source_item = inHeur_source_item.replace(
+            inHeur_char, '')
+        if query_str in inHeur_source_item and len(inHeur_source_item) > len(
+                source_item) * 0.7:
+            res_list.append([raw_source_str.index(source_item), source_item])
+
+    return res_list
 
 
 def bluE_standard(query_str, input_paragraph, lang='ch', isSemantic=0,
@@ -61,7 +109,7 @@ class Search:
         map_dict = {}
         condition = {}
         if video_ids:
-            condition = {"video_id": {"$in": video_ids}}
+            condition = {"video_id": {"$in": video_ids}, "price": {"$gt": 0}}
         documents = self.database.document.find(condition,
                                                 {'full_str': 1, '_id': 1,
                                                  'char_id_to_page_id': 1})
@@ -199,6 +247,9 @@ class Search:
                                               {"video_path": 1, "_id": 1,
                                                "full_cn_str": 1})
         full_cn_str = result['full_cn_str']
+
+        existed_subs_pos = []
+
         for _num in res_dict:
             video_id = res_dict[_num]['video_id']
             pos = res_dict[_num]['pos']
@@ -211,7 +262,11 @@ class Search:
                 "subs_pos": char_dur,
                 "whole_str": full_cn_str[char_dur[0]:char_dur[1] + 1],
                 "video_id": video_id}
-            match_frames.append(match_frame)
+
+            if match_frame['subs_pos'] not in existed_subs_pos:
+                existed_subs_pos.append(match_frame['subs_pos'])
+                match_frames.append(match_frame)
+
         dict_search = {'match_frame': match_frames}
         result_data.append(dict_search)
 
@@ -235,7 +290,7 @@ class Search:
         match_frame = {}
         match_ids = []
         query_str = query_str.lower()
-        tool = self.database.tool.find_one({'type': 'category'})
+        tool = self.database.tool.find_one({'type': 'category'}).get("data")
         if not video_ids:
             videos = self.database.video.find({"state": 2}, {"_id": 1})
             for video in videos:
@@ -280,7 +335,9 @@ class Search:
                 for result in results:
                     category = []
                     for category_number in result['category']:
-                        category.append(tool['data'][category_number])
+                        for category_tool in tool:
+                            if category_number == category_tool["id"]:
+                                category.append(category_tool["name"])
                     video_num += 1
                     user_id = result['user_id']
                     video_id = result['_id']
@@ -350,7 +407,10 @@ class Search:
                     series = self.database.series.find_one({'_id': series_id})
                     category = []
                     for category_number in series['category']:
-                        category.append(tool['data'][category_number])
+                        for category_number in result['category']:
+                            for category_tool in tool:
+                                if category_number == category_tool["id"]:
+                                    category.append(category_tool["name"])
                     view_counts = 0
                     video_ids = []
                     results = self.database.video.find({'series_id': series_id})
@@ -403,10 +463,12 @@ class Search:
                     document_id = document_dict['matched_id']
                     document = self.database.document.find_one(
                         {'_id': document_id},
-                        {'file_name': 1, 'type': 1, 'download_counts': 1})
+                        {'file_name': 1, 'type': 1, 'download_counts': 1,
+                         'time': 1})
                     data['document_id'] = document_id
                     data['file_name'] = document['file_name']
                     data['file_type'] = document['type']
+                    data['time'] = document['time']
                     data['download_counts'] = document['download_counts']
                     dict_search['match_frame'] = {
                         'matched_str': document_dict['matched_str'],
@@ -423,7 +485,20 @@ class Search:
         compare_list = sorted(compare.items(), key=lambda x: x[1], reverse=True)
         for num in compare_list:
             result_data.append(temp_data[num[0]])
-        return result_data[max_size * (page - 1):max_size * page]
+
+        unsorted_data = {}
+        for _item in result_data[:]:
+            if 'video_id' in _item['data']:
+                unsorted_data[_item['data']['video_id']] = _item
+            if 'document_id' in _item['data']:
+                unsorted_data[_item['data']['document_id']] = _item
+
+        sorted_ids = sorted(unsorted_data, key=lambda v: (
+        unsorted_data[v]['match_frame']['score']), reverse=True)
+        # print(sorted_ids)
+        sorted_result_data = [unsorted_data[_id] for _id in sorted_ids]
+
+        return sorted_result_data[max_size * (page - 1):max_size * page]
 
     def video_search(self, query_str, video_ids, isBluE=False):
         """
@@ -436,21 +511,57 @@ class Search:
         inputs_dict = self.get_video(video_ids)
         res_dict = {}
 
-        if not isBluE:
-            for video_id in inputs_dict:
-                curr_str = inputs_dict[video_id]
-                if query_str in curr_str:
-                    matched_index = curr_str.index(query_str)
-                    res_dict[video_id] = {
-                        'pos': [matched_index,
-                                matched_index + len(query_str) + 1],
-                        'matched_str': query_str
-                    }
+        # if not isBluE:
+        #     for video_id in inputs_dict:
+        #         curr_str = inputs_dict[video_id]
+        #         if query_str in curr_str:
+        #             matched_index = curr_str.index(query_str)
+        #             res_dict[video_id] = {
+        #                 'pos': [matched_index,
+        #                         matched_index + len(query_str) + 1],
+        #                 'matched_str': query_str
+        #             }
 
         if isBluE:
             bluE_results = bluE_standard(query_str, inputs_dict, lang='ch',
                                          isSemantic=0,
                                          max_size=100)
+
+            ###
+            for video_id in inputs_dict:
+                curr_str = inputs_dict[video_id]
+                # jump_res = jump_search(query_str, curr_str)
+                # inHeur_res = inHeur_search(query_str, inputs_dict[video_id])
+
+                # if jump_res != []:
+                #     for jump_item in jump_res:
+                #         str_pos = [str(jump_item[0]), str(jump_item[0]+len(query_str))]
+
+                if query_str in curr_str:
+                    matched_index = curr_str.index(query_str)
+                    res_dict[video_id] = {
+                        'pos': [matched_index,
+                                matched_index + len(query_str) + 1],
+                        'matched_str': query_str,
+                        'type': "subtitle",
+                        'score': 1.0
+                    }
+
+                inHeur_res = inHeur_search(query_str, curr_str)
+                if inHeur_res != []:
+                    inHeur_item = inHeur_res[0]
+                    str_pos = [str(inHeur_item[0]),
+                               str(inHeur_item[0] + len(inHeur_item[1]))]
+                    res_dict[video_id] = {
+                        'pos': str_pos,
+                        'matched_str': inHeur_item[1],
+                        'type': "subtitle",
+                        'score': 1.0
+                    }
+
+            # print('xsxsxs')
+            # pprint.pprint(bluE_results[:5])
+
             for item in bluE_results:
                 # print(item)
                 curr_key = item['key_id']
@@ -520,17 +631,46 @@ class Search:
         :param isSemantic:
         :return res_dict:
         """
+        LOCAL_MAX_SIZE = 10
+
         res_dict = {}
         curr_key = 0
         inputs_dict = self.get_input_dict([video_id])
         bluE_results = bluE_standard(query_str, inputs_dict, lang='ch',
                                      isSemantic=isSemantic,
-                                     max_size=10)
+                                     max_size=LOCAL_MAX_SIZE)
+
+        jump_res = jump_search(query_str, inputs_dict[video_id])
+        inHeur_res = inHeur_search(query_str, inputs_dict[video_id])
+
+        if jump_res != []:
+            for jump_item in jump_res:
+                str_pos = [str(jump_item[0]),
+                           str(jump_item[0] + len(query_str))]
+                if curr_key < LOCAL_MAX_SIZE:
+                    res_dict[curr_key] = {
+                        'video_id': video_id,
+                        'pos': str_pos,
+                        'matched_str': query_str
+                    }
+                    curr_key += 1
+
+        if jump_res == [] and inHeur_res != []:
+            for inHeur_item in inHeur_res:
+                str_pos = [str(inHeur_item[0]),
+                           str(inHeur_item[0] + len(inHeur_item[1]))]
+                if curr_key < LOCAL_MAX_SIZE:
+                    res_dict[curr_key] = {
+                        'video_id': video_id,
+                        'pos': str_pos,
+                        'matched_str': inHeur_item[1]
+                    }
+                    curr_key += 1
+
         for item in bluE_results:
-            video_id = item['key_id']
             str_pos = item['str_position']
             # toDo generating multiple results
-            if curr_key < 5:
+            if curr_key < LOCAL_MAX_SIZE:
                 res_dict[curr_key] = {
                     'video_id': video_id,
                     'pos': str_pos,
@@ -603,44 +743,50 @@ def main():
     print()
     ###### Sample One (Local Search) ######
 
-    # video_ids = ['4339af28471e62289847391fab65b149']
-    # query_str = '向量'
-
-    # ss = time.time()
-    # s = Search()
-    # res_list = s.local_search(query_str, video_ids)
-
-    # ee = time.time()
-
-    # print('###### Sample One (Local Search) ######')
-    # print('Query:',query_str)
-    # pprint.pprint(res_list)
-    # print('Video Size:',len(video_ids))
-    # print('Time Cost: ', ee-ss)
-    # print()
-
-    ###### Sample Two (Global Search) ######
-
-    video_ids = ["9bedd89faf371092e1aaaacf5fd3b704",
-                 "162fb70b08169805aab916f75711b015"]
-    # video_ids = []
-    query_str = '重力'
-    # query_str = ''
+    video_ids = ['c918a902b296a38feaa7e4af0a0ee901']
+    query_str = '向量的大小'
 
     ss = time.time()
     s = Search()
-    type = 'all'
-    max_size = 12
-    page = 1
-    res_list = s.global_search(query_str, video_ids, type, max_size, page)
+    res_list = s.local_search(query_str, video_ids)
 
     ee = time.time()
 
-    print('###### Sample Two (Global Search) ######')
+    print('###### Sample One (Local Search) ######')
     print('Query:', query_str)
     pprint.pprint(res_list)
     print('Video Size:', len(video_ids))
     print('Time Cost: ', ee - ss)
+    print()
+
+    ###### Sample Two (Global Search) ######
+
+    # video_ids = ["9bedd89faf371092e1aaaacf5fd3b704",
+    #              "162fb70b08169805aab916f75711b015",
+    #              "5c82d69504419c65f4aec21db403e904",
+    #              "4339af28471e62289847391fab65b149",
+    #              "ee73aca89fb3c23397f55f5db9f8db03",
+    #              "c918a902b296a38feaa7e4af0a0ee901"]
+
+    # video_ids = []
+    # # query_str = '向量的加法'
+    # query_str = '财政自由'
+    # # query_str = ''
+
+    # ss = time.time()
+    # s = Search()
+    # type = 'document'
+    # max_size = 5
+    # page = 1
+    # res_list = s.global_search(query_str, video_ids, type, max_size, page)
+
+    # ee = time.time()
+
+    # print('###### Sample Two (Global Search) ######')
+    # print('Query:', query_str)
+    # pprint.pprint(res_list)
+    # print('Video Size:', len(video_ids))
+    # print('Time Cost: ', ee - ss)
 
 
 if __name__ == "__main__":

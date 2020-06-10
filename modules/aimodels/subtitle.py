@@ -1825,7 +1825,7 @@ import datetime
 from moviepy.editor import VideoFileClip
 from pymongo import MongoClient
 import fitz
-import packages.iflytek_api as voice_api
+import modules.aimodels.packages.iflytek_api as voice_api
 
 
 def get_dict_from_path(_path):

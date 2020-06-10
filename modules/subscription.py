@@ -130,6 +130,7 @@ class SubscriptionHandler(object):
                 video_dict["user_id"] = video["user_id"]
                 video_dict["user_name"] = user_info["name"]
                 video_dict["head_shot"] = user_info["headshot"]
+                video_dict["introduction"] = user_info["introduction"]
 
                 video_list.append(deepcopy(video_dict))
         res_list = sorted(video_list, key=itemgetter("update_time"),
@@ -138,6 +139,8 @@ class SubscriptionHandler(object):
         if mode == "web":
             resp = set_resjson(res_array=res_list[:8])
         else:
+            if res_list == []:
+                return set_resjson()
             app_list = []
             latest_user_id = res_list[0].get("user_id")
             for video_dict in res_list:
@@ -170,6 +173,7 @@ class SubscriptionHandler(object):
                 {"_id": sub_author["relation_id"]})
             res_dict["author_id"] = author_info["_id"]
             res_dict["author_name"] = author_info["name"]
+            res_dict["background"] = author_info["background"]
             res_dict["introduction"] = author_info["introduction"]
             res_dict["headshot"] = author_info["headshot"]
             res_dict["video_counts"] = mongo.db.video.find(

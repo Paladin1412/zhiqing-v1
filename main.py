@@ -13,14 +13,12 @@ from flask_apscheduler import APScheduler
 from flask_cors import CORS
 from flask_mail import Mail
 from flask_pymongo import PyMongo
-
+from datetime import datetime
 from config.settings import config
 from utils import response_code
 from utils.log import setup_log
 from utils.response_code import ApiException
 from utils.setResJson import set_resjson
-import logging
-
 
 app = Flask(__name__, instance_relative_config=True)
 app.config.from_object(config)
@@ -56,6 +54,8 @@ def index():
         model_name = post_data.get('model_name', "")
         model_action = post_data.get('model_action', "")
         extra_data = post_data.get('extra_data', "")
+        current_app.logger.info(post_data)
+        current_app.logger.info(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
         # model_type = post_data.get('model_type', "")
         if model_action == "":
             resp = set_resjson(err=-8, errmsg="[ extra_data ] must be provided")

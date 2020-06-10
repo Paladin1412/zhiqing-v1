@@ -21,7 +21,7 @@ from main import mongo, mail
 from utils import response_code, constants
 from utils.auth import encode_auth_token
 # from utils.dysms1.send_sms import send_sms
-from utils.mongo_id import create_uuid, get_user_id
+from utils.mongo_id import get_user_id
 from utils.redisConnector import redis_conn
 from utils.regular import mobile_re, name_re, url_re
 from utils.setResJson import set_resjson
@@ -72,6 +72,14 @@ class UserHandler(object):
                 {"user_id": user["_id"], "state": 0}).count()
             fans_counts = mongo.db.subscription.find(
                 {"relation_id": user["_id"], "state": 0}).count()
+
+            video_id_list = [video.get("_id") for video in
+                             mongo.db.video.find({"user_id": user["_id"]},
+                                                 {"_id": 1})]
+            like_counts = mongo.db.like.find({"user_id": user["_id"],
+                                              "relation_id": {
+                                                  "$in": video_id_list}}).count()
+
         except Exception as e:
             raise response_code.DatabaseERR(errmsg="{}".format(e))
         res_dict["user_name"] = user["name"]
@@ -84,6 +92,8 @@ class UserHandler(object):
         res_dict["introduction"] = user["introduction"]
         res_dict["headshot"] = user["headshot"]
         res_dict["background"] = user["background"]
+        res_dict["like_counts"] = like_counts
+        res_dict["video_counts"] = len(video_id_list)
         res_dict["user_name"] = user["name"]
         res_dict["binding_webchat"] = 1 if user.get("wechat_unionid",
                                                     None) else 0
