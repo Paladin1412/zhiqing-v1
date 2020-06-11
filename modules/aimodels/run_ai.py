@@ -7,12 +7,10 @@
 @Email    : 18821723039@163.com
 @Software : PyCharm
 """
-from flask import current_app
-
 from modules.aimodels.search import Search
 from modules.aimodels.subtitle import Subtitle, Document
 from utils import response_code
-import traceback
+from flask import current_app
 
 
 def global_play_video(query_str, mode, video_ids, max_size, page):
@@ -21,9 +19,10 @@ def global_play_video(query_str, mode, video_ids, max_size, page):
     """
     s = Search()
     try:
+        current_app.logger.info("全局搜索开始")
         result = s.global_search(query_str, video_ids, mode, max_size, page)
+        current_app.logger.info("全局搜索结束")
     except Exception as e:
-        traceback.print_exc()
         raise response_code.RoleERR(errmsg='{}'.format(e))
     return result
 
@@ -34,7 +33,9 @@ def local_play_video(query_str, video_ids):
     """
     s = Search()
     try:
+        current_app.logger.info("局部搜索开始")
         result = s.local_search(query_str, video_ids)
+        current_app.logger.info("局部搜索结束")
     except Exception as e:
         raise response_code.RoleERR(errmsg='{}'.format(e))
     return result
@@ -51,13 +52,15 @@ def generate_subtitle(task_id, lang):
     try:
 
         with app.app_context():
+            current_app.logger.info("生成字幕开始")
             subtitle = Subtitle(task_id)
             subtitle.generate_configs(video_id=task_id, lang=lang)
+            current_app.logger.info("生成字幕结束")
     except Exception as e:
-        current_app.log.info(e)
+        print(e)
         try:
             mongo.db.video.update_one({'_id': task_id},
-                                      {'$unset': {'subtitling': []}})
+                                      {'$unset': {'subtitling': ''}})
         except Exception as e:
             raise response_code.DatabaseERR(errmsg='{}'.format(e))
 
@@ -70,8 +73,10 @@ def update_subtitle(task_id, subtitling, style):
     :param style:
     :return:
     """
+    current_app.logger.info("更改字幕，并更新数据库开始")
     subtitle = Subtitle(task_id)
     result = subtitle.update_configs(subtitling, task_id, style)
+    current_app.logger.info("更改字幕，并更新数据库结束")
     return result
 
 
@@ -86,13 +91,14 @@ def edit_video(res_list, video_id, style, lang):
         raise response_code.ParamERR(errmsg='{}'.format(e))
 
 
-def edit_document(file_id, file_name, file_path, image_path, price, video_id,
-                  user_id):
+def edit_document(file_id, file_name, file_path, preview_path, price, video_id,
+                  user_id, image_path):
     """
     生成课件内容
     @return:
     """
     document = Document()
     result = document.save_str_to_database(file_id, file_name, file_path,
-                                           image_path, price, video_id, user_id)
+                                           preview_path, price, video_id,
+                                           user_id, image_path)
     return result

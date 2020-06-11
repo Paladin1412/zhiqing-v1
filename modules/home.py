@@ -116,6 +116,8 @@ class IndexHandler(object):
             if collection["type"] == "video":
                 video = mongo.db.video.find_one(
                     {"_id": collection["relation_id"]})
+                if not video:
+                    continue
                 collection_dict["type"] = "video"
                 collection_dict["video_id"] = video["_id"]
                 collection_dict["title"] = video["title"]
@@ -128,6 +130,8 @@ class IndexHandler(object):
             elif collection["type"] == "series":
                 series = mongo.db.series.find_one(
                     {"_id": collection["relation_id"]})
+                if not series:
+                    continue
                 collection_dict["type"] = "series"
                 collection_dict["series_id"] = series["_id"]
                 collection_dict["title"] = series["title"]

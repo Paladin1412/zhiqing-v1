@@ -8,9 +8,8 @@
 @Software: PyCharm
 """
 import time
-from copy import deepcopy
 
-from flask import g
+from flask import g, current_app
 
 from main import mongo
 from utils import response_code
@@ -43,7 +42,7 @@ class HistoryHandler(object):
                                    self.model_action))
         return resp
 
-    def func_watch_history(self):
+    def func_end_watch_history(self):
         """
         观看播放历史
         """
@@ -64,20 +63,10 @@ class HistoryHandler(object):
         if not video_info:
             raise response_code.ParamERR(errmsg="video_id 不存在")
         else:
-            history_info = mongo.db.video_history.find_one(
-                {"video_id": video_id, "user_id": user_id,
-                 "record.action": "watch"})
-            if not history_info:
-                mongo.db.video_history.insert_one(
-                    {"_id": create_uuid(), "time": time.time(),
-                     "video_id": video_id, "user_id": user_id, "record": {
-                        "action": "watch", "end_time": end_time}})
-            else:
-                mongo.db.video_history.update_one(
-                    {"video_id": video_id, "user_id": user_id,
-                     "record.action": "watch"},
-                    {"$set": {"record.end_time": end_time}})
-
+            mongo.db.video_history.insert_one(
+                {"_id": create_uuid(), "time": time.time(),
+                 "video_id": video_id, "user_id": user_id, "record": {
+                    "action": "end_watch", "end_time": end_time}})
         return set_resjson()
 
     def func_search_history(self):
@@ -98,30 +87,48 @@ class HistoryHandler(object):
         try:
             time.strptime(end_time, "%H:%M:%S")
         except Exception as e:
+            current_app.logger.info(e)
             raise response_code.ParamERR("end_time format incorrect")
         video_info = mongo.db.video.find_one({"_id": video_id})
         if not video_info:
             raise response_code.ParamERR(errmsg="video_id 不存在")
         else:
-            history_info = mongo.db.video_history.find_one(
-                {"video_id": video_id, "user_id": user_id,
-                 "record.action": "search",
-                 "record.query_string": query_string})
-            if not history_info:
-                mongo.db.video_history.insert_one(
-                    {"_id": create_uuid(), "time": time.time(),
-                     "video_id": video_id, "user_id": user_id,
-                     "record": {"action": "search",
-                                "query_string": query_string,
-                                "end_time": end_time}})
-            else:
-                mongo.db.video_history.update_one(
-                    {"video_id": video_id, "user_id": user_id,
-                     "record.action": "search",
-                     "record.query_string": query_string},
-                    {"$set": {"record.end_time": end_time}})
-
+            mongo.db.video_history.insert_one(
+                {"_id": create_uuid(), "time": time.time(),
+                 "video_id": video_id, "user_id": user_id,
+                 "record": {"action": "search",
+                            "query_string": query_string,
+                            "end_time": end_time}})
         return set_resjson()
+
+    # @staticmethod
+    # def func_get_history(self):
+    #     """
+    #     获取历史记录
+    #     @return:
+    #     """
+    #     user = g.user
+    #     res_dict = {}
+    #     res_list = []
+    #     if not user:
+    #         raise response_code.ParamERR(errmsg="用户未登陆")
+    #     try:
+    #         history_cursor = mongo.db.video_history.find(
+    #             {"user_id": user["_id"], "record.action": "watch"}).sort("time", -1)
+    #         for history in history_cursor:
+    #             video = mongo.db.video.find_one(
+    #                 {"_id": history["video_id"]},
+    #                 {"image_path": 1, "video_time": 1})
+    #             res_dict["video_id"] = history["video_id"]
+    #             res_dict["record"] = history["record"]
+    #             res_dict["image_path"] = video["image_path"]
+    #             res_dict["video_time"] = video["video_time"]
+    #             res_dict["time"] = history["time"]
+    #             res_list.append(deepcopy(res_dict))
+    #     except Exception as e:
+    #         raise response_code.ParamERR(errmsg="{}".format(e))
+    #
+    #     return set_resjson(res_array=res_list)
 
     @staticmethod
     def func_get_history(self):
@@ -130,24 +137,30 @@ class HistoryHandler(object):
         @return:
         """
         user = g.user
-        res_dict = {}
-        res_list = []
         if not user:
             raise response_code.ParamERR(errmsg="用户未登陆")
-        try:
-            history_cursor = mongo.db.video_history.find(
-                {"user_id": user["_id"]})
-            for history in history_cursor:
-                video = mongo.db.video.find_one(
-                    {"_id": history["video_id"]},
-                    {"image_path": 1, "video_time": 1})
-                res_dict["video_id"] = history["video_id"]
-                res_dict["record"] = history["record"]
-                res_dict["image_path"] = video["image_path"]
-                res_dict["video_time"] = video["video_time"]
-                res_dict["time"] = history["time"]
-                res_list.append(deepcopy(res_dict))
-        except Exception as e:
-            raise response_code.ParamERR(errmsg="{}".format(e))
+        results = mongo.db.video_history.find(
+            {'user_id': user["_id"], "record.action": "end_watch"}).sort('time',
+                                                                         -1)
+        temp_dict = {}
+        result_data = []
+        for result in results:
+            temp_dict[result['video_id']] = {'video_id': result['video_id'],
+                                             'time': result['time'],
+                                             'record': result['record']}
 
-        return set_resjson(res_array=res_list)
+        video_ids = sorted(temp_dict, key=lambda v: (temp_dict[v]['time']),
+                           reverse=True)
+
+        for video_id in video_ids:
+            video_data = mongo.db.video.find_one({'_id': video_id},
+                                                 {'image_path': 1,
+                                                  'video_time': 1,
+                                                  '_id': 0})
+            # Merge(temp_dict[video_id], video_data)
+            video_data.update(temp_dict[video_id])
+            result_data.append(video_data)
+
+        # return result_data
+
+        return set_resjson(res_array=result_data)

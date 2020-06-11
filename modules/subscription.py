@@ -209,7 +209,8 @@ class SubscriptionHandler(object):
                 series_dict["update_time"] = series["time"]
                 series_dict["image_path"] = series["image_path"]
                 series_video_cursor = mongo.db.video.find(
-                    {"series": series["_id"], "state": 2}).sort([("number", 1), ("upload_time", -1)])
+                    {"series": series["_id"], "state": 2}).sort(
+                    [("number", 1), ("upload_time", -1)])
                 series_dict["video_counts"] = series.get("video_counts",
                                                          None) if series.get(
                     "video_counts", None) else series_video_cursor.count()
@@ -222,10 +223,13 @@ class SubscriptionHandler(object):
                     {"state": 2, "video_id": {"$in": video_id_list}}).count()
                 series_dict["like_counts"] = like_counts
                 series_dict["comment_counts"] = comment_counts
+                series_dict["view_counts"] = view_counts
                 works.append(deepcopy(series_dict))
-            res_dict["works"] = works
+            res_dict["works"] = sorted(works, key=itemgetter("view_counts"),
+                                       reverse=True)
             res_list.append(deepcopy(res_dict))
-        res_sort_list = sorted(res_list, key=itemgetter("fans_counts"))
+        res_sort_list = sorted(res_list, key=itemgetter("fans_counts"),
+                               reverse=True)
         return set_resjson(res_array=res_sort_list)
 
     @staticmethod
@@ -295,7 +299,9 @@ class SubscriptionHandler(object):
                     series["like_counts"] = like_counts
                     series["comment_counts"] = comment_counts
                     works.append(deepcopy(series))
-                fans_info["works"] = works
+                fans_info["works"] = sorted(works,
+                                            key=itemgetter("view_counts"),
+                                            reverse=True)
                 res_list.append(deepcopy(fans_info))
         except Exception as e:
             traceback.print_exc()

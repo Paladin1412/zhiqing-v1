@@ -141,6 +141,8 @@ class CollectHandler(object):
             if video_collect["type"] == "video":
                 video = mongo.db.video.find_one(
                     {"_id": video_collect["relation_id"]})
+                if not video:
+                    continue
                 video_dict["type"] = "video"
                 video_dict["video_id"] = video["_id"]
                 video_dict["title"] = video["title"]
@@ -157,6 +159,8 @@ class CollectHandler(object):
                 video_id = []
                 series_info = mongo.db.series.find_one(
                     {"_id": video_collect["relation_id"]})
+                if not series_info:
+                    continue
                 video_cursor = mongo.db.video.find(
                     {"series": series_info["_id"], "state": 2})
                 for video in video_cursor:

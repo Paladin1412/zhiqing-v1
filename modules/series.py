@@ -79,16 +79,15 @@ class SeriesHandler(object):
         series_info = mongo.db.series.find_one({"_id": series_id})
         if not series_info:
             raise response_code.ParamERR(errmsg="series_id is incorrect")
-        if not user:
-            is_collect = 0
-        else:
+        collect = None
+        subscription = None
+        if user:
             collect = mongo.db.collection.find_one(
                 {"user_id": user["_id"], "relation_id": series_id, "state": 0,
                  "type": "series"})
-            if collect:
-                is_collect = 1
-            else:
-                is_collect = 0
+            subscription = mongo.db.subscription.find_one(
+                {'relation_id': series_info["user_id"], 'type': 'author',
+                 'user_id': user["_id"], "state": 0})
         document_counts = 0
         like_counts = mongo.db.like.find({"relation_id": series_id}).count()
         collection_counts = mongo.db.collection.find(
@@ -101,7 +100,8 @@ class SeriesHandler(object):
             {"relation_id": author_info["_id"], "state": 0}).count()
         res_dict["description"] = series_info["description"]
         res_dict["author_id"] = series_info["user_id"]
-        res_dict["is_collect"] = is_collect
+        res_dict["is_collect"] = 1 if collect else 0
+        res_dict["is_subscription"] = 1 if subscription else 0
         res_dict["video_counts"] = series_info.get("video_counts",
                                                    None) if series_info.get(
             "video_counts", None) else mongo.db.video.find(
@@ -150,6 +150,5 @@ class SeriesHandler(object):
         res_dict["video_data"] = video_list
         res_dict["document_data"] = document_list
         res_dict["like_counts"] = like_counts
-
         res_list.append(res_dict)
         return set_resjson(res_array=res_list)
