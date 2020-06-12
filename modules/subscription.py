@@ -176,13 +176,16 @@ class SubscriptionHandler(object):
         for sub_author in sub_cursor:
             author_info = mongo.db.user.find_one(
                 {"_id": sub_author["relation_id"]})
+            video_counts = mongo.db.video.find(
+                {"user_id": author_info["_id"], "state": 2}).count()
+            if video_counts == 0:
+                continue
             res_dict["author_id"] = author_info["_id"]
             res_dict["author_name"] = author_info["name"]
             res_dict["background"] = author_info["background"]
             res_dict["introduction"] = author_info["introduction"]
             res_dict["headshot"] = author_info["headshot"]
-            res_dict["video_counts"] = mongo.db.video.find(
-                {"user_id": author_info["_id"], "state": 2}).count()
+            res_dict["video_counts"] = video_counts
             res_dict["fans_counts"] = mongo.db.subscription.find(
                 {"relation_id": author_info["_id"], "state": 0}).count()
             video_cursor = mongo.db.video.find(

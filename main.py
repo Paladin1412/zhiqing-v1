@@ -99,7 +99,7 @@ def index():
                 from modules.subscription import SubscriptionHandler
                 comment_main = SubscriptionHandler(extra_data, model_action)
                 resp = comment_main.handle_model()
-            elif model_name == "data":
+            elif model_name == "data" or "color":
                 from modules.data import DataHandler
                 comment_main = DataHandler(extra_data, model_action)
                 resp = comment_main.handle_model()

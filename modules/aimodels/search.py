@@ -490,8 +490,8 @@ class Search:
         for _item in result_data[:]:
             if 'video_id' in _item['data']:
                 unsorted_data[_item['data']['video_id']] = _item
-            if 'document_id' in _item['data']:
-                unsorted_data[_item['data']['document_id']] = _item
+            if 'file_id' in _item['data']:
+                unsorted_data[_item['data']['file_id']] = _item
 
         sorted_ids = sorted(unsorted_data, key=lambda v: (
         unsorted_data[v]['match_frame']['score']), reverse=True)

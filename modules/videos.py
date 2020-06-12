@@ -767,6 +767,7 @@ class VideoHandler(object):
                 res_dict["headshot"] = author_info["headshot"]
                 res_dict["background"] = author_info["background"]
                 res_dict["introduction"] = author_info["introduction"]
+                res_dict["video_counts"] = mongo.db.video.find({"user_id": author_info["_id"], "state": 2}).count()
                 res_dict["fans_counts"] = relation_id_set[1]
                 video_cursor = mongo.db.video.find(
                     {"user_id": relation_id_set[0], "state": 2}).sort(
