@@ -465,7 +465,7 @@ class Search:
                         {'_id': document_id},
                         {'file_name': 1, 'type': 1, 'download_counts': 1,
                          'time': 1})
-                    data['document_id'] = document_id
+                    data['file_id'] = document_id
                     data['file_name'] = document['file_name']
                     data['file_type'] = document['type']
                     data['time'] = document['time']

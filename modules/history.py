@@ -101,35 +101,6 @@ class HistoryHandler(object):
                             "end_time": end_time}})
         return set_resjson()
 
-    # @staticmethod
-    # def func_get_history(self):
-    #     """
-    #     获取历史记录
-    #     @return:
-    #     """
-    #     user = g.user
-    #     res_dict = {}
-    #     res_list = []
-    #     if not user:
-    #         raise response_code.ParamERR(errmsg="用户未登陆")
-    #     try:
-    #         history_cursor = mongo.db.video_history.find(
-    #             {"user_id": user["_id"], "record.action": "watch"}).sort("time", -1)
-    #         for history in history_cursor:
-    #             video = mongo.db.video.find_one(
-    #                 {"_id": history["video_id"]},
-    #                 {"image_path": 1, "video_time": 1})
-    #             res_dict["video_id"] = history["video_id"]
-    #             res_dict["record"] = history["record"]
-    #             res_dict["image_path"] = video["image_path"]
-    #             res_dict["video_time"] = video["video_time"]
-    #             res_dict["time"] = history["time"]
-    #             res_list.append(deepcopy(res_dict))
-    #     except Exception as e:
-    #         raise response_code.ParamERR(errmsg="{}".format(e))
-    #
-    #     return set_resjson(res_array=res_list)
-
     @staticmethod
     def func_get_history(self):
         """

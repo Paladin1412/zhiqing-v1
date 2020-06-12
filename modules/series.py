@@ -134,9 +134,9 @@ class SeriesHandler(object):
             if document_cursor.count() > 0:
                 for document in document_cursor:
                     document_counts += 1
-                    document_dict["document_id"] = document["_id"]
-                    document_dict["document_name"] = document["file_name"]
-                    document_dict["document_type"] = document["type"]
+                    document_dict["file_id"] = document["_id"]
+                    document_dict["file_name"] = document["file_name"]
+                    document_dict["file_type"] = document["type"]
                     document_dict["price"] = document["price"]
                     document_dict["image_path"] = document["image_path"]
                     document_dict["download_counts"] = document[

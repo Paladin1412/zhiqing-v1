@@ -113,7 +113,8 @@ class SubscriptionHandler(object):
             video_cursor = mongo.db.video.find(
                 {"user_id": user_id.get("relation_id"), "state": 2},
                 {"image_path": 1, "title": 1, "category": 1,
-                 "upload_time": 1, "video_time": 1, "user_id": 1})
+                 "upload_time": 1, "video_time": 1, "user_id": 1,
+                 "view_counts": 1})
             user_info = mongo.db.user.find_one(
                 {"_id": user_id.get("relation_id")})
             for video in video_cursor:
@@ -129,6 +130,9 @@ class SubscriptionHandler(object):
                 video_dict["update_time"] = video["upload_time"]
                 video_dict["video_time"] = video["video_time"]
                 video_dict["user_id"] = video["user_id"]
+                video_dict["view_counts"] = video["view_counts"]
+                video_dict["like_counts"] = mongo.db.like.find(
+                    {"relation_id": video["_id"]}).count()
                 video_dict["user_name"] = user_info["name"]
                 video_dict["head_shot"] = user_info["headshot"]
                 video_dict["introduction"] = user_info["introduction"]

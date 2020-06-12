@@ -7,6 +7,7 @@
 @Email    : 18821723039@163.com
 @Software : PyCharm
 """
+import time
 
 from flask import Flask, request, current_app
 from flask_apscheduler import APScheduler
@@ -31,8 +32,10 @@ setup_log()
 
 @app.route("/api/v1/gateway", methods=['POST'])
 def index():
+    s = time.time()
     from utils.auth import authenticate
     authenticate()
+    model_name = request.form.get('model_name', "")
     model_action = request.form.get('model_action')
     if model_action == 'upload':
         from modules.videos import upload
@@ -114,6 +117,8 @@ def index():
                 resp = comment_main.handle_model()
             else:
                 resp = set_resjson(err=-1, errmsg="model_name is incorrect")
+    e = time.time()
+    current_app.logger.info("model_name{} model_action {} 运行时间 {}".format(model_name, model_action, e-s))
     return resp
 
 

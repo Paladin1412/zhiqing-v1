@@ -57,7 +57,11 @@ class VideoHandler(object):
                 raise response_code.ParamERR(
                     errmsg="[ extra_data ] must be provided ")
         try:
+            current_app.logger.info("{} 开始".format(func_name))
+            s = time.time()
             res = handle_function(self)
+            e = time.time()
+            current_app.logger.info("{}: 结束 时间: {}".format(func_name, e-s))
         except TimeoutError as e:
             current_app.logger.info("响应超时 {}".format(e))
 
@@ -521,7 +525,6 @@ class VideoHandler(object):
         res_data.append(data_dict)
         mongo.db.video.update_one({'_id': video_id},
                                   {'$set': {'view_counts': view_counts + 1}})
-        mongo.db.video_history.insetr()
         return set_resjson(res_array=res_data)
 
     @staticmethod
@@ -666,11 +669,11 @@ class VideoHandler(object):
                 res_dict["title"] = video["title"]
                 res_dict["video_time"] = video["video_time"]
                 res_dict["category"] = category_list
-                res_dict["update_time"] = video["upload_time"]
+                res_dict["upload_time"] = video["upload_time"]
                 res_dict["user_id"] = video["user_id"]
                 res_dict["view_counts"] = video["view_counts"]
                 res_dict["user_name"] = user_info["name"]
-                res_dict["head_shot"] = user_info["headshot"]
+                res_dict["headshot"] = user_info["headshot"]
                 res_dict["comment_counts"] = comments
                 res_dict["like_counts"] = likes
                 res_list.append(deepcopy(res_dict))
@@ -688,10 +691,10 @@ class VideoHandler(object):
                 series_dict["type"] = 'series'
                 series_dict["image_path"] = series["image_path"]
                 series_dict["title"] = series["title"]
-                series_dict["time"] = series["time"]
+                series_dict["update_time"] = series["time"]
                 series_dict["user_id"] = series["user_id"]
                 series_dict["user_name"] = series_user_info["name"]
-                series_dict["head_shot"] = series_user_info["headshot"]
+                series_dict["headshot"] = series_user_info["headshot"]
                 series_dict["view_counts"] = view_counts
                 series_dict["video_counts"] = series_video_cursor.count()
                 like_counts = mongo.db.like.find(
