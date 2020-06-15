@@ -140,7 +140,8 @@ class CommentHandler(object):
                     else:
                         comment['is_like'] = 0
                     like_counts = mongo.db.like.find(
-                        {"relation_id": comment['_id'], "type": "comment"}).count()
+                        {"relation_id": comment['_id'],
+                         "type": "comment"}).count()
                     comment['like_counts'] = like_counts
                     if parent_id == "0":
                         comment_counts = mongo.db.comment.find(

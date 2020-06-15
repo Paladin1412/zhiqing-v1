@@ -22,6 +22,7 @@ class LikeHandler(object):
     """
     点赞
     """
+
     def __init__(self, extra_data, model_action):
         self.extra_data = extra_data
         self.model_action = model_action

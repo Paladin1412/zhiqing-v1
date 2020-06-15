@@ -3,8 +3,8 @@ import hashlib
 import hmac
 import json
 import os
-import time
 import pprint
+import time
 
 import requests
 
@@ -80,7 +80,8 @@ class RequestApi(object):
 
         if apiname == api_prepare:
             # slice_num是指分片数量，如果您使用的音频都是较短音频也可以不分片，直接将slice_num指定为1即可
-            slice_num = int(file_len / file_piece_sice) + (0 if (file_len % file_piece_sice == 0) else 1)
+            slice_num = int(file_len / file_piece_sice) + (
+                0 if (file_len % file_piece_sice == 0) else 1)
             param_dict['app_id'] = appid
             param_dict['signa'] = signa
             param_dict['ts'] = ts
@@ -112,7 +113,8 @@ class RequestApi(object):
 
     # 请求和结果解析，结果中各个字段的含义可参考：https://doc.xfyun.cn/rest_api/%E8%AF%AD%E9%9F%B3%E8%BD%AC%E5%86%99.html
     def gene_request(self, apiname, data, files=None, headers=None):
-        response = requests.post(lfasr_host + apiname, data=data, files=files, headers=headers)
+        response = requests.post(lfasr_host + apiname, data=data, files=files,
+                                 headers=headers)
         result = json.loads(response.text)
         if result["ok"] == 0:
             print("{} success:".format(apiname) + str(result))
@@ -142,7 +144,8 @@ class RequestApi(object):
                     "content": content
                 }
                 response = self.gene_request(api_upload,
-                                             data=self.gene_params(api_upload, taskid=taskid,
+                                             data=self.gene_params(api_upload,
+                                                                   taskid=taskid,
                                                                    slice_id=sig.getNextSliceId()),
                                              files=files)
                 if response.get('ok') != 0:
@@ -158,22 +161,28 @@ class RequestApi(object):
 
     # 合并
     def merge_request(self, taskid):
-        return self.gene_request(api_merge, data=self.gene_params(api_merge, taskid=taskid))
+        return self.gene_request(api_merge, data=self.gene_params(api_merge,
+                                                                  taskid=taskid))
 
     # 获取进度
     def get_progress_request(self, taskid):
-        return self.gene_request(api_get_progress, data=self.gene_params(api_get_progress, taskid=taskid))
+        return self.gene_request(api_get_progress,
+                                 data=self.gene_params(api_get_progress,
+                                                       taskid=taskid))
 
     # 获取结果
     def get_result_request(self, taskid):
-        return self.gene_request(api_get_result, data=self.gene_params(api_get_result, taskid=taskid))
+        return self.gene_request(api_get_result,
+                                 data=self.gene_params(api_get_result,
+                                                       taskid=taskid))
 
     def all_api_request(self):
         # 1. 预处理
         pre_result = self.prepare_request()
         taskid = pre_result["data"]
         # 2 . 分片上传
-        self.upload_request(taskid=taskid, upload_file_path=self.upload_file_path)
+        self.upload_request(taskid=taskid,
+                            upload_file_path=self.upload_file_path)
         # 3 . 文件合并
         self.merge_request(taskid=taskid)
         # 4 . 获取任务进度
@@ -190,7 +199,9 @@ class RequestApi(object):
                 if task_status['status'] == 9:
                     print('task ' + taskid + ' finished')
                     break
-                print('The task ' + taskid + ' is in processing, task status: ' + str(data))
+                print(
+                    'The task ' + taskid + ' is in processing, task status: ' + str(
+                        data))
 
             # 每次获取进度间隔20S
             time.sleep(20)
@@ -200,12 +211,13 @@ class RequestApi(object):
 
 # 注意：如果出现requests模块报错："NoneType" object has no attribute 'read', 请尝试将requests模块更新到2.20.0或以上版本(本demo测试版本为2.20.0)
 # 输入讯飞开放平台的appid，secret_key和待转写的文件路径
-if 1==2 and __name__ == '__main__':
-    api = RequestApi(appid="59b0b177", secret_key="a176a32d6f267a72bcd0ffdf73f9f63f", upload_file_path=r"voice_test2.m4a")
+if 1 == 2 and __name__ == '__main__':
+    api = RequestApi(appid="59b0b177",
+                     secret_key="a176a32d6f267a72bcd0ffdf73f9f63f",
+                     upload_file_path=r"voice_test2.m4a")
     raw_res = api.all_api_request()
     print()
-    #str_res = ''.join([item['onebest'] for item in json.loads(raw_res['data'])])
-    _res =  json.loads(raw_res['data'])
-
+    # str_res = ''.join([item['onebest'] for item in json.loads(raw_res['data'])])
+    _res = json.loads(raw_res['data'])
 
     pprint.pprint(_res)

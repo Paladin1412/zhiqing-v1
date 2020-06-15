@@ -82,8 +82,8 @@ class MessageHandler(object):
             fans_cursor = mongo.db.subscription.find(
                 {"relation_id": user["_id"], "state": 0, "type": "author"})
             sender_counts = mongo.db.subscription.find(
-            {"relation_id": user["_id"], "state": 0, "type": "author",
-             "read_state": 0}).count()
+                {"relation_id": user["_id"], "state": 0, "type": "author",
+                 "read_state": 0}).count()
             res_subscription = {}
             res_subscription["type"] = "subscription"
             res_subscription["unread_counts"] = sender_counts
@@ -120,8 +120,8 @@ class MessageHandler(object):
                                  {"$set": {"read_state": 1}}, multi=True)
         elif date_type == "subscription":
             mongo.db.subscription.update({"_id": {"$in": message_id_list}},
-                                 {"$set": {"read_state": 1}}, multi=True)
+                                         {"$set": {"read_state": 1}},
+                                         multi=True)
         else:
             return set_resjson(errmsg="这个功能暂时没做")
         return set_resjson(errmsg="200")
-

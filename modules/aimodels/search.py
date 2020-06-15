@@ -494,7 +494,7 @@ class Search:
                 unsorted_data[_item['data']['file_id']] = _item
 
         sorted_ids = sorted(unsorted_data, key=lambda v: (
-        unsorted_data[v]['match_frame']['score']), reverse=True)
+            unsorted_data[v]['match_frame']['score']), reverse=True)
         # print(sorted_ids)
         sorted_result_data = [unsorted_data[_id] for _id in sorted_ids]
 

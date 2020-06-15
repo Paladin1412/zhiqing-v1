@@ -130,7 +130,7 @@ def upload_file():
     elif image_type == "headshot":
         file_path = 'static/headershot/{}'.format(allowed_image_file(file))
         res_url = "http://api.haetek.com:8181/" + file_path
-    elif image_type in ["video_image", "series_image"] :
+    elif image_type in ["video_image", "series_image"]:
         file_path = 'static/image/{}'.format(allowed_image_file(file))
         res_url = file_path
     elif image_type == "document":
@@ -147,7 +147,7 @@ def density_to_RGB(start_RGB, middle_RGB, end_RGB, dens_val):
     for color_id in range(3):
         if dens_val < 0.5:
             curr_color_val = start_RGB[color_id] + 2 * dens_val * (
-                        middle_RGB[color_id] - start_RGB[color_id])
+                    middle_RGB[color_id] - start_RGB[color_id])
         else:
             curr_color_val = 2 * middle_RGB[color_id] - end_RGB[
                 color_id] + 2 * dens_val * (end_RGB[color_id] - middle_RGB[

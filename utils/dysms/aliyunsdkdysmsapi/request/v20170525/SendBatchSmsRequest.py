@@ -18,55 +18,57 @@
 # under the License.
 
 from aliyunsdkcore.request import RpcRequest
+
+
 class SendBatchSmsRequest(RpcRequest):
 
-	def __init__(self):
-		RpcRequest.__init__(self, 'Dysmsapi', '2017-05-25', 'SendBatchSms')
+    def __init__(self):
+        RpcRequest.__init__(self, 'Dysmsapi', '2017-05-25', 'SendBatchSms')
 
-	def get_TemplateCode(self):
-		return self.get_query_params().get('TemplateCode')
+    def get_TemplateCode(self):
+        return self.get_query_params().get('TemplateCode')
 
-	def set_TemplateCode(self,TemplateCode):
-		self.add_query_param('TemplateCode',TemplateCode)
+    def set_TemplateCode(self, TemplateCode):
+        self.add_query_param('TemplateCode', TemplateCode)
 
-	def get_TemplateParamJson(self):
-		return self.get_query_params().get('TemplateParamJson')
+    def get_TemplateParamJson(self):
+        return self.get_query_params().get('TemplateParamJson')
 
-	def set_TemplateParamJson(self,TemplateParamJson):
-		self.add_query_param('TemplateParamJson',TemplateParamJson)
+    def set_TemplateParamJson(self, TemplateParamJson):
+        self.add_query_param('TemplateParamJson', TemplateParamJson)
 
-	def get_ResourceOwnerAccount(self):
-		return self.get_query_params().get('ResourceOwnerAccount')
+    def get_ResourceOwnerAccount(self):
+        return self.get_query_params().get('ResourceOwnerAccount')
 
-	def set_ResourceOwnerAccount(self,ResourceOwnerAccount):
-		self.add_query_param('ResourceOwnerAccount',ResourceOwnerAccount)
+    def set_ResourceOwnerAccount(self, ResourceOwnerAccount):
+        self.add_query_param('ResourceOwnerAccount', ResourceOwnerAccount)
 
-	def get_SmsUpExtendCodeJson(self):
-		return self.get_query_params().get('SmsUpExtendCodeJson')
+    def get_SmsUpExtendCodeJson(self):
+        return self.get_query_params().get('SmsUpExtendCodeJson')
 
-	def set_SmsUpExtendCodeJson(self,SmsUpExtendCodeJson):
-		self.add_query_param('SmsUpExtendCodeJson',SmsUpExtendCodeJson)
+    def set_SmsUpExtendCodeJson(self, SmsUpExtendCodeJson):
+        self.add_query_param('SmsUpExtendCodeJson', SmsUpExtendCodeJson)
 
-	def get_ResourceOwnerId(self):
-		return self.get_query_params().get('ResourceOwnerId')
+    def get_ResourceOwnerId(self):
+        return self.get_query_params().get('ResourceOwnerId')
 
-	def set_ResourceOwnerId(self,ResourceOwnerId):
-		self.add_query_param('ResourceOwnerId',ResourceOwnerId)
+    def set_ResourceOwnerId(self, ResourceOwnerId):
+        self.add_query_param('ResourceOwnerId', ResourceOwnerId)
 
-	def get_SignNameJson(self):
-		return self.get_query_params().get('SignNameJson')
+    def get_SignNameJson(self):
+        return self.get_query_params().get('SignNameJson')
 
-	def set_SignNameJson(self,SignNameJson):
-		self.add_query_param('SignNameJson',SignNameJson)
+    def set_SignNameJson(self, SignNameJson):
+        self.add_query_param('SignNameJson', SignNameJson)
 
-	def get_OwnerId(self):
-		return self.get_query_params().get('OwnerId')
+    def get_OwnerId(self):
+        return self.get_query_params().get('OwnerId')
 
-	def set_OwnerId(self,OwnerId):
-		self.add_query_param('OwnerId',OwnerId)
+    def set_OwnerId(self, OwnerId):
+        self.add_query_param('OwnerId', OwnerId)
 
-	def get_PhoneNumberJson(self):
-		return self.get_query_params().get('PhoneNumberJson')
+    def get_PhoneNumberJson(self):
+        return self.get_query_params().get('PhoneNumberJson')
 
-	def set_PhoneNumberJson(self,PhoneNumberJson):
-		self.add_query_param('PhoneNumberJson',PhoneNumberJson)
+    def set_PhoneNumberJson(self, PhoneNumberJson):
+        self.add_query_param('PhoneNumberJson', PhoneNumberJson)

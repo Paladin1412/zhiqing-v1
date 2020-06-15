@@ -17,7 +17,8 @@ acs_client = AcsClient(config.ACCESS_KEY_ID, config.ACCESS_KEY_SECRET, REGION)
 region_provider.add_endpoint(PRODUCT_NAME, REGION, DOMAIN)
 
 
-def send_sms(business_id, phone_numbers, sign_name, template_code, template_param=None):
+def send_sms(business_id, phone_numbers, sign_name, template_code,
+             template_param=None):
     """
     发送短信
     :param business_id: 业务流水号
@@ -55,4 +56,3 @@ def send_sms(business_id, phone_numbers, sign_name, template_code, template_para
     sms_response = acs_client.do_action_with_exception(sms_request)
 
     return sms_response
-

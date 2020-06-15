@@ -32,6 +32,7 @@ class UserHandler(object):
     """
     用户账户
     """
+
     def __init__(self, extra_data, model_action):
         self.extra_data = extra_data
         self.model_action = model_action
@@ -559,7 +560,7 @@ class UserHandler(object):
         background = self.extra_data.get('background')
         headshot = self.extra_data.get('headshot')
         if not all([gender, user_name, birthday, introduction, background,
-                 headshot]):
+                    headshot]):
             raise response_code.ParamERR(errmsg="Parameter is not complete")
         elif not name_re.match('{}'.format(user_name)):
             raise response_code.ParamERR(errmsg="Incorrect user name format")
@@ -613,7 +614,8 @@ class UserHandler(object):
         elif not mobile_re.match('{}'.format(mobile)):
             raise response_code.ParamERR(errmsg="手机号码不正确")
         elif mobile == user['mobile']:
-            raise response_code.ParamERR(errmsg="The phone number hasn't changed")
+            raise response_code.ParamERR(
+                errmsg="The phone number hasn't changed")
         # 手机验证码验证
         sms_verify(mobile, code)
         real_token = redis_conn.get("verify_mobile_%s" % mobile)
@@ -638,7 +640,8 @@ class UserHandler(object):
         elif third_type.lower() == "microblog":
             mongo.db.user.update_one(user, {"$unset": {"wechat_unionid": ""}})
         elif third_type.lower() == "wechat":
-            mongo.db.user.update_one(user, {"$unset": {"microblog_unionid": ""}})
+            mongo.db.user.update_one(user,
+                                     {"$unset": {"microblog_unionid": ""}})
         elif third_type.lower() == "qq":
             mongo.db.user.update_one(user, {"$unset": {"qq_unionid": ""}})
         raise set_resjson()
@@ -672,7 +675,8 @@ class UserHandler(object):
         comment_counts = 0
         view_counts = 0
         for video in mongo.db.video.find(
-                {"user_id": author_info["_id"], "series": {"$exists": False}}).sort("upload_time", -1):
+                {"user_id": author_info["_id"],
+                 "series": {"$exists": False}}).sort("upload_time", -1):
             view_counts += video["view_counts"]
             video_like_counts = mongo.db.like.find(
                 {"relation_id": video["_id"]}).count()
@@ -690,7 +694,8 @@ class UserHandler(object):
             video_dict["like_counts"] = video_like_counts
             video_dict["comment_counts"] = video_comment_counts
             data.append(deepcopy(video_dict))
-        series_cursor = mongo.db.series.find({"user_id": author_info["_id"]}).sort("time", -1)
+        series_cursor = mongo.db.series.find(
+            {"user_id": author_info["_id"]}).sort("time", -1)
         series_dict = {}
         ser_video_id = []
         for series in series_cursor:
@@ -700,9 +705,9 @@ class UserHandler(object):
             series_dict["title"] = series["title"]
             series_dict["update_time"] = series["time"]
             series_dict["video_counts"] = series.get("video_counts",
-                                                      None) if series.get(
-                    "video_counts", None) else mongo.db.video.find(
-                    {"series": series["_id"]}).count()
+                                                     None) if series.get(
+                "video_counts", None) else mongo.db.video.find(
+                {"series": series["_id"]}).count()
             series_dict["update_time"] = series["time"]
             series_view_counts = 0
             for ser_video in mongo.db.video.find({"series": series["_id"]}):
@@ -791,7 +796,7 @@ def wehcat_login(code):
     if not user_info:
         # 第一次登录
         nickname, headimgurl, _, gender = wechatlogin.get_user_info(
-            access_token,  openid)
+            access_token, openid)
         try:
             pl = redis_conn.pipeline()
             pl.set("unionid_name_%s" % unionid, nickname,

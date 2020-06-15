@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
-from utils import response_code
 from config.settings import config
+from utils import response_code
 from .voduploadsdk.AliyunVodUtils import *
 from .voduploadsdk.UploadVideoRequest import UploadVideoRequest
 from .voduploadsdk.VodUploader import vodUploader

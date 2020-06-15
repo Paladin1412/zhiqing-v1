@@ -1,16 +1,16 @@
-#coding=utf-8
+# coding=utf-8
 # Copyright (C) 2015, Alibaba Cloud Computing
 
-#Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-#The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import time
-from .mns_client import MNSClient
+
 from .mns_request import *
-from .mns_exception import *
+
 
 class Subscription:
     def __init__(self, topic_name, subscription_name, mns_client, debug=False):
@@ -64,7 +64,8 @@ class Subscription:
             :: MNSClientNetworkException    网络异常
             :: MNSServerException           mns处理异常
         """
-        req = GetSubscriptionAttributesRequest(self.topic_name, self.subscription_name)
+        req = GetSubscriptionAttributesRequest(self.topic_name,
+                                               self.subscription_name)
         req.set_req_info(req_info)
         resp = GetSubscriptionAttributesResponse()
         self.mns_client.get_subscription_attributes(req, resp)
@@ -129,8 +130,10 @@ class Subscription:
         subscription_meta.create_time = resp.create_time
         subscription_meta.last_modify_time = resp.last_modify_time
 
+
 class SubscriptionMeta:
-    def __init__(self, endpoint = "", notify_strategy = "", notify_content_format = "", filter_tag = ""):
+    def __init__(self, endpoint="", notify_strategy="",
+                 notify_content_format="", filter_tag=""):
         """ Subscription属性
             @note: 设置属性
             :: endpoint: 接收端地址, HttpEndpoint, MailEndpoint or QueueEndpoint
@@ -176,13 +179,20 @@ class SubscriptionMeta:
                      "FilterTag": self.filter_tag,
                      "NotifyStrategy": self.notify_strategy,
                      "NotifyContentFormat": self.notify_content_format,
-                     "CreateTime": time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(self.create_time)),
-                     "LastModifyTime": time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(self.last_modify_time))}
-        return "\n".join(["%s: %s" % (k.ljust(30),v) for k,v in meta_info.items()])
+                     "CreateTime": time.strftime("%Y/%m/%d %H:%M:%S",
+                                                 time.localtime(
+                                                     self.create_time)),
+                     "LastModifyTime": time.strftime("%Y/%m/%d %H:%M:%S",
+                                                     time.localtime(
+                                                         self.last_modify_time))}
+        return "\n".join(
+            ["%s: %s" % (k.ljust(30), v) for k, v in meta_info.items()])
+
 
 class SubscriptionNotifyStrategy:
     BACKOFF = "BACKOFF_RETRY"
     EXPONENTIAL = "EXPONENTIAL_DECAY_RETRY"
+
 
 class SubscriptionNotifyContentFormat:
     XML = "XML"

@@ -90,10 +90,6 @@
 #     res_data.append(data_dict)
 #     database.video.update_one({'_id':video_id},{'$set':{'view_counts':view_counts+1}})
 #     return res_data
-import os
-from configparser import ConfigParser
-from pymongo import MongoClient, ReadPreference
-
 
 # def connect_mongodb():
 #     '''
@@ -236,9 +232,10 @@ from pymongo import MongoClient, ReadPreference
 # print(a)
 
 
-from configparser import ConfigParser
-from pymongo import MongoClient
 import os
+from configparser import ConfigParser
+
+from pymongo import MongoClient
 
 
 def connect_mongodb():
@@ -256,8 +253,10 @@ def connect_mongodb():
     mongodb_password = parser.get('mongodb', 'password')
     mongodb_authMechanism = parser.get('mongodb', 'authMechanism')
     mongodb_port = int(parser.get('mongodb', 'port'))
-    client = MongoClient(host=mongodb_host, username=mongodb_user, password=mongodb_password,
-                         authSource=mongodb_db, authMechanism=mongodb_authMechanism, port=mongodb_port)
+    client = MongoClient(host=mongodb_host, username=mongodb_user,
+                         password=mongodb_password,
+                         authSource=mongodb_db,
+                         authMechanism=mongodb_authMechanism, port=mongodb_port)
     database = client.get_database(mongodb_db)
     return database
 
@@ -291,27 +290,40 @@ def video_play(video_id, user_id):
     database = connect_mongodb()
     tool = database.tool.find_one({'type': 'category'})
     video = database.video.find_one({'_id': video_id})
-    user = database.collection.find_one({"_id": user_id}, {"name": 1, "_id": 1, "headshot": 1})
-    like_counts = database.like.find({"relation_id": video_id, "type": "video"}).count()
+    user = database.collection.find_one({"_id": user_id},
+                                        {"name": 1, "_id": 1, "headshot": 1})
+    like_counts = database.like.find(
+        {"relation_id": video_id, "type": "video"}).count()
     collection_counts = database.collection.find({"video_id": video_id}).count()
     author_id = video['user_id']
-    view_counts = 0 if 'view_counts' not in list(video.keys()) else video['view_counts']
-    data_dict = {'video_id': video_id, 'video_path': video['video_path'], 'audio_path': video['audio_path'],
-                 'lang': video['lang'], 'ass_path': video['ass_path'], 'upload_time': video['upload_time'],
-                 'title': video['title'], 'user_id': user_id, 'user_name': user['name'], 'headshot': user['headshot'],
-                 'category': tool['data'][video['category']], 'description': video['description'],
-                 'image_path': video['image_path'], 'view_counts': video['view_counts'], 'like_counts': like_counts,
+    view_counts = 0 if 'view_counts' not in list(video.keys()) else video[
+        'view_counts']
+    data_dict = {'video_id': video_id, 'video_path': video['video_path'],
+                 'audio_path': video['audio_path'],
+                 'lang': video['lang'], 'ass_path': video['ass_path'],
+                 'upload_time': video['upload_time'],
+                 'title': video['title'], 'user_id': user_id,
+                 'user_name': user['name'], 'headshot': user['headshot'],
+                 'category': tool['data'][video['category']],
+                 'description': video['description'],
+                 'image_path': video['image_path'],
+                 'view_counts': video['view_counts'],
+                 'like_counts': like_counts,
                  'collection_counts': collection_counts}
 
     if user_id:
-        like = database.like.find_one({'relation_id': video_id, 'type': 'video', 'user_id': user_id})
-        collection = database.collection.find_one({'relation_id': video_id, 'type': 'video', 'user_id': user_id})
-        subscription = database.subscription.find_one({'relation_id': author_id, 'type': 'author', 'user_id': user_id})
+        like = database.like.find_one(
+            {'relation_id': video_id, 'type': 'video', 'user_id': user_id})
+        collection = database.collection.find_one(
+            {'relation_id': video_id, 'type': 'video', 'user_id': user_id})
+        subscription = database.subscription.find_one(
+            {'relation_id': author_id, 'type': 'author', 'user_id': user_id})
         data_dict['is_like'] = 1 if like else 0
         data_dict['is_collect'] = 1 if collection else 0
         data_dict['is_subscribe'] = 1 if subscription else 00
     res_data.append(data_dict)
-    database.video.update_one({'_id': video_id}, {'$set': {'view_counts': view_counts + 1}})
+    database.video.update_one({'_id': video_id},
+                              {'$set': {'view_counts': view_counts + 1}})
     return res_data
 
 
@@ -328,25 +340,33 @@ def get_comment(user_id, video_id, parent_id, max_size, page):
     """
     res_data = []
     database = connect_mongodb()
-    likes = database.like.find({'user_id': user_id, 'type': 'comment'}, {'_id': 1})
+    likes = database.like.find({'user_id': user_id, 'type': 'comment'},
+                               {'_id': 1})
     like_list = []
     if likes:
         for like in likes:
             like_list.append(like['_id'])
     if parent_id:
-        comments = database.comment.find({'video_id': video_id, 'parent_id': parent_id}).sort('time', -1).limit(max_size).skip(max_size*(page-1))
+        comments = database.comment.find(
+            {'video_id': video_id, 'parent_id': parent_id}).sort('time',
+                                                                 -1).limit(
+            max_size).skip(max_size * (page - 1))
     else:
-        comments = database.comment.find({'video_id': video_id, 'parent_id': {'$exists': False}}).sort('time', -1).limit(max_size).skip(max_size*(page-1))
+        comments = database.comment.find(
+            {'video_id': video_id, 'parent_id': {'$exists': False}}).sort(
+            'time', -1).limit(max_size).skip(max_size * (page - 1))
     if comments:
         for comment in comments:
             if comment['_id'] in like_list:
                 comment['is_like'] = 1
             else:
                 comment['is_like'] = 0
-            like_counts = database.like.find({"relation_id": comment['_id'], "type": "comment"}).count()
+            like_counts = database.like.find(
+                {"relation_id": comment['_id'], "type": "comment"}).count()
             comment['like_counts'] = like_counts
             if not parent_id:
-                comment_counts = database.comment.find({"parent_id": comment['_id'], "type": "comment"}).count()
+                comment_counts = database.comment.find(
+                    {"parent_id": comment['_id'], "type": "comment"}).count()
                 comment['comment_counts'] = comment_counts
             res_data.append(comment)
     return res_data

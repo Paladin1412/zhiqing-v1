@@ -8,6 +8,8 @@
 """
 
 from utils.video_upload.voduploadsdk.AliyunVodUtils import *
+
+
 class UploadVideoRequest:
     def __init__(self, filePath, title=None, fileExt=None):
         """
@@ -21,7 +23,7 @@ class UploadVideoRequest:
         self.mediaExt = None
         self.title = None
         self.setFilePath(filePath, title, fileExt)
-        
+
         self.cateId = None
         self.tags = None
         self.description = None
@@ -38,7 +40,8 @@ class UploadVideoRequest:
         if fileExt is None:
             fileExt = AliyunVodUtils.getFileExtension(filePath)
             if not fileExt:
-                raise AliyunVodException('ParameterError', 'InvalidParameter', 'filePath has no Extension')
+                raise AliyunVodException('ParameterError', 'InvalidParameter',
+                                         'filePath has no Extension')
 
         fileExt = fileExt.lstrip('.')
         self.mediaExt = fileExt
@@ -55,22 +58,21 @@ class UploadVideoRequest:
             if self.title is None:
                 self.title = briefName
 
-
     def setCateId(self, cateId):
-        self.cateId = cateId  
+        self.cateId = cateId
 
     def setTags(self, tags):
         self.tags = tags
 
     def setDescription(self, description):
-        self.description = description       
+        self.description = description
 
     def setCoverURL(self, coverURL):
         self.coverURL = coverURL
 
     def setTemplateGroupId(self, templateGroupId):
         self.templateGroupId = templateGroupId
-        
+
     # 关闭水印，仅用于配置全局水印且转码模板开启水印后，单次上传时关闭水印   
     def shutdownWatermark(self):
         self.isShowWatermark = False

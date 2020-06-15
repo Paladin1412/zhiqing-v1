@@ -101,5 +101,6 @@ class ReqERR(ApiException):
 
 class OAuthQQAPIError(ApiException):
     """ QQ request error"""
+
     def __init__(self, err_code="4301", errmsg="请求QQ服务器失败"):
         super(OAuthQQAPIError, self).__init__(err_code, errmsg)

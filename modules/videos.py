@@ -61,7 +61,7 @@ class VideoHandler(object):
             s = time.time()
             res = handle_function(self)
             e = time.time()
-            current_app.logger.info("{}: 结束 时间: {}".format(func_name, e-s))
+            current_app.logger.info("{}: 结束 时间: {}".format(func_name, e - s))
         except TimeoutError as e:
             current_app.logger.info("响应超时 {}".format(e))
 
@@ -623,7 +623,7 @@ class VideoHandler(object):
                 video_dict["image_path"] = video["image_path"]
                 video_dict["view_counts"] = video["view_counts"]
                 video_dict["like_counts"] = mongo.db.like.find(
-                {"relation_id": video["_id"]}).count()
+                    {"relation_id": video["_id"]}).count()
                 res_list.append(deepcopy(video_dict))
         return set_resjson(res_array=res_list)
 
@@ -767,7 +767,8 @@ class VideoHandler(object):
                 res_dict["headshot"] = author_info["headshot"]
                 res_dict["background"] = author_info["background"]
                 res_dict["introduction"] = author_info["introduction"]
-                res_dict["video_counts"] = mongo.db.video.find({"user_id": author_info["_id"], "state": 2}).count()
+                res_dict["video_counts"] = mongo.db.video.find(
+                    {"user_id": author_info["_id"], "state": 2}).count()
                 res_dict["fans_counts"] = relation_id_set[1]
                 video_cursor = mongo.db.video.find(
                     {"user_id": relation_id_set[0], "state": 2}).sort(

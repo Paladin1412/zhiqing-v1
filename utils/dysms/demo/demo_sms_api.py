@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # coding=utf8
-import sys
 import datetime
+import sys
+
+import const
 from aliyunsdkcore.acs_exception.exceptions import ServerException
 from aliyunsdkcore.client import AcsClient
 from aliyunsdkcore.profile import region_provider
-from aliyunsdkcore.http import method_type as MT
-from aliyunsdkcore.http import format_type as FT
-from aliyunsdkdybaseapi.request.v20170525.QueryTokenForMnsQueueRequest import QueryTokenForMnsQueueRequest
-import const
+from aliyunsdkdybaseapi.request.v20170525.QueryTokenForMnsQueueRequest import \
+    QueryTokenForMnsQueueRequest
 
 sys.path.append("./mns_python_sdk/")
 from mns.mns_account import Account
@@ -33,7 +33,6 @@ try:
 except NameError:
     pass
 
-
 # 注意：不要更改
 PRODUCT_NAME = "Dybaseapi"
 DOMAIN = "dybaseapi.aliyuncs.com"
@@ -53,7 +52,8 @@ region_provider.add_endpoint(PRODUCT_NAME, REGION, DOMAIN)
 
 # 云通信业务token存在失效时间，需动态更新。
 class Token():
-    def __init__(self, token=None, tmp_access_id=None, tmp_access_key=None, expire_time=None):
+    def __init__(self, token=None, tmp_access_id=None, tmp_access_key=None,
+                 expire_time=None):
         self.__token = token
         self.__tmp_access_id = tmp_access_id
         self.__tmp_access_key = tmp_access_key
@@ -86,7 +86,8 @@ class Token():
     def is_refresh(self):
         # 失效时间与当前系统时间比较，提前2分钟刷新token
         now = datetime.datetime.now()
-        expire = datetime.datetime.strptime(self.__expire_time, "%Y-%m-%d %H:%M:%S")
+        expire = datetime.datetime.strptime(self.__expire_time,
+                                            "%Y-%m-%d %H:%M:%S")
         # intval = (expire - now).seconds
         # print "token生效剩余时长（秒）：" + str(intval)
         if expire <= now or (expire - now).seconds < 120:
@@ -97,28 +98,33 @@ class Token():
         print("start refresh token...")
         request = QueryTokenForMnsQueueRequest()
         request.set_MessageType(msgtype)
-		# 数据提交方式
-	    # smsRequest.set_method(MT.POST)	
-	    # 数据提交格式
+        # 数据提交方式
+        # smsRequest.set_method(MT.POST)
+        # 数据提交格式
         # smsRequest.set_accept_format(FT.JSON)
-		
+
         response = acs_client.do_action_with_exception(request)
         # print response
         if response is None:
             raise ServerException("GET_TOKEN_FAIL", "获取token时无响应")
 
-        #response = response.decode('utf-8')
+        # response = response.decode('utf-8')
         response_body = json.loads(response.decode('utf-8'))
 
         if response_body.get("Code") != "OK":
             raise ServerException("GET_TOKEN_FAIL", "获取token失败")
 
-        self.__tmp_access_key = response_body.get("MessageTokenDTO").get("AccessKeySecret")
-        self.__tmp_access_id = response_body.get("MessageTokenDTO").get("AccessKeyId")
-        self.__expire_time = response_body.get("MessageTokenDTO").get("ExpireTime")
+        self.__tmp_access_key = response_body.get("MessageTokenDTO").get(
+            "AccessKeySecret")
+        self.__tmp_access_id = response_body.get("MessageTokenDTO").get(
+            "AccessKeyId")
+        self.__expire_time = response_body.get("MessageTokenDTO").get(
+            "ExpireTime")
         self.__token = response_body.get("MessageTokenDTO").get("SecurityToken")
         print("key=%s, id=%s, expire_time=%s, token=%s" \
-                % (self.__tmp_access_key, self.__tmp_access_id, self.__expire_time, self.__token))
+              % (
+              self.__tmp_access_key, self.__tmp_access_id, self.__expire_time,
+              self.__token))
 
         print("finsh refresh token...")
 
@@ -126,7 +132,8 @@ class Token():
 # 初始化 my_account, my_queue
 token = Token()
 token.refresh()
-my_account = Account(endpoint, token.get_tmp_access_id(), token.get_tmp_access_key(), token.get_token())
+my_account = Account(endpoint, token.get_tmp_access_id(),
+                     token.get_tmp_access_key(), token.get_token())
 my_queue = my_account.get_queue(qname)
 # my_queue.set_encoding(False)
 # 循环读取删除消息直到队列空
@@ -137,8 +144,9 @@ my_queue = my_account.get_queue(qname)
 ### 当队列中没有消息时，请求在MNS服务器端挂3秒钟，在这期间，有消息写入队列，请求会立即返回消息，3秒后，请求返回队列没有消息；
 
 wait_seconds = 3
-print("%sReceive And Delete Message From Queue%s\nQueueName:%s\nWaitSeconds:%s\n" % (
-    10 * "=", 10 * "=", qname, wait_seconds))
+print(
+    "%sReceive And Delete Message From Queue%s\nQueueName:%s\nWaitSeconds:%s\n" % (
+        10 * "=", 10 * "=", qname, wait_seconds))
 while True:
     # 读取消息
     try:
@@ -147,21 +155,25 @@ while True:
             # 刷新token
             token.refresh()
             my_account.mns_client.close_connection()
-            my_account = Account(endpoint, token.get_tmp_access_id(), token.get_tmp_access_key(), token.get_token())
+            my_account = Account(endpoint, token.get_tmp_access_id(),
+                                 token.get_tmp_access_key(), token.get_token())
             my_queue = my_account.get_queue(qname)
 
         # 接收消息
         recv_msg = my_queue.receive_message(wait_seconds)
 
         # TODO 业务处理
-        
-        print("Receive Message Succeed! ReceiptHandle:%s MessageBody:%s MessageID:%s" % (
-            recv_msg.receipt_handle, recv_msg.message_body, recv_msg.message_id))
-        
-    #except MNSExceptionBase as e:
+
+        print(
+            "Receive Message Succeed! ReceiptHandle:%s MessageBody:%s MessageID:%s" % (
+                recv_msg.receipt_handle, recv_msg.message_body,
+                recv_msg.message_id))
+
+    # except MNSExceptionBase as e:
     except Exception as e:
         if e.type == u"QueueNotExist":
-            print("Queue not exist, please create queue before receive message.")
+            print(
+                "Queue not exist, please create queue before receive message.")
             sys.exit(0)
         elif e.type == u"MessageNotExist":
             print("Queue is empty! sleep 10s")
@@ -173,6 +185,7 @@ while True:
     # 删除消息
     try:
         my_queue.delete_message(recv_msg.receipt_handle)
-        print("Delete Message Succeed!  ReceiptHandle:%s" % recv_msg.receipt_handle)
+        print(
+            "Delete Message Succeed!  ReceiptHandle:%s" % recv_msg.receipt_handle)
     except MNSExceptionBase as e:
         print("Delete Message Fail! Exception:%s\n" % e)

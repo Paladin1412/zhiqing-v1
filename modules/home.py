@@ -10,7 +10,7 @@
 import datetime
 from copy import deepcopy
 
-from flask import g
+from flask import g, current_app
 
 from main import mongo
 from utils import response_code
@@ -37,6 +37,7 @@ class IndexHandler(object):
                         errmsg="[ extra_data ] must be provided ")
             resp = handle_function(self)
         except AttributeError as e:
+            current_app.logger.error(e)
             resp = set_resjson(err=-4,
                                errmsg="{} is incorrect !".format(
                                    self.model_action))
@@ -56,6 +57,7 @@ class IndexHandler(object):
             p_video_counts = int(video_counts)
             p_collection_counts = int(collection_counts)
         except Exception as e:
+            current_app.logger.error(e)
             raise response_code.ParamERR(
                 errmsg="The parameter is of numeric type")
         res_dict = {}
@@ -112,7 +114,7 @@ class IndexHandler(object):
         # 收藏
         for collection in mongo.db.collection.find(
                 {"user_id": user["_id"], "state": 0}).sort("time", -1).limit(
-                p_collection_counts):
+            p_collection_counts):
             if collection["type"] == "video":
                 video = mongo.db.video.find_one(
                     {"_id": collection["relation_id"]})
@@ -138,7 +140,7 @@ class IndexHandler(object):
                 collection_dict["update_time"] = series["time"]
                 collection_dict["image_path"] = series["image_path"]
                 collection_dict["video_counts"] = series.get("video_counts",
-                                                             None) if series.get(
+                                                            None) if series.get(
                     "video_counts", None) else mongo.db.video.find(
                     {"series": series["_id"], "state": 2}).count()
                 c_view_counts = 0

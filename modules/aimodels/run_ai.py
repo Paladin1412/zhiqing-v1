@@ -7,10 +7,11 @@
 @Email    : 18821723039@163.com
 @Software : PyCharm
 """
+from flask import current_app
+
 from modules.aimodels.search import Search
 from modules.aimodels.subtitle import Subtitle, Document
 from utils import response_code
-from flask import current_app
 
 
 def global_play_video(query_str, mode, video_ids, max_size, page):

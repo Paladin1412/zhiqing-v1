@@ -1,24 +1,23 @@
-#coding=utf-8
+# coding=utf-8
 # Copyright (C) 2015, Alibaba Cloud Computing
 
-#Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-#The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-import sys
-import os
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from .mns_client import MNSClient
-from .mns_request import *
 from .mns_queue import Queue
-from .mns_topic import Topic
+from .mns_request import *
 from .mns_subscription import Subscription
 from .mns_tool import MNSLogger
+from .mns_topic import Topic
+
 
 class Account:
-    def __init__(self, host, access_id, access_key, security_token = "", debug=False, logger = None):
+    def __init__(self, host, access_id, access_key, security_token="",
+                 debug=False, logger=None):
         """
             @type host: string
             @param host: 访问的url，例如：http://$accountid.mns.cn-hangzhou.aliyuncs.com
@@ -40,7 +39,9 @@ class Account:
         self.security_token = security_token
         self.debug = debug
         self.logger = logger
-        self.mns_client = MNSClient(host, access_id, access_key, security_token = security_token, logger=self.logger)
+        self.mns_client = MNSClient(host, access_id, access_key,
+                                    security_token=security_token,
+                                    logger=self.logger)
 
     def set_debug(self, debug):
         self.debug = debug
@@ -59,7 +60,8 @@ class Account:
         """
         self.mns_client.close_log()
 
-    def set_client(self, host, access_id=None, access_key=None, security_token=None):
+    def set_client(self, host, access_id=None, access_key=None,
+                   security_token=None):
         """ 设置访问的url
 
             @type host: string
@@ -83,7 +85,9 @@ class Account:
             access_key = self.access_key
         if security_token is None:
             security_token = self.security_token
-        self.mns_client = MNSClient(host, access_id, access_key, security_token=security_token, logger=self.logger)
+        self.mns_client = MNSClient(host, access_id, access_key,
+                                    security_token=security_token,
+                                    logger=self.logger)
 
     def set_attributes(self, account_meta, req_info=None):
         """ 设置Account的属性
@@ -161,7 +165,8 @@ class Account:
             @rtype: Subscription object
             @return: 返回该Account指定Topic的一个Subscription对象
         """
-        return Subscription(topic_name, subscription_name, self.mns_client, self.debug)
+        return Subscription(topic_name, subscription_name, self.mns_client,
+                            self.debug)
 
     def get_client(self):
         """ 获取queue client
@@ -171,7 +176,7 @@ class Account:
         """
         return self.mns_client
 
-    def list_queue(self, prefix = u"", ret_number = -1, marker = u"", req_info=None):
+    def list_queue(self, prefix=u"", ret_number=-1, marker=u"", req_info=None):
         """ 列出Account的队列
 
             @type prefix: string
@@ -201,7 +206,7 @@ class Account:
         self.debuginfo(resp)
         return resp.queueurl_list, resp.next_marker
 
-    def list_topic(self, prefix = "", ret_number = -1, marker = "", req_info=None):
+    def list_topic(self, prefix="", ret_number=-1, marker="", req_info=None):
         """ 列出Account的主题
 
             @type prefix: string
@@ -240,8 +245,9 @@ class Account:
     def __resp2meta__(self, account_meta, resp):
         account_meta.logging_bucket = resp.logging_bucket
 
+
 class AccountMeta:
-    def __init__(self, logging_bucket = None):
+    def __init__(self, logging_bucket=None):
         """ Account属性
             @note: 可设置属性
             :: logging_bucket: 保存用户操作MNS日志的bucket name
@@ -249,5 +255,6 @@ class AccountMeta:
         self.logging_bucket = logging_bucket
 
     def __str__(self):
-        meta_info = {"LoggingBucket" : self.logging_bucket}
-        return "\n".join(["%s: %s" % (k.ljust(30),v) for k,v in meta_info.items()])
+        meta_info = {"LoggingBucket": self.logging_bucket}
+        return "\n".join(
+            ["%s: %s" % (k.ljust(30), v) for k, v in meta_info.items()])

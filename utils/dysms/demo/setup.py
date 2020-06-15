@@ -18,9 +18,10 @@
  under the License.
 '''
 
-from setuptools import setup, find_packages
 import os
 import sys
+
+from setuptools import setup, find_packages
 
 """
 setup module for dysmsapi.
@@ -42,9 +43,9 @@ VERSION = __import__(PACKAGE).__version__
 
 desc_file = open("README.rst")
 try:
-	LONG_DESCRIPTION = desc_file.read()
+    LONG_DESCRIPTION = desc_file.read()
 finally:
-	desc_file.close()
+    desc_file.close()
 
 requires = []
 
@@ -62,24 +63,24 @@ setup(
     author_email=AUTHOR_EMAIL,
     license="Apache",
     url=URL,
-    keywords=["aliyun","sdk","dysmsapi"],
+    keywords=["aliyun", "sdk", "dysmsapi"],
     packages=find_packages(exclude=["tests*"]),
     include_package_data=True,
     platforms="any",
     install_requires=requires,
     classifiers=(
-                "Development Status :: 4 - Beta",
-                "Intended Audience :: Developers",
-                "License :: OSI Approved :: Apache Software License",
-                "Programming Language :: Python",
-                "Programming Language :: Python :: 2.6",
-                "Programming Language :: Python :: 2.7",
-                "Programming Language :: Python :: 3",
-                "Programming Language :: Python :: 3.3",
-                "Programming Language :: Python :: 3.4",
-                "Programming Language :: Python :: 3.5",
-                "Programming Language :: Python :: 3.6",
-                "Topic :: Software Development",
-              )
+        "Development Status :: 4 - Beta",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: Apache Software License",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 2.6",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.3",
+        "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
+        "Topic :: Software Development",
+    )
 
 )

@@ -8,6 +8,8 @@
 """
 
 from utils.video_upload.voduploadsdk.AliyunVodUtils import *
+
+
 class UploadImageRequest:
     def __init__(self, filePath, title=None, fileExt=None):
         """
@@ -36,7 +38,8 @@ class UploadImageRequest:
         if fileExt is None:
             fileExt = AliyunVodUtils.getFileExtension(filePath)
             if not fileExt:
-                raise AliyunVodException('ParameterError', 'InvalidParameter', 'filePath has no Extension')
+                raise AliyunVodException('ParameterError', 'InvalidParameter',
+                                         'filePath has no Extension')
 
         fileExt = fileExt.lstrip('.')
         self.imageExt = fileExt
@@ -54,10 +57,9 @@ class UploadImageRequest:
         else:
             if self.title is None:
                 self.title = briefName
-        
 
     def setImageType(self, imageType):
-        self.imageType = imageType 
+        self.imageType = imageType
 
     def setTitle(self, title):
         self.title = title

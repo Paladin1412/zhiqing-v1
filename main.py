@@ -8,13 +8,14 @@
 @Software : PyCharm
 """
 import time
+from datetime import datetime
 
 from flask import Flask, request, current_app
 from flask_apscheduler import APScheduler
 from flask_cors import CORS
 from flask_mail import Mail
 from flask_pymongo import PyMongo
-from datetime import datetime
+
 from config.settings import config
 from utils import response_code
 from utils.log import setup_log
@@ -99,7 +100,7 @@ def index():
                 from modules.subscription import SubscriptionHandler
                 comment_main = SubscriptionHandler(extra_data, model_action)
                 resp = comment_main.handle_model()
-            elif model_name == "data" or "color":
+            elif model_name in ["data", "color"]:
                 from modules.data import DataHandler
                 comment_main = DataHandler(extra_data, model_action)
                 resp = comment_main.handle_model()
@@ -118,7 +119,9 @@ def index():
             else:
                 resp = set_resjson(err=-1, errmsg="model_name is incorrect")
     e = time.time()
-    current_app.logger.info("model_name{} model_action {} 运行时间 {}".format(model_name, model_action, e-s))
+    current_app.logger.info(
+        "model_name{} model_action {} 运行时间 {}".format(model_name, model_action,
+                                                      e - s))
     return resp
 
 

@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 import sys
-from aliyunsdkdysmsapi.request.v20170525 import SendSmsRequest
-from aliyunsdkdysmsapi.request.v20170525 import QuerySendDetailsRequest
-from aliyunsdkcore.client import AcsClient
-import uuid
-from aliyunsdkcore.profile import region_provider
-from aliyunsdkcore.http import method_type as MT
-from aliyunsdkcore.http import format_type as FT
+
 import const
+from aliyunsdkcore.client import AcsClient
+from aliyunsdkcore.profile import region_provider
+from aliyunsdkdysmsapi.request.v20170525 import QuerySendDetailsRequest
 
 """
 短信业务调用接口示例，版本号：v20170525
@@ -31,6 +28,7 @@ DOMAIN = "dysmsapi.aliyuncs.com"
 acs_client = AcsClient(const.ACCESS_KEY_ID, const.ACCESS_KEY_SECRET, REGION)
 region_provider.add_endpoint(PRODUCT_NAME, REGION, DOMAIN)
 
+
 def query_send_detail(biz_id, phone_number, page_size, current_page, send_date):
     queryRequest = QuerySendDetailsRequest.QuerySendDetailsRequest()
     # 查询的手机号码
@@ -43,11 +41,11 @@ def query_send_detail(biz_id, phone_number, page_size, current_page, send_date):
     queryRequest.set_CurrentPage(current_page)
     # 必填-页大小
     queryRequest.set_PageSize(page_size)
-	
-	# 数据提交方式
-	# queryRequest.set_method(MT.POST)
-	
-	# 数据提交格式
+
+    # 数据提交方式
+    # queryRequest.set_method(MT.POST)
+
+    # 数据提交格式
     # queryRequest.set_accept_format(FT.JSON)
 
     # 调用短信记录查询接口，返回json
@@ -59,4 +57,5 @@ def query_send_detail(biz_id, phone_number, page_size, current_page, send_date):
 
 
 if __name__ == '__main__':
-    print(query_send_detail("141324518542671592^0", "13000000000", 10, 1, "20180214"))
+    print(query_send_detail("141324518542671592^0", "13000000000", 10, 1,
+                            "20180214"))

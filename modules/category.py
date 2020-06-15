@@ -17,6 +17,7 @@ class CategoryHandler(object):
     """
     标签
     """
+
     def __init__(self, extra_data, model_action):
         self.extra_data = extra_data
         self.model_action = model_action
@@ -39,7 +40,8 @@ class CategoryHandler(object):
         查看标签信息
         """
         try:
-            category_info = mongo.db.tool.find_one({"type": "category"}).get("data")
+            category_info = mongo.db.tool.find_one({"type": "category"}).get(
+                "data")
         except Exception as e:
             raise response_code.DatabaseERR(errmsg="{}".format(e))
         return set_resjson(res_array=category_info)

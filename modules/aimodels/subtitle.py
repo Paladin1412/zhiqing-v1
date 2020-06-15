@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-import json
-import time
-import random
 import hashlib
-import urllib
 import http.client
+import json
 import os
+import random
+import time
+import urllib
 from configparser import ConfigParser
-import datetime
+
+import fitz
 from moviepy.editor import VideoFileClip
 from pymongo import MongoClient
-import fitz
+
 import modules.aimodels.packages.iflytek_api as voice_api
 
 
@@ -549,7 +550,7 @@ class Subtitle:
         for res_dict in res_list:
             char_id_to_time[len(full_cn_str)] = res_dict['bg']
             char_id_to_time[len(full_cn_str) + len(res_dict['cn_sub']) - 1] = \
-            res_dict['ed']
+                res_dict['ed']
             full_cn_str += res_dict['cn_sub']
         srt_path = transform(res_list, self.srt_path)
         vtt_path = srt_to_vtt(srt_path, self.vtt_path)

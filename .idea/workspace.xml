@@ -4,10 +4,87 @@
     <list default="true" id="6c7c281b-f7b3-43bc-8de8-c1cbc42d9bf8" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/aimodels/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/aimodels/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/aimodels/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/aimodels/api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/aimodels/config/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/aimodels/config/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/aimodels/packages/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/aimodels/packages/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/aimodels/packages/iflytek_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/aimodels/packages/iflytek_api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/aimodels/run_ai.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/aimodels/run_ai.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/aimodels/search(2).py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/aimodels/search(2).py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules/aimodels/search.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/aimodels/search.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/aimodels/subtitle.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/aimodels/subtitle.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/category.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/category.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/collection.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/collection.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/comment.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/comment.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules/data.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/subscription.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/subscription.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/home.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/home.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/like.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/like.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/message.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/message.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/series.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/series.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/user.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules/videos.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules/videos.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/aliyunsdkdybaseapi/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/aliyunsdkdybaseapi/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/aliyunsdkdybaseapi/request/v20170525/QueryTokenForMnsQueueRequest.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/aliyunsdkdybaseapi/request/v20170525/QueryTokenForMnsQueueRequest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/aliyunsdkdysmsapi/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/aliyunsdkdysmsapi/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/aliyunsdkdysmsapi/request/v20170525/QueryInterSmsIsoInfoRequest.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/aliyunsdkdysmsapi/request/v20170525/QueryInterSmsIsoInfoRequest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/aliyunsdkdysmsapi/request/v20170525/QuerySendDetailsRequest.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/aliyunsdkdysmsapi/request/v20170525/QuerySendDetailsRequest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/aliyunsdkdysmsapi/request/v20170525/QueryTokenForMnsQueueRequest.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/aliyunsdkdysmsapi/request/v20170525/QueryTokenForMnsQueueRequest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/aliyunsdkdysmsapi/request/v20170525/SendBatchSmsRequest.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/aliyunsdkdysmsapi/request/v20170525/SendBatchSmsRequest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/aliyunsdkdysmsapi/request/v20170525/SendInterSmsRequest.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/aliyunsdkdysmsapi/request/v20170525/SendInterSmsRequest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/aliyunsdkdysmsapi/request/v20170525/SendSmsRequest.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/aliyunsdkdysmsapi/request/v20170525/SendSmsRequest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/demo/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/demo/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/demo/demo_sms_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/demo/demo_sms_api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/demo/demo_sms_query.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/demo/demo_sms_query.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/demo/demo_sms_send.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/demo/demo_sms_send.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/demo/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/demo/setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/bin/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/bin/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/bin/mnscmd" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/bin/mnscmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/mns/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/mns/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/mns/mns_account.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/mns/mns_account.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/mns/mns_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/mns/mns_client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/mns/mns_common.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/mns/mns_common.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/mns/mns_exception.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/mns/mns_exception.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/mns/mns_http.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/mns/mns_http.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/mns/mns_pkg_info.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/mns/mns_pkg_info.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/mns/mns_queue.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/mns/mns_queue.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/mns/mns_request.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/mns/mns_request.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/mns/mns_subscription.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/mns/mns_subscription.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/mns/mns_tool.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/mns/mns_tool.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/mns/mns_topic.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/mns/mns_topic.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/mns/mns_xml_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/mns/mns_xml_handler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample/createqueue.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample/createqueue.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample/createtopic.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample/createtopic.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample/deletequeue.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample/deletequeue.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample/deletetopic.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample/deletetopic.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample/publishmessage.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample/publishmessage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample/recvdelmessage.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample/recvdelmessage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample/sample_common.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample/sample_common.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample/sendmessage.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample/sendmessage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample/server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample/simple_http_notify_endpoint.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample/simple_http_notify_endpoint.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample/simple_https_notify_endpoint.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample/simple_https_notify_endpoint.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample/subscribe.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample/subscribe.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample/subscribe_queueendpoint.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/sample/subscribe_queueendpoint.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/mns_python_sdk/setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms/sms_send.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms/sms_send.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms1/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms1/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dysms1/send_sms.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dysms1/send_sms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/mongo_id.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/mongo_id.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/redisConnector.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/redisConnector.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/regular.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/regular.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/response_code.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/response_code.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/third_login.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/third_login.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/video_upload/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/video_upload/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/video_upload/uploadVideo.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/video_upload/uploadVideo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/video_upload/voduploadsdk/AliyunVodUtils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/video_upload/voduploadsdk/AliyunVodUtils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/video_upload/voduploadsdk/UploadAttachedMediaRequest.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/video_upload/voduploadsdk/UploadAttachedMediaRequest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/video_upload/voduploadsdk/UploadImageRequest.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/video_upload/voduploadsdk/UploadImageRequest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/video_upload/voduploadsdk/UploadVideoRequest.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/video_upload/voduploadsdk/UploadVideoRequest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/video_upload/voduploadsdk/VodUploader.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/video_upload/voduploadsdk/VodUploader.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/video_upload/voduploadsdk/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/video_upload/voduploadsdk/__init__.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -195,14 +272,10 @@
       <workItem from="1591836918833" duration="4220000" />
       <workItem from="1591844297136" duration="2075000" />
       <workItem from="1591855069523" duration="11887000" />
-      <workItem from="1591922824425" duration="11657000" />
-    </task>
-    <task id="LOCAL-00020" summary="修改了视频审核接口">
-      <created>1589524106043</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1589524106043</updated>
+      <workItem from="1591922824425" duration="14756000" />
+      <workItem from="1591958956656" duration="57000" />
+      <workItem from="1592008239806" duration="399000" />
+      <workItem from="1592181889373" duration="3296000" />
     </task>
     <task id="LOCAL-00021" summary="修改了视频审核接口">
       <created>1589524154677</created>
@@ -540,7 +613,14 @@
       <option name="project" value="LOCAL" />
       <updated>1591941745641</updated>
     </task>
-    <option name="localTasksCounter" value="69" />
+    <task id="LOCAL-00069" summary="细节修改2">
+      <created>1591951831329</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1591951831329</updated>
+    </task>
+    <option name="localTasksCounter" value="70" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -550,7 +630,6 @@
     <option featureType="com.intellij.fileTypeFactory" implementationName="*.log" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="删除视频" />
     <MESSAGE value="编辑个人信息" />
     <MESSAGE value="获取系类视频， 修改了收藏状态吗" />
     <MESSAGE value="上传图片" />
@@ -575,13 +654,18 @@
     <MESSAGE value="查看粉丝， 查看点赞 + 修改" />
     <MESSAGE value="历史记录" />
     <MESSAGE value="细节修改" />
-    <option name="LAST_COMMIT_MESSAGE" value="细节修改" />
+    <MESSAGE value="细节修改2" />
+    <option name="LAST_COMMIT_MESSAGE" value="细节修改2" />
   </component>
   <component name="WindowStateProjectService">
     <state x="0" y="23" width="1792" height="1016" key="#Deployment" timestamp="1590566723829">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
     <state x="0" y="23" width="1792" height="1016" key="#Deployment/0.23.1792.1016@0.23.1792.1016" timestamp="1590566723829" />
+    <state x="1110" y="401" key="#Notifications" timestamp="1592186212632">
+      <screen x="0" y="23" width="1792" height="1097" />
+    </state>
+    <state x="1110" y="401" key="#Notifications/0.23.1792.1097@0.23.1792.1097" timestamp="1592186212632" />
     <state x="980" y="212" key="#Options" timestamp="1590566979160">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
@@ -600,15 +684,15 @@
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
     <state x="586" y="340" key="#com.intellij.fileTypes.FileTypeChooser/0.23.1792.1016@0.23.1792.1016" timestamp="1591593615081" />
-    <state x="823" y="309" width="832" height="579" key="#xdebugger.evaluate" timestamp="1591951354700">
+    <state x="823" y="309" width="832" height="579" key="#xdebugger.evaluate" timestamp="1591954559587">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
-    <state x="823" y="309" width="832" height="579" key="#xdebugger.evaluate/0.23.1792.1016@0.23.1792.1016" timestamp="1591951354700" />
+    <state x="823" y="309" width="832" height="579" key="#xdebugger.evaluate/0.23.1792.1016@0.23.1792.1016" timestamp="1591954559587" />
     <state x="643" y="463" width="1012" height="579" key="#xdebugger.evaluate/0.23.1792.1019@0.23.1792.1019" timestamp="1588226610795" />
-    <state x="711" y="130" key="CommitChangelistDialog2" timestamp="1591941745325">
+    <state x="711" y="130" key="CommitChangelistDialog2" timestamp="1591951830996">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
-    <state x="711" y="130" key="CommitChangelistDialog2/0.23.1792.1016@0.23.1792.1016" timestamp="1591941745325" />
+    <state x="711" y="130" key="CommitChangelistDialog2/0.23.1792.1016@0.23.1792.1016" timestamp="1591951830996" />
     <state x="473" y="106" key="CommitChangelistDialog2/0.23.1792.1017@0.23.1792.1017" timestamp="1591773674345" />
     <state x="473" y="106" key="CommitChangelistDialog2/0.23.1792.1019@0.23.1792.1019" timestamp="1588469272246" />
     <state x="473" y="106" key="CommitChangelistDialog2/0.23.1792.1020@0.23.1792.1020" timestamp="1590734036495" />
@@ -625,94 +709,102 @@
       <screen x="0" y="23" width="1792" height="1019" />
     </state>
     <state x="660" y="243" key="Github.UntrackedFilesDialog/0.23.1792.1019@0.23.1792.1019" timestamp="1588227907829" />
-    <state width="1078" height="376" key="GridCell.Tab.0.bottom" timestamp="1591951511297">
-      <screen x="0" y="23" width="1792" height="1016" />
+    <state width="1087" height="322" key="GridCell.Tab.0.bottom" timestamp="1592186089935">
+      <screen x="0" y="23" width="1792" height="1097" />
     </state>
     <state width="1750" height="238" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1589854002934" />
-    <state width="1078" height="376" key="GridCell.Tab.0.bottom/0.23.1792.1016@0.23.1792.1016" timestamp="1591951511297" />
+    <state width="1750" height="376" key="GridCell.Tab.0.bottom/0.23.1792.1016@0.23.1792.1016" timestamp="1592015088925" />
     <state width="1049" height="376" key="GridCell.Tab.0.bottom/0.23.1792.1017@0.23.1792.1017" timestamp="1591867459619" />
     <state width="1750" height="342" key="GridCell.Tab.0.bottom/0.23.1792.1019@0.23.1792.1019" timestamp="1588243199676" />
     <state width="1483" height="376" key="GridCell.Tab.0.bottom/0.23.1792.1020@0.23.1792.1020" timestamp="1591769321107" />
     <state width="1750" height="376" key="GridCell.Tab.0.bottom/0.23.1792.1022@0.23.1792.1022" timestamp="1591873648069" />
     <state width="1750" height="376" key="GridCell.Tab.0.bottom/0.23.1792.1024@0.23.1792.1024" timestamp="1591696495544" />
     <state width="1750" height="331" key="GridCell.Tab.0.bottom/0.23.1792.1026@0.23.1792.1026" timestamp="1589452950497" />
-    <state width="1078" height="376" key="GridCell.Tab.0.center" timestamp="1591951511296">
-      <screen x="0" y="23" width="1792" height="1016" />
+    <state width="1087" height="322" key="GridCell.Tab.0.bottom/0.23.1792.1097@0.23.1792.1097" timestamp="1592186089935" />
+    <state width="1087" height="322" key="GridCell.Tab.0.center" timestamp="1592186089934">
+      <screen x="0" y="23" width="1792" height="1097" />
     </state>
     <state width="1750" height="238" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1589854002933" />
-    <state width="1078" height="376" key="GridCell.Tab.0.center/0.23.1792.1016@0.23.1792.1016" timestamp="1591951511296" />
+    <state width="1750" height="376" key="GridCell.Tab.0.center/0.23.1792.1016@0.23.1792.1016" timestamp="1592015088924" />
     <state width="1049" height="376" key="GridCell.Tab.0.center/0.23.1792.1017@0.23.1792.1017" timestamp="1591867459618" />
     <state width="1750" height="342" key="GridCell.Tab.0.center/0.23.1792.1019@0.23.1792.1019" timestamp="1588243199675" />
     <state width="1483" height="376" key="GridCell.Tab.0.center/0.23.1792.1020@0.23.1792.1020" timestamp="1591769321106" />
     <state width="1750" height="376" key="GridCell.Tab.0.center/0.23.1792.1022@0.23.1792.1022" timestamp="1591873648069" />
     <state width="1750" height="376" key="GridCell.Tab.0.center/0.23.1792.1024@0.23.1792.1024" timestamp="1591696495543" />
     <state width="1750" height="331" key="GridCell.Tab.0.center/0.23.1792.1026@0.23.1792.1026" timestamp="1589452950496" />
-    <state width="1078" height="376" key="GridCell.Tab.0.left" timestamp="1591951511295">
-      <screen x="0" y="23" width="1792" height="1016" />
+    <state width="1087" height="322" key="GridCell.Tab.0.center/0.23.1792.1097@0.23.1792.1097" timestamp="1592186089934" />
+    <state width="1087" height="322" key="GridCell.Tab.0.left" timestamp="1592186089933">
+      <screen x="0" y="23" width="1792" height="1097" />
     </state>
     <state width="1750" height="238" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1589854002932" />
-    <state width="1078" height="376" key="GridCell.Tab.0.left/0.23.1792.1016@0.23.1792.1016" timestamp="1591951511295" />
+    <state width="1750" height="376" key="GridCell.Tab.0.left/0.23.1792.1016@0.23.1792.1016" timestamp="1592015088910" />
     <state width="1049" height="376" key="GridCell.Tab.0.left/0.23.1792.1017@0.23.1792.1017" timestamp="1591867459618" />
     <state width="1750" height="342" key="GridCell.Tab.0.left/0.23.1792.1019@0.23.1792.1019" timestamp="1588243199675" />
     <state width="1483" height="376" key="GridCell.Tab.0.left/0.23.1792.1020@0.23.1792.1020" timestamp="1591769321105" />
     <state width="1750" height="376" key="GridCell.Tab.0.left/0.23.1792.1022@0.23.1792.1022" timestamp="1591873648069" />
     <state width="1750" height="376" key="GridCell.Tab.0.left/0.23.1792.1024@0.23.1792.1024" timestamp="1591696495543" />
     <state width="1750" height="331" key="GridCell.Tab.0.left/0.23.1792.1026@0.23.1792.1026" timestamp="1589452950496" />
-    <state width="1078" height="376" key="GridCell.Tab.0.right" timestamp="1591951511296">
-      <screen x="0" y="23" width="1792" height="1016" />
+    <state width="1087" height="322" key="GridCell.Tab.0.left/0.23.1792.1097@0.23.1792.1097" timestamp="1592186089933" />
+    <state width="1087" height="322" key="GridCell.Tab.0.right" timestamp="1592186089934">
+      <screen x="0" y="23" width="1792" height="1097" />
     </state>
     <state width="1750" height="238" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1589854002934" />
-    <state width="1078" height="376" key="GridCell.Tab.0.right/0.23.1792.1016@0.23.1792.1016" timestamp="1591951511296" />
+    <state width="1750" height="376" key="GridCell.Tab.0.right/0.23.1792.1016@0.23.1792.1016" timestamp="1592015088925" />
     <state width="1049" height="376" key="GridCell.Tab.0.right/0.23.1792.1017@0.23.1792.1017" timestamp="1591867459619" />
     <state width="1750" height="342" key="GridCell.Tab.0.right/0.23.1792.1019@0.23.1792.1019" timestamp="1588243199675" />
     <state width="1483" height="376" key="GridCell.Tab.0.right/0.23.1792.1020@0.23.1792.1020" timestamp="1591769321107" />
     <state width="1750" height="376" key="GridCell.Tab.0.right/0.23.1792.1022@0.23.1792.1022" timestamp="1591873648069" />
     <state width="1750" height="376" key="GridCell.Tab.0.right/0.23.1792.1024@0.23.1792.1024" timestamp="1591696495544" />
     <state width="1750" height="331" key="GridCell.Tab.0.right/0.23.1792.1026@0.23.1792.1026" timestamp="1589452950496" />
-    <state width="1078" height="376" key="GridCell.Tab.1.bottom" timestamp="1591951511298">
-      <screen x="0" y="23" width="1792" height="1016" />
+    <state width="1087" height="322" key="GridCell.Tab.0.right/0.23.1792.1097@0.23.1792.1097" timestamp="1592186089934" />
+    <state width="1087" height="376" key="GridCell.Tab.1.bottom" timestamp="1592183544051">
+      <screen x="0" y="23" width="1792" height="1097" />
     </state>
     <state width="1750" height="238" key="GridCell.Tab.1.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1589854002936" />
-    <state width="1078" height="376" key="GridCell.Tab.1.bottom/0.23.1792.1016@0.23.1792.1016" timestamp="1591951511298" />
+    <state width="1750" height="376" key="GridCell.Tab.1.bottom/0.23.1792.1016@0.23.1792.1016" timestamp="1592015088927" />
     <state width="1049" height="376" key="GridCell.Tab.1.bottom/0.23.1792.1017@0.23.1792.1017" timestamp="1591867459620" />
     <state width="1750" height="342" key="GridCell.Tab.1.bottom/0.23.1792.1019@0.23.1792.1019" timestamp="1588243199676" />
     <state width="1483" height="376" key="GridCell.Tab.1.bottom/0.23.1792.1020@0.23.1792.1020" timestamp="1591769320955" />
     <state width="1750" height="376" key="GridCell.Tab.1.bottom/0.23.1792.1022@0.23.1792.1022" timestamp="1591873647949" />
     <state width="1750" height="376" key="GridCell.Tab.1.bottom/0.23.1792.1024@0.23.1792.1024" timestamp="1591696495545" />
     <state width="1750" height="238" key="GridCell.Tab.1.bottom/0.23.1792.1026@0.23.1792.1026" timestamp="1589452860827" />
-    <state width="1078" height="376" key="GridCell.Tab.1.center" timestamp="1591951511297">
-      <screen x="0" y="23" width="1792" height="1016" />
+    <state width="1087" height="376" key="GridCell.Tab.1.bottom/0.23.1792.1097@0.23.1792.1097" timestamp="1592183544051" />
+    <state width="1087" height="376" key="GridCell.Tab.1.center" timestamp="1592183544050">
+      <screen x="0" y="23" width="1792" height="1097" />
     </state>
     <state width="1750" height="238" key="GridCell.Tab.1.center/0.0.1792.1120@0.0.1792.1120" timestamp="1589854002935" />
-    <state width="1078" height="376" key="GridCell.Tab.1.center/0.23.1792.1016@0.23.1792.1016" timestamp="1591951511297" />
+    <state width="1750" height="376" key="GridCell.Tab.1.center/0.23.1792.1016@0.23.1792.1016" timestamp="1592015088926" />
     <state width="1049" height="376" key="GridCell.Tab.1.center/0.23.1792.1017@0.23.1792.1017" timestamp="1591867459619" />
     <state width="1750" height="342" key="GridCell.Tab.1.center/0.23.1792.1019@0.23.1792.1019" timestamp="1588243199676" />
     <state width="1483" height="376" key="GridCell.Tab.1.center/0.23.1792.1020@0.23.1792.1020" timestamp="1591769320955" />
     <state width="1750" height="376" key="GridCell.Tab.1.center/0.23.1792.1022@0.23.1792.1022" timestamp="1591873647949" />
     <state width="1750" height="376" key="GridCell.Tab.1.center/0.23.1792.1024@0.23.1792.1024" timestamp="1591696495545" />
     <state width="1750" height="238" key="GridCell.Tab.1.center/0.23.1792.1026@0.23.1792.1026" timestamp="1589452860827" />
-    <state width="1078" height="376" key="GridCell.Tab.1.left" timestamp="1591951511297">
-      <screen x="0" y="23" width="1792" height="1016" />
+    <state width="1087" height="376" key="GridCell.Tab.1.center/0.23.1792.1097@0.23.1792.1097" timestamp="1592183544050" />
+    <state width="1087" height="376" key="GridCell.Tab.1.left" timestamp="1592183544050">
+      <screen x="0" y="23" width="1792" height="1097" />
     </state>
     <state width="1750" height="238" key="GridCell.Tab.1.left/0.0.1792.1120@0.0.1792.1120" timestamp="1589854002934" />
-    <state width="1078" height="376" key="GridCell.Tab.1.left/0.23.1792.1016@0.23.1792.1016" timestamp="1591951511297" />
+    <state width="1750" height="376" key="GridCell.Tab.1.left/0.23.1792.1016@0.23.1792.1016" timestamp="1592015088926" />
     <state width="1049" height="376" key="GridCell.Tab.1.left/0.23.1792.1017@0.23.1792.1017" timestamp="1591867459619" />
     <state width="1750" height="342" key="GridCell.Tab.1.left/0.23.1792.1019@0.23.1792.1019" timestamp="1588243199676" />
     <state width="1483" height="376" key="GridCell.Tab.1.left/0.23.1792.1020@0.23.1792.1020" timestamp="1591769320954" />
     <state width="1750" height="376" key="GridCell.Tab.1.left/0.23.1792.1022@0.23.1792.1022" timestamp="1591873647948" />
     <state width="1750" height="376" key="GridCell.Tab.1.left/0.23.1792.1024@0.23.1792.1024" timestamp="1591696495544" />
     <state width="1750" height="238" key="GridCell.Tab.1.left/0.23.1792.1026@0.23.1792.1026" timestamp="1589452860826" />
-    <state width="1078" height="376" key="GridCell.Tab.1.right" timestamp="1591951511297">
-      <screen x="0" y="23" width="1792" height="1016" />
+    <state width="1087" height="376" key="GridCell.Tab.1.left/0.23.1792.1097@0.23.1792.1097" timestamp="1592183544050" />
+    <state width="1087" height="376" key="GridCell.Tab.1.right" timestamp="1592183544050">
+      <screen x="0" y="23" width="1792" height="1097" />
     </state>
     <state width="1750" height="238" key="GridCell.Tab.1.right/0.0.1792.1120@0.0.1792.1120" timestamp="1589854002935" />
-    <state width="1078" height="376" key="GridCell.Tab.1.right/0.23.1792.1016@0.23.1792.1016" timestamp="1591951511297" />
+    <state width="1750" height="376" key="GridCell.Tab.1.right/0.23.1792.1016@0.23.1792.1016" timestamp="1592015088927" />
     <state width="1049" height="376" key="GridCell.Tab.1.right/0.23.1792.1017@0.23.1792.1017" timestamp="1591867459620" />
     <state width="1750" height="342" key="GridCell.Tab.1.right/0.23.1792.1019@0.23.1792.1019" timestamp="1588243199676" />
     <state width="1483" height="376" key="GridCell.Tab.1.right/0.23.1792.1020@0.23.1792.1020" timestamp="1591769320955" />
     <state width="1750" height="376" key="GridCell.Tab.1.right/0.23.1792.1022@0.23.1792.1022" timestamp="1591873647949" />
     <state width="1750" height="376" key="GridCell.Tab.1.right/0.23.1792.1024@0.23.1792.1024" timestamp="1591696495545" />
     <state width="1750" height="238" key="GridCell.Tab.1.right/0.23.1792.1026@0.23.1792.1026" timestamp="1589452860827" />
+    <state width="1087" height="376" key="GridCell.Tab.1.right/0.23.1792.1097@0.23.1792.1097" timestamp="1592183544050" />
     <state width="243" height="456" key="HiddenNamespacesPopup" timestamp="1590377118950">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
@@ -724,10 +816,18 @@
     <state x="740" y="154" key="SettingsEditor/0.23.1792.1016@0.23.1792.1016" timestamp="1591337337917" />
     <state x="397" y="171" key="SettingsEditor/0.23.1792.1019@0.23.1792.1019" timestamp="1588227735541" />
     <state x="740" y="155" key="SettingsEditor/0.23.1792.1024@0.23.1792.1024" timestamp="1591692745718" />
-    <state x="920" y="519" key="Vcs.Push.Dialog.v2" timestamp="1591941764737">
+    <state x="626" y="270" width="540" height="524" key="StructurePopup" timestamp="1592181916955">
+      <screen x="0" y="23" width="1792" height="1097" />
+    </state>
+    <state x="626" y="270" width="540" height="524" key="StructurePopup/0.23.1792.1097@0.23.1792.1097" timestamp="1592181916955" />
+    <state width="500" height="445" key="SwitcherDM" timestamp="1592183337030">
+      <screen x="0" y="23" width="1792" height="1097" />
+    </state>
+    <state width="500" height="445" key="SwitcherDM/0.23.1792.1097@0.23.1792.1097" timestamp="1592183337030" />
+    <state x="920" y="519" key="Vcs.Push.Dialog.v2" timestamp="1591951832919">
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
-    <state x="920" y="519" key="Vcs.Push.Dialog.v2/0.23.1792.1016@0.23.1792.1016" timestamp="1591941764737" />
+    <state x="920" y="519" key="Vcs.Push.Dialog.v2/0.23.1792.1016@0.23.1792.1016" timestamp="1591951832919" />
     <state x="496" y="271" key="Vcs.Push.Dialog.v2/0.23.1792.1017@0.23.1792.1017" timestamp="1591773676133" />
     <state x="496" y="272" key="Vcs.Push.Dialog.v2/0.23.1792.1020@0.23.1792.1020" timestamp="1590734039865" />
     <state x="920" y="523" key="Vcs.Push.Dialog.v2/0.23.1792.1024@0.23.1792.1024" timestamp="1591692770817" />
@@ -744,10 +844,11 @@
       <screen x="0" y="23" width="1792" height="1016" />
     </state>
     <state x="725" y="311" key="com.intellij.database.view.ui.AbstractDbRefactoringDialog/0.23.1792.1016@0.23.1792.1016" timestamp="1589768243320" />
-    <state x="984" y="452" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1589763747506">
-      <screen x="0" y="23" width="1792" height="1016" />
+    <state x="984" y="486" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1592183126603">
+      <screen x="0" y="23" width="1792" height="1097" />
     </state>
     <state x="984" y="452" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.23.1792.1016@0.23.1792.1016" timestamp="1589763747506" />
+    <state x="984" y="486" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.23.1792.1097@0.23.1792.1097" timestamp="1592183126603" />
     <state x="1012" y="123" width="680" height="819" key="dock-window-1" timestamp="1588067501155">
       <screen x="0" y="23" width="1792" height="1019" />
     </state>
@@ -781,7 +882,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/modules/videos.py</url>
-          <line>1044</line>
+          <line>1045</line>
           <option name="timeStamp" value="58" />
         </line-breakpoint>
       </breakpoints>
@@ -804,7 +905,7 @@
     <SUITE FILE_PATH="coverage/zhiqing_v1$search__1_.coverage" NAME="search (1) Coverage Results" MODIFIED="1589515383310" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/modules/aimodels" />
     <SUITE FILE_PATH="coverage/zhiqing_v1$mongo_id.coverage" NAME="mongo_id Coverage Results" MODIFIED="1590377821332" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
     <SUITE FILE_PATH="coverage/zhiqing_v1$videos.coverage" NAME="videos Coverage Results" MODIFIED="1589853972232" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/modules" />
-    <SUITE FILE_PATH="coverage/zhiqing_v1$main.coverage" NAME="main Coverage Results" MODIFIED="1591942524226" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/zhiqing_v1$main.coverage" NAME="main Coverage Results" MODIFIED="1592183544032" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/zhiqing_v1$main1.coverage" NAME="main1 Coverage Results" MODIFIED="1590032558406" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/zhiqing_v1$third_login.coverage" NAME="third_login Coverage Results" MODIFIED="1591580444494" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
     <SUITE FILE_PATH="coverage/zhiqing_v1$search.coverage" NAME="search Coverage Results" MODIFIED="1591674825471" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/modules/aimodels" />

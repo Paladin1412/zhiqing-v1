@@ -133,8 +133,6 @@ class CollectHandler(object):
         series_dict = {}
         res_list = []
         view_counts = 0
-        # like_counts = 0
-        # comment_counts = 0
         collections_cursor = mongo.db.collection.find(
             {"user_id": user["_id"], "state": 0})
         for video_collect in collections_cursor:

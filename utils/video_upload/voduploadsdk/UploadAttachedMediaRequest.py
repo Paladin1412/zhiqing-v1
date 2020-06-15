@@ -8,6 +8,8 @@
 """
 
 from utils.video_upload.voduploadsdk.AliyunVodUtils import *
+
+
 class UploadAttachedMediaRequest:
     def __init__(self, filePath, businessType, title=None, fileExt=None):
         """
@@ -31,12 +33,12 @@ class UploadAttachedMediaRequest:
         self.appId = None
         self.workflowId = None
 
-
     def setFilePath(self, filePath, title=None, fileExt=None):
         if fileExt is None:
             fileExt = AliyunVodUtils.getFileExtension(filePath)
             if not fileExt:
-                raise AliyunVodException('ParameterError', 'InvalidParameter', 'filePath has no Extension')
+                raise AliyunVodException('ParameterError', 'InvalidParameter',
+                                         'filePath has no Extension')
 
         fileExt = fileExt.lstrip('.')
         self.mediaExt = fileExt
@@ -52,7 +54,6 @@ class UploadAttachedMediaRequest:
         else:
             if self.title is None:
                 self.title = briefName
-
 
     def setBusinessType(self, businessType):
         self.businessType = businessType
@@ -83,5 +84,3 @@ class UploadAttachedMediaRequest:
 
     def setWorkflowId(self, workflowId):
         self.workflowId = workflowId
-
-
